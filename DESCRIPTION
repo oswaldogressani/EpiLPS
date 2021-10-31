@@ -1,0 +1,28 @@
+Package: EpiLPS
+Type: Package
+Title: A Bayesian Tool for Estimating the Reproduction Number with
+ Laplacian-P-Splines
+Version: 0.1.1
+Authors@R: c(person("Oswaldo","Gressani", 
+ email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
+ comment="Author"))
+Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
+Description: This package uses Laplacian-P-splines for estimating the
+ instantaneous reproduction number R(t).
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+LinkingTo: 
+    RcppArmadillo,
+    Rcpp
+Imports: 
+    Rcpp,
+    coda  (>= 0.19-4),
+    progress  (>= 1.2.2),
+    crayon    (>= 1.4.1),
+    MASS (>= 7.3-54),
+    EpiEstim (>= 2.2-4),
+    ggplot2 (>= 3.3.5),
+    grDevices (>= 4.1.1),
+    gridExtra (>= 2.3)
