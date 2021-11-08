@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{epilps}(x, plotout = c("rt", "epicurve"), dates = NULL,
      datelab = c("7d", "1m", "3m", "6m"),
-     overlayEpiestim = FALSE, rtcol = "red", cicol = "gray",
+     overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
      transparency = 0.5, epicol = "red",
      incibars = FALSE, barwidth = 0.35,
      themetype = c("gray", "classic", "light", "dark"), ...)
@@ -23,6 +23,10 @@ number or "epicurve" for showing the epidemic curve.}
 3 months or 6 months.}
 
 \item{overlayEpiestim}{Should the EpiEstim fit be overlayed?}
+
+\item{Rtitle}{The title for the plot of R.}
+
+\item{epititle}{The title for the plot of the epidemic curve.}
 
 \item{rtcol}{Color for the reproduction number curve fit.}
 
@@ -48,9 +52,9 @@ This routine can be used to plot the estimated epidemic curve
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
 epidemic <- episim(serial_interval = si, Rpattern = 2)
 epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si)
-gridExtra::grid.arrange(plot(epifit),
+gridExtra::grid.arrange(plot(epifit, title = TRUE),
                         plot(epifit, plotout = "epicurve", epicol = "blue",
-                        nrow = 2))
+                        title = TRUE), nrow = 2)
 
 }
 \author{

@@ -6,7 +6,7 @@
 #' @usage
 #' \method{plot}{epilps}(x, plotout = c("rt", "epicurve"), dates = NULL,
 #'      datelab = c("7d", "1m", "3m", "6m"),
-#'      overlayEpiestim = FALSE, rtcol = "red", cicol = "gray",
+#'      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
 #'      transparency = 0.5, epicol = "red",
 #'      incibars = FALSE, barwidth = 0.35,
 #'      themetype = c("gray", "classic", "light", "dark"), ...)
@@ -18,6 +18,8 @@
 #' @param datelab The spacing for ticks on the x-axis. Either 7 days, 1 month,
 #'  3 months or 6 months.
 #' @param overlayEpiestim Should the EpiEstim fit be overlayed?
+#' @param Rtitle The title for the plot of R.
+#' @param epititle The title for the plot of the epidemic curve.
 #' @param rtcol Color for the reproduction number curve fit.
 #' @param cicol Color for shading the credible envelope.
 #' @param transparency Controls the transparency of the credible envelope.
@@ -31,9 +33,9 @@
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
 #' epidemic <- episim(serial_interval = si, Rpattern = 2)
 #' epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si)
-#' gridExtra::grid.arrange(plot(epifit),
+#' gridExtra::grid.arrange(plot(epifit, title = TRUE),
 #'                         plot(epifit, plotout = "epicurve", epicol = "blue",
-#'                         nrow = 2))
+#'                         title = TRUE), nrow = 2)
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
@@ -41,7 +43,7 @@
 
 plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                         datelab = c("7d", "1m", "3m", "6m"),
-                        overlayEpiestim = FALSE,
+                        overlayEpiestim = FALSE, Rtitle = "", epititle = "",
                         rtcol = "red", cicol = "gray", transparency = 0.5,
                         epicol = "red", incibars = FALSE, barwidth = 0.35,
                         themetype = c("gray","classic","light","dark"), ...) {
@@ -95,7 +97,6 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
     xlabtype <- eval(parse(text = "ggplot2::xlim(0,n)"))
   }
 
-
   themetype <- match.arg(themetype)
   if (themetype == "classic") {
     themeval <- eval(parse(text = "ggplot2::theme_classic()"))
@@ -107,20 +108,24 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
     themeval <- eval(parse(text = "ggplot2::theme_dark()"))
   }
 
+
   out_type <- match.arg(plotout)
   if (out_type == "rt") {
     if (overlayEpiestim == FALSE) {
       # -- Plot of Rt with EpiLPS
       plotR_EpiLPS <- ggplot2::ggplot(data = Rlps, ggplot2::aes(x = tdom)) +
+                      ggplot2::ggtitle(Rtitle) +
                       ggplot2::geom_ribbon(ggplot2::aes(ymin = RCI_low,
                                                         ymax = RCI_up),
                                            alpha = transparency, fill = cicol) +
                       ggplot2::geom_line(ggplot2::aes(y = R_estim),
                                          color = rtcol, size = 1.1) +
-                      ggplot2::geom_hline(yintercept = 1, linetype = "dotted") +
+                      ggplot2::geom_hline(yintercept = 1, linetype = "dotted",
+                                          size = 1.1) +
                       xlabtype +
                       ggplot2::xlab("Time") + ggplot2::ylab("R") + themeval +
                       ggplot2::theme(
+                        plot.title = ggplot2::element_text(size = 15),
                         axis.title.x = ggplot2::element_text(size = 13),
                         axis.title.y = ggplot2::element_text(size = 13),
                         axis.text.x = ggplot2::element_text(size = 13),
@@ -132,6 +137,7 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
       linetypes <- c("EpiLPS" = 1, "EpiEstim" = 2)
 
       plotR_EpiLPS <- ggplot2::ggplot(data = Rlps, ggplot2::aes(x = tdom)) +
+                      ggplot2::ggtitle(Rtitle) +
                       ggplot2::geom_ribbon(ggplot2::aes(ymin = RCI_low,
                                                         ymax = RCI_up),
                                           alpha = transparency, fill = cicol) +
@@ -152,9 +158,11 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                                     linetype = "Legend") +
                       ggplot2::scale_color_manual(values = colors) +
                       ggplot2::scale_linetype_manual(values = linetypes) +
-                      ggplot2::geom_hline(yintercept = 1, linetype = "dotted") +
+                      ggplot2::geom_hline(yintercept = 1, linetype = "dotted",
+                                          size = 1.1) +
                       xlabtype + themeval +
                       ggplot2::theme(
+                        plot.title = ggplot2::element_text(size = 15),
                         axis.title.x = ggplot2::element_text(size = 13),
                         axis.title.y = ggplot2::element_text(size = 13),
                         axis.text.x = ggplot2::element_text(size = 13),
@@ -189,17 +197,18 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
     plot_incidence <- ggplot2::ggplot(data = mulps,
                                       ggplot2::aes(x = tdom, y = mu_estim)) +
                       incidence_bars +
+                      ggplot2::ggtitle(epititle) +
                       ggplot2::geom_ribbon(ggplot2::aes(ymin = muCI_low,
                                                         ymax = muCI_up),
                                            alpha = transparency, fill = cicol) +
                       ggplot2::geom_line(ggplot2::aes(y = mu_estim),
                                          color = epicol, size = 1.1) +
-
                       xlabtype +
                       ggplot2::xlab("Time") +
                       ggplot2::ylab("Incidence") +
                       themeval +
                       ggplot2::theme(
+                        plot.title = ggplot2::element_text(size = 15),
                         axis.title.x = ggplot2::element_text(size = 13),
                         axis.title.y = ggplot2::element_text(size = 13),
                         axis.text.x = ggplot2::element_text(size = 13),

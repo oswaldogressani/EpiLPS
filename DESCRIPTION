@@ -2,7 +2,7 @@ Package: EpiLPS
 Type: Package
 Title: A Bayesian Tool for Estimating the Reproduction Number with
  Laplacian-P-Splines
-Version: 0.1.1
+Version: 0.1.5
 Authors@R: c(person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
  comment="Author"))
