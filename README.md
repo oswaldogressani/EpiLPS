@@ -124,9 +124,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  19   5  17  20  39  40  69  83 147 140 209 252 325 413 520 566 639 754 838
-    ## [20] 847 899 862 885 862 823 752 667 588 517 425 353 285 225 204 142 115  90  58
-    ## [39]  59  37  24  19  11  10   5   6   4   3   1   1
+    ##  [1]  19   6  10  25  37  47  60  69 103 133 178 235 283 347 449 505 589 627 709
+    ## [20] 802 771 770 747 774 761 616 569 513 430 391 306 245 210 162 115  95  77  55
+    ## [39]  29  21  13  21   9   7   6   5   4   6   1   2
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -139,9 +139,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si)
 
     ## Inference method chosen: LPSMAP. 
     ## Total number of days: 50. 
-    ## Mean R(t) discarding first 7 days: 0.968.
-    ## Mean 95% CI of R(t) discarding first 7 days: (0.786,1.2) 
-    ## Elapsed real time (wall clock time): 0.14 seconds.
+    ## Mean R(t) discarding first 7 days: 0.975.
+    ## Mean 95% CI of R(t) discarding first 7 days: (0.786,1.217) 
+    ## Elapsed real time (wall clock time): 0.18 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -176,13 +176,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,1:3])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.410422 |   1.969449 |  2.950132 |
-| 9   | 2.341048 |   1.930179 |  2.839376 |
-| 10  | 2.225698 |   1.836116 |  2.697941 |
-| 11  | 2.105503 |   1.750342 |  2.532729 |
-| 12  | 2.003184 |   1.663552 |  2.412155 |
-| 13  | 1.922171 |   1.603634 |  2.303980 |
-| 14  | 1.845638 |   1.536449 |  2.217047 |
+| 8   | 2.196644 |   1.782825 |  2.706517 |
+| 9   | 2.154161 |   1.767416 |  2.625533 |
+| 10  | 2.120227 |   1.742247 |  2.580211 |
+| 11  | 2.085096 |   1.726031 |  2.518857 |
+| 12  | 2.034957 |   1.681605 |  2.462559 |
+| 13  | 1.963093 |   1.630694 |  2.363246 |
+| 14  | 1.875193 |   1.556359 |  2.259342 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
