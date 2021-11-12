@@ -2,7 +2,7 @@
 #'
 #' @description
 #' The \code{perfcheck()} routine can be used to check the performance of EpiLPS
-#' in various epidemic scearios. The user can choose between 4 scenarios,
+#' in various epidemic scenarios. The user can choose between 4 scenarios,
 #' each scenario corresponding to a different data generating process for the
 #' incidence data with a specific target dynamics for the reproduction number.
 #' The aim of these simulations is to assess how close EpiLPS can reproduce
@@ -169,7 +169,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
   perf_metrics[, 5] <- coverage_epilps
   perf_metrics[, 6] <- coverage_epiestim
 
-  simul_summary <- round(perf_metrics[seq(1, length(t_end), by = 2), ], 3)
+  simul_summary <- round(perf_metrics[seq(1, length(t_end), by = 1), ], 3)
 
   #-- Plot results with ggplot2
 
@@ -309,25 +309,31 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
 
 
   outputlist <- list(simul_summary = simul_summary,
-                     plot_summary = summary_plot)
+                     plot_summary = summary_plot,
+                     ciwidth_epilps = ciwidth_epilps,
+                     ciwidth_epiestim = ciwidth_epiestim)
 
   cat("Comparing ",method," vs EpiEstim in S=",S,
       " replications (epidemic T=50 days). \n", sep ="")
   cat("Mean Bias on days ",t_end[1],"-",epidays, ":\n", sep = "")
   cat("-- EpiLPS mean Bias: ", round(mean(Bias_epilps),5), "\n", sep = "")
-  cat("-- EpiEstim mean Bias: ", round(mean(Bias_epiestim),5), "\n", sep = "")
+  cat("-- EpiEstim mean Bias: ", round(mean(Bias_epiestim, na.rm = TRUE),5),
+      "\n", sep = "")
   cat("Mean MSE on days ",t_end[1],"-",epidays, ":\n", sep = "")
   cat("-- EpiLPS mean MSE:   ", round(mean(MSE_epilps),5), "\n", sep = "")
-  cat("-- EpiEstim mean MSE: ", round(mean(MSE_epiestim),5), "\n", sep = "")
+  cat("-- EpiEstim mean MSE: ", round(mean(MSE_epiestim, na.rm = TRUE),5),
+      "\n", sep = "")
   cat("Mean credible interval coverage on days ",t_end[1],"-",epidays,
       " (nominal level: ",ci_level * 100," %)",":\n", sep = "")
   cat("-- EpiLPS mean coverage:   ", round(mean(coverage_epilps),5),
       "\n", sep = "")
-  cat("-- EpiEstim mean coverage: ", round(mean(coverage_epiestim),5),
+  cat("-- EpiEstim mean coverage: ", round(mean(coverage_epiestim,
+                                                na.rm = TRUE),5),
       "\n", sep = "")
   cat("-- EpiLPS mean CI width: ", round(mean(meanciwidth_epilps),2),
       "\n", sep = "")
-  cat("-- EpiEstim mean CI width: ", round(mean(meanciwidth_epiestim),2),
+  cat("-- EpiEstim mean CI width: ", round(mean(meanciwidth_epiestim,
+                                                na.rm = TRUE),2),
       "\n", sep = "")
 
 

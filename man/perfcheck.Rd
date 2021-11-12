@@ -29,7 +29,7 @@ perfcheck(S = 10, serial_interval, scenario = 3, K = 30, method = "LPSMAP",
 }
 \description{
 The \code{perfcheck()} routine can be used to check the performance of EpiLPS
-in various epidemic scearios. The user can choose between 4 scenarios,
+in various epidemic scenarios. The user can choose between 4 scenarios,
 each scenario corresponding to a different data generating process for the
 incidence data with a specific target dynamics for the reproduction number.
 The aim of these simulations is to assess how close EpiLPS can reproduce

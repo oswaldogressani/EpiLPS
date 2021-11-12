@@ -1,8 +1,7 @@
-EpiLPS: A new Bayesian tool for estimating the time-varying reproduction
-number
+EpiLPS: a fast and flexible Bayesian tool for near real-time estimation
+of the time-varying reproduction number
 ================
-Oswaldo Gressani [1] ,Jacco Wallinga [2] ,Christian Althaus [3] ,Niel
-Hens [4] ,Christel Faes [5]
+Oswaldo Gressani [1]
 
 <!-- Introduce badges -->
 
@@ -124,9 +123,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  19   6  10  25  37  47  60  69 103 133 178 235 283 347 449 505 589 627 709
-    ## [20] 802 771 770 747 774 761 616 569 513 430 391 306 245 210 162 115  95  77  55
-    ## [39]  29  21  13  21   9   7   6   5   4   6   1   2
+    ##  [1]  24   7  17  33  41  56  72 104 130 199 222 272 352 461 517 560 684 773 866
+    ## [20] 865 926 913 969 924 900 788 681 631 558 430 378 275 252 184 131 101  94  61
+    ## [39]  48  28  27  26  12   8   8   9   7   5   1   4
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -139,9 +138,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si)
 
     ## Inference method chosen: LPSMAP. 
     ## Total number of days: 50. 
-    ## Mean R(t) discarding first 7 days: 0.975.
-    ## Mean 95% CI of R(t) discarding first 7 days: (0.786,1.217) 
-    ## Elapsed real time (wall clock time): 0.18 seconds.
+    ## Mean R(t) discarding first 7 days: 0.974.
+    ## Mean 95% CI of R(t) discarding first 7 days: (0.791,1.204) 
+    ## Elapsed real time (wall clock time): 0.17 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -176,13 +175,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,1:3])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.196644 |   1.782825 |  2.706517 |
-| 9   | 2.154161 |   1.767416 |  2.625533 |
-| 10  | 2.120227 |   1.742247 |  2.580211 |
-| 11  | 2.085096 |   1.726031 |  2.518857 |
-| 12  | 2.034957 |   1.681605 |  2.462559 |
-| 13  | 1.963093 |   1.630694 |  2.363246 |
-| 14  | 1.875193 |   1.556359 |  2.259342 |
+| 8   | 2.286240 |   1.874062 |  2.789071 |
+| 9   | 2.245393 |   1.857539 |  2.714232 |
+| 10  | 2.165929 |   1.792218 |  2.617567 |
+| 11  | 2.062015 |   1.716555 |  2.477000 |
+| 12  | 1.956527 |   1.625819 |  2.354504 |
+| 13  | 1.862789 |   1.555603 |  2.230635 |
+| 14  | 1.774048 |   1.477996 |  2.129400 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
@@ -272,23 +271,7 @@ during epidemics, *American Journal of Epidemiology*, **178**(9),
 
 <hr>
 
-### Author affiliations
+### Author affiliation
 
 [1] Interuniversity Institute for Biostatistics and Statistical
-Bioinformatics, Data Science Institute, Hasselt University, Belgium.
-
-[2] \(a\) Centre for Infectious Disease Control, National Institute for
-Public Health and the Environment, Bilthoven, The Netherlands. (b)
-Department of Biomedical Data Sciences, Leiden University Medical
-Centre, Leiden, The Netherlands.
-
-[3] Institute of Social and Preventive Medicine, University of Bern,
-Bern, Switzerland.
-
-[4] \(c\) Interuniversity Institute for Biostatistics and Statistical
-Bioinformatics, Data Science Institute, Hasselt University, Belgium. (d)
-Centre for Health Economics Research and Modelling Infectious Diseases,
-Vaxinfectio, University of Antwerp, Belgium.
-
-[5] Interuniversity Institute for Biostatistics and Statistical
 Bioinformatics, Data Science Institute, Hasselt University, Belgium.
