@@ -52,9 +52,9 @@ This routine can be used to plot the estimated epidemic curve
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
 epidemic <- episim(serial_interval = si, Rpattern = 2)
 epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si)
-gridExtra::grid.arrange(plot(epifit, title = TRUE),
+gridExtra::grid.arrange(plot(epifit, Rtitle = "Estimated R"),
                         plot(epifit, plotout = "epicurve", epicol = "blue",
-                        title = TRUE), nrow = 2)
+                        epititle = "Epidemic curve"), nrow = 2)
 
 }
 \author{

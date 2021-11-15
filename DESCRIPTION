@@ -1,14 +1,19 @@
 Package: EpiLPS
 Type: Package
-Title: A Bayesian Tool for Estimating the Reproduction Number with
- Laplacian-P-Splines
+Title: EpiLPS: a fast and flexible Bayesian tool for near real-time estimation
+ of the time-varying reproduction number
 Version: 0.1.5
 Authors@R: c(person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
  comment="Author"))
 Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
 Description: This package uses Laplacian-P-splines for estimating the
- instantaneous reproduction number R(t).
+ instantaneous reproduction number R(t). The Negative Binomial distribution is 
+ used to model the time series of incidence counts. Two methods are available
+ for fitting R(t): (1) LPSMAP is a fully sampling-free approach based on a 
+ maximum a posteriori calibration of the hyperparameter vector and (2) LPSMALA
+ is a fully stochastic approach with a Metropolis-within-Gibbs algorithm and
+ Langevin diffusions for efficient sampling of the posterior distribution.
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true

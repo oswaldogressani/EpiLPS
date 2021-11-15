@@ -1,11 +1,11 @@
 EpiLPS: a fast and flexible Bayesian tool for near real-time estimation
 of the time-varying reproduction number
 ================
-Oswaldo Gressani [1]
+Oswaldo Gressani
 
 <!-- Introduce badges -->
 
-![Version](https://img.shields.io/badge/Version-1.1.1-lightgrey)
+![Version](https://img.shields.io/badge/Version-0.1.5-lightgrey)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-yellow)
 
@@ -123,9 +123,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  24   7  17  33  41  56  72 104 130 199 222 272 352 461 517 560 684 773 866
-    ## [20] 865 926 913 969 924 900 788 681 631 558 430 378 275 252 184 131 101  94  61
-    ## [39]  48  28  27  26  12   8   8   9   7   5   1   4
+    ##  [1]  20   4  17  25  23  46  67  77 104 164 195 242 281 377 462 534 634 658 744
+    ## [20] 821 806 837 807 785 742 678 598 543 416 383 308 242 196 159 127  89  68  53
+    ## [39]  42  30  24  19   7  10   2   5   4   1   2   2
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -138,9 +138,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si)
 
     ## Inference method chosen: LPSMAP. 
     ## Total number of days: 50. 
-    ## Mean R(t) discarding first 7 days: 0.974.
-    ## Mean 95% CI of R(t) discarding first 7 days: (0.791,1.204) 
-    ## Elapsed real time (wall clock time): 0.17 seconds.
+    ## Mean R(t) discarding first 7 days: 0.97.
+    ## Mean 95% CI of R(t) discarding first 7 days: (0.783,1.211) 
+    ## Elapsed real time (wall clock time): 0.18 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -175,13 +175,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,1:3])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.286240 |   1.874062 |  2.789071 |
-| 9   | 2.245393 |   1.857539 |  2.714232 |
-| 10  | 2.165929 |   1.792218 |  2.617567 |
-| 11  | 2.062015 |   1.716555 |  2.477000 |
-| 12  | 1.956527 |   1.625819 |  2.354504 |
-| 13  | 1.862789 |   1.555603 |  2.230635 |
-| 14  | 1.774048 |   1.477996 |  2.129400 |
+| 8   | 2.371290 |   1.924554 |  2.921724 |
+| 9   | 2.339011 |   1.920273 |  2.849058 |
+| 10  | 2.253371 |   1.854570 |  2.737928 |
+| 11  | 2.134743 |   1.769101 |  2.575958 |
+| 12  | 2.012658 |   1.663449 |  2.435176 |
+| 13  | 1.907002 |   1.584243 |  2.295516 |
+| 14  | 1.820547 |   1.510852 |  2.193724 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
@@ -249,6 +249,43 @@ nrow = 2, ncol = 2)
 
 <img src="README_files/figure-gfm/realdata-1.png" style="display: block; margin: auto;" />
 
+## Validation
+
+To check the (statistical) performance of EpiLPS, the `perfcheck()`
+routine can be used to simulate epidemic outbreaks under four different
+scenarios. Each scenario has a different *R*(*t*) curve to be compared
+with the estimated trajectories fitted by EpiLPS. For comparative
+reasons, the trajectories of EpiEstim (with a weekly sliding window) are
+also shown. The code below simulates 100 epidemic outbreaks with a data
+generating process following scenario 3 and a given serial interval
+distribution. A seed can also be specified for reproducibility.
+
+``` r
+simexample <- perfcheck(S = 50, method = "LPSMALA",
+                        serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
+                        scenario = 3, ci_level = 0.95,  seed = 1234,
+                        themetype = "gray")
+```
+
+![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+    ## Comparing LPSMALA vs EpiEstim in S=50 replications (epidemic T=50 days). 
+    ## Mean Bias on days 8-50:
+    ## -- EpiLPS mean Bias: -0.00067
+    ## -- EpiEstim mean Bias: 0.04601
+    ## Mean MSE on days 8-50:
+    ## -- EpiLPS mean MSE:   0.00467
+    ## -- EpiEstim mean MSE: 0.11194
+    ## Mean credible interval coverage on days 8-50 (nominal level: 95 %):
+    ## -- EpiLPS mean coverage:   95.5814
+    ## -- EpiEstim mean coverage: 13.02326
+    ## -- EpiLPS mean CI width: 0.22
+    ## -- EpiEstim mean CI width: 0.18
+
+## Package version
+
+This is version 0.1.5 (2021-10-31) - “EpiLPS is born”.
+
 ## Acknowledgments
 
 This project is funded by the European Union’s Research and Innovation
@@ -270,8 +307,3 @@ during epidemics, *American Journal of Epidemiology*, **178**(9),
 1505–1512. <https://doi.org/10.1093/aje/kwt133>
 
 <hr>
-
-### Author affiliation
-
-[1] Interuniversity Institute for Biostatistics and Statistical
-Bioinformatics, Data Science Institute, Hasselt University, Belgium.
