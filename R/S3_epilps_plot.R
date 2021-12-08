@@ -68,9 +68,9 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
   }
 
   tdom <- seq(8, n)
-  R_estim <-   x$epifit[8:n, 1]
-  RCI_low <- x$epifit[8:n, 2]
-  RCI_up <-  x$epifit[8:n, 3]
+  R_estim <- x$epifit[8:n, 2]
+  RCI_low <- x$epifit[8:n, 3]
+  RCI_up <-  x$epifit[8:n, 4]
   Rlps <- data.frame(tdom = tdom, R_estim = R_estim, RCI_low = RCI_low,
                      RCI_up = RCI_up, Repiestim = Repiestim,
                      Repiestim_CIlow = Repiestim_CIlow,
@@ -172,9 +172,9 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
 
   }else if (out_type == "epicurve"){
     tdom <- seq_len(n)
-    mu_estim <-   x$epifit[, 4]
-    muCI_low <- x$epifit[, 5]
-    muCI_up <-  x$epifit[, 6]
+    mu_estim <- x$epifit[, 5]
+    muCI_low <- x$epifit[, 6]
+    muCI_up <-  x$epifit[, 7]
     mulps <- data.frame(tdom = tdom, mu_estim = mu_estim,
                         muCI_low = muCI_low, muCI_up = muCI_up)
 

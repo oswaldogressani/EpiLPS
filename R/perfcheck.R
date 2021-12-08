@@ -85,7 +85,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
                          serial_interval = p, ci_level = ci_level,
                          verbose = FALSE, progmala = FALSE)
     epilps_timing[s] <- epilps_fit$elapsed
-    ciwidth_epilps[s,] <- (epilps_fit$epifit[, 3] - epilps_fit$epifit[, 2])
+    ciwidth_epilps[s,] <- (epilps_fit$epifit[, 4] - epilps_fit$epifit[, 3])
 
     #-- Estimation with epiestim
     t_start <- seq(2, epidays - slidewindow)
@@ -112,8 +112,8 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
 
     # Check if credible interval contains the truth for epilps
     for (j in 1:epidays) {
-      epilpsCI[s, j] <- Rtarget[j] >= epilps_fit$epifit[j, 2] &&
-        Rtarget[j] <= epilps_fit$epifit[j, 3]
+      epilpsCI[s, j] <- Rtarget[j] >= epilps_fit$epifit[j, 3] &&
+        Rtarget[j] <= epilps_fit$epifit[j, 4]
     }
 
     # Check if credible interval contains the truth for epiestim

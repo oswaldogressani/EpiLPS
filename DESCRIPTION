@@ -2,7 +2,7 @@ Package: EpiLPS
 Type: Package
 Title: EpiLPS: a fast and flexible Bayesian tool for near real-time estimation
  of the time-varying reproduction number
-Version: 0.1.5
+Version: 1.0.1
 Authors@R: c(person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
  comment="Author"))

@@ -8,18 +8,22 @@
 #' based on Laplace approximations to the conditional posterior distribution of
 #' the spline vector. LPSMALA is an MCMC-based approach based on Langevin
 #' diffusions to sample the joint posterior of the model parameters. The
-#' \code{epilps()} routine estimates R(t) based on a time series of incidence
-#' data and a given serial/generation interval distribution. The negative
+#' \code{epilps()} routine estimates R(t) based on a time series of case counts
+#' and a given serial/generation interval distribution. The negative
 #' Binomial distribution is used to model incidence count data and P-splines
 #' (Eilers and Marx, 1996) are used to smooth the epidemic curve. The link
 #' between the epidemic curve and the reproduction number is established via the
-#' renewal equation.
+#' renewal equation. If \code{incidence} contains NA values at certain time
+#' points, these are replaced by the average of the left- and right neighbor
+#' counts. If the right neighbor is NA, the left neighbor is used as a
+#' replacement value.
 #'
 #' @usage epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 #'        serial_interval, penorder = 2, hyperprior = c(10,10),
-#'        chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95, verbose = TRUE)
+#'        chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95,
+#'        verbose = TRUE, dates = NULL)
 #'
-#' @param incidence A vector containing the time series of incidence count data.
+#' @param incidence A vector containing the case counts per unit of time.
 #' @param K Number of (cubic) B-splines in the basis.
 #' @param method Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).
 #' @param serial_interval The serial interval distribtuion.
@@ -31,11 +35,15 @@
 #' @param progmala Should the progress bar of LPSMALA be shown? (default TRUE).
 #' @param ci_level Level of the credible intervals to be computed.
 #' @param verbose Should metainformation be printed?
+#' @param dates A vector of date values (optional).
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
-#'
-#' @references White, L.F., Moser, C.B., Thompson, R.N., Pagano, M. (2021)
+#' @references Gressani, O., Wallinga, J., Althaus, C., Hens, N. and Faes, C.
+#'  (2021). EpiLPS: a fast and flexible Bayesian tool for near real-time
+#'  estimation of the time-varying reproduction number.
+#'  \emph{MedRxiv preprint}, \url{https://doi.org/10.1101/2021.12.02.21267189}
+#' @references White, L.F., Moser, C.B., Thompson, R.N., Pagano, M. (2021).
 #'  Statistical estimation of the reproductive number from case notification
 #'  data. \emph{American Journal of Epidemiology}, \strong{190}(4):611-620.
 #'  \url{https://doi.org/10.1093/aje/kwaa211}
@@ -51,17 +59,44 @@
 #'
 #' @export
 
-
-
 epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
                   serial_interval, penorder = 2, hyperprior = c(10,10),
                   chain_length = 5000, burn = 2000, progmala = TRUE,
-                  ci_level = 0.95, verbose = TRUE){
+                  ci_level = 0.95, verbose = TRUE, dates = NULL){
 
   tic <- proc.time()              # clock starts ticking
   y <- incidence                  # time series of incidence counts (daily)
   n <- length(y)                  # total number of days of the epidemic
   smax <- length(serial_interval) # length of serial interval distribution
+
+  #-- Check incidence vector for NAs
+  if (anyNA(y)) {
+    nreplace <- sum(is.na(y))
+    NAloc <- which(is.na(y))
+    for (j in 1:nreplace) {
+      if (1 < NAloc[j] && NAloc[j] < n) {
+        #NA is interior
+        if (!is.na(y[NAloc[j] + 1])) {
+          y[NAloc[j]] <- round((y[NAloc[j] - 1] + y[NAloc[j] + 1]) * 0.5)
+        } else{
+          y[NAloc[j]] <- y[NAloc[j] - 1]
+        }
+      } else if (NAloc[j] == 1) {
+        y[1] <- round(mean(y, na.rm = TRUE))
+      } else if (NAloc[j] == n) {
+        y[n] <- y[NAloc[j] - 1]
+      }
+    }
+    warning("Count data contains NA values that have been replaced.
+    See documentation for the replacement method employed.")
+  }
+
+  #-- Assigning date vector
+  if (!is.null(dates)) {
+    datevec <- dates
+  } else{
+    datevec <- seq_len(n)
+  }
 
   #-- B-splines basis
   xx <- seq_len(n)
@@ -360,11 +395,11 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
     colnames(CI_R) <- c(paste0("R", ci_level * 100, "CI_low"),
                         paste0("R", ci_level * 100, "CI_up"))
     Rt_LPS_CImean <- round(colMeans(CI_R[8:n, ]), 3)
-    epifit <- data.frame(R_estim, CI_R, mu_estim, CI_mu)
+    epifit <- data.frame(Date = datevec, R_estim, CI_R, mu_estim, CI_mu)
     toc <- proc.time() - tic
     toc <- round(toc[3], 3)
     outputlist <- list(CImu = CImu, Rt_LPS = Rt_LPS, CIRt_LPS = CIRt_LPS,
-                       epifit = epifit, incidence = incidence,
+                       epifit = epifit, incidence = y,
                        serial_interval = serial_interval,
                        ci_level = ci_level, elapsed = toc)
   }else if(chosen_method == "LPSMALA"){
@@ -390,23 +425,15 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
     rhohat_mcmc <- mean(rhoMALA)
     accept_mcmc <- Langevin$accept_rate
 
-    # muMALA <- matrix(0, nrow = (Langevin$niter - burn), ncol = 500)
     muMALA_mcmc <- matrix(0, nrow = (Langevin$niter - burn), ncol = n)
-    # xx_fine <- seq(1, n , length = 500)
-    # Bfine <- Rcpp_cubicBspline(xx_fine, lower = 1, upper = n, K = K)
      for(j in 1:(Langevin$niter-burn)){
        muMALA_mcmc[j,] <- as.numeric(exp(B %*% thetaMALA[j, ]))
-       #   muMALA[j,] <- as.numeric(exp(Bfine %*% thetaMALA[j, ]))
      }
-    # mu_fine_MALA <- colMeans(muMALA)
     mu_estim <- colMeans(muMALA_mcmc)
 
     CI_mu <- coda::HPDinterval(coda::as.mcmc(muMALA_mcmc), prob = ci_level)
     colnames(CI_mu) <- c(paste0("mu", ci_level * 100, "CI_low"),
                          paste0("mu", ci_level * 100, "CI_up"))
-
-    # CI_lb_MALA <- as.numeric(HPD_mu_MALA[, 1])
-    # CI_ub_MALA <- as.numeric(HPD_mu_MALA[, 2])
 
     #----- Pointwise estimate of R(t) for MALA
     Rt_MALA <- function(t) {
@@ -464,14 +491,14 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
     colnames(CI_R) <- c(paste0("R", ci_level * 100, "CI_low"),
                         paste0("R", ci_level * 100, "CI_up"))
     Rt_LPSMALA_CImean <- round(colMeans(CI_R[8:n, ]), 3)
-    epifit <- data.frame(R_estim, CI_R, mu_estim, CI_mu)
+    epifit <- data.frame(Date = datevec, R_estim, CI_R, mu_estim, CI_mu)
     rownames(epifit) <- seq_len(n)
     toc <- proc.time() - tic
     toc <- round(toc[3], 3)
     outputlist <- list(chain_length = chain_length, burn = burn,
                        thetaMALA = thetaMALA, Rt_MALA = Rt_MALA,
                        CIRt_MALA = CIRt_MALA, epifit = epifit, K = K,
-                       Geweke = Geweke, incidence = incidence,
+                       Geweke = Geweke, incidence = y,
                        serial_interval = serial_interval,
                        ci_level = ci_level, elapsed = toc)
   }

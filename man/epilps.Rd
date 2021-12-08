@@ -6,10 +6,11 @@
 \usage{
 epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
        serial_interval, penorder = 2, hyperprior = c(10,10),
-       chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95, verbose = TRUE)
+       chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95,
+       verbose = TRUE, dates = NULL)
 }
 \arguments{
-\item{incidence}{A vector containing the time series of incidence count data.}
+\item{incidence}{A vector containing the case counts per unit of time.}
 
 \item{K}{Number of (cubic) B-splines in the basis.}
 
@@ -31,6 +32,8 @@ epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 \item{ci_level}{Level of the credible intervals to be computed.}
 
 \item{verbose}{Should metainformation be printed?}
+
+\item{dates}{A vector of date values (optional).}
 }
 \description{
 This routine estimates the instantaneous reproduction number (the mean number
@@ -40,12 +43,15 @@ methods are possible for inference. LPSMAP is a fully sampling-free approach
 based on Laplace approximations to the conditional posterior distribution of
 the spline vector. LPSMALA is an MCMC-based approach based on Langevin
 diffusions to sample the joint posterior of the model parameters. The
-\code{epilps()} routine estimates R(t) based on a time series of incidence
-data and a given serial/generation interval distribution. The negative
+\code{epilps()} routine estimates R(t) based on a time series of case counts
+and a given serial/generation interval distribution. The negative
 Binomial distribution is used to model incidence count data and P-splines
 (Eilers and Marx, 1996) are used to smooth the epidemic curve. The link
 between the epidemic curve and the reproduction number is established via the
-renewal equation.
+renewal equation. If \code{incidence} contains NA values at certain time
+points, these are replaced by the average of the left- and right neighbor
+counts. If the right neighbor is NA, the left neighbor is used as a
+replacement value.
 }
 \examples{
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
@@ -55,7 +61,12 @@ plot(epifit)
 
 }
 \references{
-White, L.F., Moser, C.B., Thompson, R.N., Pagano, M. (2021)
+Gressani, O., Wallinga, J., Althaus, C., Hens, N. and Faes, C.
+ (2021). EpiLPS: a fast and flexible Bayesian tool for near real-time
+ estimation of the time-varying reproduction number.
+ \emph{MedRxiv preprint}, \url{https://doi.org/10.1101/2021.12.02.21267189}
+
+White, L.F., Moser, C.B., Thompson, R.N., Pagano, M. (2021).
  Statistical estimation of the reproductive number from case notification
  data. \emph{American Journal of Epidemiology}, \strong{190}(4):611-620.
  \url{https://doi.org/10.1093/aje/kwaa211}
