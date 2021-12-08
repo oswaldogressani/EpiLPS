@@ -9,7 +9,7 @@
 * **2021-12-08:** 
 
 * Version name: "EpiLPS smoothing"
-* The epilps routine can now be fitted to count data containing NAs.
+* The *epilps()* routine can now be fitted to count data containing NAs.
 * Possibility to add dates to the *epilps()* routine.
 
 
