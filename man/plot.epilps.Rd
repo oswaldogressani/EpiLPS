@@ -9,7 +9,8 @@
      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
      transparency = 0.5, epicol = "red",
      incibars = FALSE, barwidth = 0.35,
-     themetype = c("gray", "classic", "light", "dark"), titlesize = 15, ...)
+     themetype = c("gray", "classic", "light", "dark"), titlesize = 15,
+     xtitlesize = 13, ytitlesize = 13,  ...)
 }
 \arguments{
 \item{x}{An object of class \code{epilps}.}
@@ -43,6 +44,10 @@ number or "epicurve" for showing the epidemic curve.}
 \item{themetype}{Type of theme for the plot.}
 
 \item{titlesize}{The size of the plot title. Default is 15.}
+
+\item{xtitlesize}{The size of title and text on x axis. Default is 13.}
+
+\item{ytitlesize}{The sizt of title and text on y axis. Default is 13.}
 
 \item{...}{Further arguments to be passed to plot.}
 }
