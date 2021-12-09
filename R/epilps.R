@@ -72,6 +72,7 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
   #-- Check incidence vector for NAs
   if (anyNA(y)) {
     nreplace <- sum(is.na(y))
+    NAprop <- round((nreplace / n) * 100, 2)
     NAloc <- which(is.na(y))
     for (j in 1:nreplace) {
       if (1 < NAloc[j] && NAloc[j] < n) {
@@ -87,8 +88,11 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
         y[n] <- y[NAloc[j] - 1]
       }
     }
-    warning("Count data contains NA values that have been replaced.
-    See documentation for the replacement method employed.")
+    warning(paste0("Count data contains ", NAprop,
+          "% of NA values that have been replaced",
+          " (see documentation for details).",
+          " A 'too high' percentage of NA values can bias the analysis,",
+          " so care should be taken in interpreting the results in this case."))
   }
 
   #-- Assigning date vector
