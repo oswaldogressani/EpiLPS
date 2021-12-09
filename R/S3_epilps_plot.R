@@ -9,7 +9,7 @@
 #'      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
 #'      transparency = 0.5, epicol = "red",
 #'      incibars = FALSE, barwidth = 0.35,
-#'      themetype = c("gray", "classic", "light", "dark"), ...)
+#'      themetype = c("gray", "classic", "light", "dark"), titlesize = 15, ...)
 #'
 #' @param x An object of class \code{epilps}.
 #' @param plotout The type of plot, either "rt" for showing the reproduction
@@ -27,6 +27,7 @@
 #' @param incibars Should the bars of the incidence time series be shown?
 #' @param barwidth The barwidth associated to the incidence time series.
 #' @param themetype Type of theme for the plot.
+#' @param titlesize The size of the plot title. Default is 15.
 #' @param ... Further arguments to be passed to plot.
 #'
 #' @examples
@@ -46,7 +47,8 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                         overlayEpiestim = FALSE, Rtitle = "", epititle = "",
                         rtcol = "red", cicol = "gray", transparency = 0.5,
                         epicol = "red", incibars = FALSE, barwidth = 0.35,
-                        themetype = c("gray","classic","light","dark"), ...) {
+                        themetype = c("gray","classic","light","dark"),
+                        titlesize = 15, ...) {
 
   n <- nrow(x$epifit)
   incidence <- x$incidence
@@ -125,7 +127,7 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                       xlabtype +
                       ggplot2::xlab("Time") + ggplot2::ylab("R") + themeval +
                       ggplot2::theme(
-                        plot.title = ggplot2::element_text(size = 15),
+                        plot.title = ggplot2::element_text(size = titlesize),
                         axis.title.x = ggplot2::element_text(size = 13),
                         axis.title.y = ggplot2::element_text(size = 13),
                         axis.text.x = ggplot2::element_text(size = 13),
@@ -162,7 +164,7 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                                           size = 1.1) +
                       xlabtype + themeval +
                       ggplot2::theme(
-                        plot.title = ggplot2::element_text(size = 15),
+                        plot.title = ggplot2::element_text(size = titlesize),
                         axis.title.x = ggplot2::element_text(size = 13),
                         axis.title.y = ggplot2::element_text(size = 13),
                         axis.text.x = ggplot2::element_text(size = 13),
@@ -208,7 +210,7 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                       ggplot2::ylab("Incidence") +
                       themeval +
                       ggplot2::theme(
-                        plot.title = ggplot2::element_text(size = 15),
+                        plot.title = ggplot2::element_text(size = titlesize),
                         axis.title.x = ggplot2::element_text(size = 13),
                         axis.title.y = ggplot2::element_text(size = 13),
                         axis.text.x = ggplot2::element_text(size = 13),

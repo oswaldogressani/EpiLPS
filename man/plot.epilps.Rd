@@ -9,7 +9,7 @@
      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
      transparency = 0.5, epicol = "red",
      incibars = FALSE, barwidth = 0.35,
-     themetype = c("gray", "classic", "light", "dark"), ...)
+     themetype = c("gray", "classic", "light", "dark"), titlesize = 15, ...)
 }
 \arguments{
 \item{x}{An object of class \code{epilps}.}
@@ -41,6 +41,8 @@ number or "epicurve" for showing the epidemic curve.}
 \item{barwidth}{The barwidth associated to the incidence time series.}
 
 \item{themetype}{Type of theme for the plot.}
+
+\item{titlesize}{The size of the plot title. Default is 15.}
 
 \item{...}{Further arguments to be passed to plot.}
 }
