@@ -7,7 +7,7 @@
 #' \method{plot}{epilps}(x, plotout = c("rt", "epicurve"), dates = NULL,
 #'      datelab = c("7d", "1m", "3m", "6m"),
 #'      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
-#'      transparency = 0.5, epicol = "red",
+#'      transparency = 0.5, epicol = "red", epiestimcol = "lightslateblue",
 #'      incibars = FALSE, barwidth = 0.35,
 #'      themetype = c("gray", "classic", "light", "dark"), titlesize = 15,
 #'      xtitlesize = 13, ytitlesize = 13,  ...)
@@ -25,6 +25,7 @@
 #' @param cicol Color for shading the credible envelope.
 #' @param transparency Controls the transparency of the credible envelope.
 #' @param epicol The color for the epidemic curve.
+#' @param epiestimcol The color for the EpiEstim Rt estimate.
 #' @param incibars Should the bars of the incidence time series be shown?
 #' @param barwidth The barwidth associated to the incidence time series.
 #' @param themetype Type of theme for the plot.
@@ -49,7 +50,7 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                         datelab = c("7d", "1m", "3m", "6m"),
                         overlayEpiestim = FALSE, Rtitle = "", epititle = "",
                         rtcol = "red", cicol = "gray", transparency = 0.5,
-                        epicol = "red", incibars = FALSE, barwidth = 0.35,
+                        epicol = "red", epiestimcol = "lightslateblue", incibars = FALSE, barwidth = 0.35,
                         themetype = c("gray","classic","light","dark"),
                         titlesize = 15, xtitlesize = 13, ytitlesize = 13, ...) {
 
@@ -138,27 +139,26 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
       return(plotR_EpiLPS)
     } else{
       # -- Plot of Rt with EpiLPS and EpiEstim
-      colors <- c("EpiLPS" = rtcol, "EpiEstim" = "black")
+      colors <- c("EpiLPS" = rtcol, "EpiEstim" = epiestimcol)
       linetypes <- c("EpiLPS" = 1, "EpiEstim" = 2)
 
       plotR_EpiLPS <- ggplot2::ggplot(data = Rlps, ggplot2::aes(x = tdom)) +
                       ggplot2::ggtitle(Rtitle) +
-                      ggplot2::geom_ribbon(ggplot2::aes(ymin = RCI_low,
-                                                        ymax = RCI_up),
-                                          alpha = transparency, fill = cicol) +
-                      ggplot2::geom_line(ggplot2::aes(y = R_estim,
-                                                      color = "EpiLPS",
-                                                      linetype = "EpiLPS"),
-                                         size = 1.1) +
                       ggplot2::geom_ribbon(ggplot2::aes(ymin = Repiestim_CIlow,
                                                         ymax = Repiestim_CIup),
                                            alpha = transparency,
-                                           color = "black", linetype = "dashed",
+                                           color = epiestimcol, linetype = "dashed",
                                            fill = NA) +
                       ggplot2::geom_line(ggplot2::aes(y = Repiestim,
                                                       color = "EpiEstim",
                                                       linetype = "EpiEstim"),
                                          size = 1.1) +
+                      ggplot2::geom_ribbon(ggplot2::aes(ymin = RCI_low,
+                                            ymax = RCI_up),
+                                          alpha = transparency, fill = cicol) +
+                      ggplot2::geom_line(ggplot2::aes(y = R_estim,
+                                         color = "EpiLPS",
+                                         linetype = "EpiLPS"), size = 1.1) +
                       ggplot2::labs(x = "Time", y = "R", color = "Legend",
                                     linetype = "Legend") +
                       ggplot2::scale_color_manual(values = colors) +

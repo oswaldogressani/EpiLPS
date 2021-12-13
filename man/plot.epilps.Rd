@@ -7,7 +7,7 @@
 \method{plot}{epilps}(x, plotout = c("rt", "epicurve"), dates = NULL,
      datelab = c("7d", "1m", "3m", "6m"),
      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
-     transparency = 0.5, epicol = "red",
+     transparency = 0.5, epicol = "red", epiestimcol = "lightslateblue",
      incibars = FALSE, barwidth = 0.35,
      themetype = c("gray", "classic", "light", "dark"), titlesize = 15,
      xtitlesize = 13, ytitlesize = 13,  ...)
@@ -36,6 +36,8 @@ number or "epicurve" for showing the epidemic curve.}
 \item{transparency}{Controls the transparency of the credible envelope.}
 
 \item{epicol}{The color for the epidemic curve.}
+
+\item{epiestimcol}{The color for the EpiEstim Rt estimate.}
 
 \item{incibars}{Should the bars of the incidence time series be shown?}
 
