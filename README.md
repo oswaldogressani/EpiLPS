@@ -7,8 +7,10 @@ Oswaldo Gressani
 
 ![Version](https://img.shields.io/badge/Version-1.0.1-lightgrey)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
-![Lifecycle](https://img.shields.io/badge/lifecycle-experimental-yellow)
+![Lifecycle](https://img.shields.io/badge/lifecycle-postexperimental-yellow)
 ![CodeSize](https://img.shields.io/github/languages/code-size/oswaldogressani/EpiLPS?color=orange&label=Code%20size&style=plastic)
+![UserStars](https://img.shields.io/github/stars/oswaldogressani/EpiLPS?style=social)
+![MyTwitter](https://img.shields.io/twitter/follow/OswaldoGressani?style=social)
 
 ## Aim and scope
 
@@ -125,10 +127,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]   25    6   26   35   48   58   99  127  180  240  280  412  481  581  666
-    ## [16]  837  952 1103 1140 1217 1293 1294 1294 1253 1188 1062  965  871  802  667
-    ## [31]  517  423  360  283  222  142  128   92   65   49   32   40   23   12   10
-    ## [46]    9    2    3    1    2
+    ##  [1]  19   5  14  28  29  48  70  86 131 162 224 258 319 358 481 543 620 663 750
+    ## [20] 808 815 871 843 815 735 698 602 562 514 407 333 293 250 185 132 104  90  55
+    ## [39]  41  32  26  19  19  12  11   4   4   7   3   4
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -141,9 +142,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si)
 
     ## Inference method chosen: LPSMAP. 
     ## Total number of days: 50. 
-    ## Mean R(t) discarding first 7 days: 0.966.
-    ## Mean 95% CI of R(t) discarding first 7 days: (0.789,1.188) 
-    ## Elapsed real time (wall clock time): 0.15 seconds.
+    ## Mean R(t) discarding first 7 days: 0.988.
+    ## Mean 95% CI of R(t) discarding first 7 days: (0.8,1.225) 
+    ## Elapsed real time (wall clock time): 0.2 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -178,13 +179,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.424164 |   1.993297 |  2.948165 |
-| 9   | 2.374009 |   1.968241 |  2.863429 |
-| 10  | 2.274928 |   1.886469 |  2.743378 |
-| 11  | 2.154359 |   1.799058 |  2.579829 |
-| 12  | 2.030099 |   1.690995 |  2.437206 |
-| 13  | 1.911840 |   1.597277 |  2.288353 |
-| 14  | 1.806181 |   1.504370 |  2.168543 |
+| 8   | 2.434876 |   1.986263 |  2.984814 |
+| 9   | 2.367769 |   1.951509 |  2.872817 |
+| 10  | 2.248764 |   1.855955 |  2.724709 |
+| 11  | 2.102776 |   1.747315 |  2.530550 |
+| 12  | 1.957831 |   1.622245 |  2.362839 |
+| 13  | 1.832747 |   1.524618 |  2.203150 |
+| 14  | 1.735908 |   1.441739 |  2.090099 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
