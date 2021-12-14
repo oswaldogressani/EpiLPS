@@ -83,7 +83,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
     #-- Estimation with epilps
     epilps_fit <- epilps(incidence = incidence, K = K, method = method,
                          serial_interval = p, ci_level = ci_level,
-                         verbose = FALSE, progmala = FALSE)
+                         verbose = FALSE, progmala = FALSE, tictoc = TRUE)
     epilps_timing[s] <- epilps_fit$elapsed
     ciwidth_epilps[s,] <- (epilps_fit$epifit[, 4] - epilps_fit$epifit[, 3])
 

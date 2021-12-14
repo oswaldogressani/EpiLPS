@@ -7,7 +7,7 @@
 epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
        serial_interval, penorder = 2, hyperprior = c(10,10),
        chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95,
-       verbose = TRUE, dates = NULL)
+       verbose = TRUE, dates = NULL, tictoc = FALSE)
 }
 \arguments{
 \item{incidence}{A vector containing the case counts per unit of time.}
@@ -34,6 +34,8 @@ epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 \item{verbose}{Should metainformation be printed?}
 
 \item{dates}{A vector of date values (optional).}
+
+\item{tictoc}{Should routine timing (in seconds) be measured?}
 }
 \description{
 This routine estimates the instantaneous reproduction number (the mean number

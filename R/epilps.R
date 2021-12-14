@@ -21,7 +21,7 @@
 #' @usage epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 #'        serial_interval, penorder = 2, hyperprior = c(10,10),
 #'        chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95,
-#'        verbose = TRUE, dates = NULL)
+#'        verbose = TRUE, dates = NULL, tictoc = FALSE)
 #'
 #' @param incidence A vector containing the case counts per unit of time.
 #' @param K Number of (cubic) B-splines in the basis.
@@ -36,6 +36,7 @@
 #' @param ci_level Level of the credible intervals to be computed.
 #' @param verbose Should metainformation be printed?
 #' @param dates A vector of date values (optional).
+#' @param tictoc Should routine timing (in seconds) be measured?
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
@@ -62,9 +63,11 @@
 epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
                   serial_interval, penorder = 2, hyperprior = c(10,10),
                   chain_length = 5000, burn = 2000, progmala = TRUE,
-                  ci_level = 0.95, verbose = TRUE, dates = NULL){
+                  ci_level = 0.95, verbose = TRUE, dates = NULL, tictoc = FALSE){
 
-  tic <- proc.time()              # clock starts ticking
+  if (tictoc == TRUE) {
+    tic <- proc.time()            # clock starts ticking
+  }
   y <- incidence                  # time series of incidence counts (daily)
   n <- length(y)                  # total number of days of the epidemic
   smax <- length(serial_interval) # length of serial interval distribution
@@ -400,8 +403,12 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
                         paste0("R", ci_level * 100, "CI_up"))
     Rt_LPS_CImean <- round(colMeans(CI_R[8:n, ]), 3)
     epifit <- data.frame(Date = datevec, R_estim, CI_R, mu_estim, CI_mu)
-    toc <- proc.time() - tic
-    toc <- round(toc[3], 3)
+    if (tictoc == TRUE) {
+      toc <- proc.time() - tic
+      toc <- round(toc[3], 3)
+    } else{
+      toc <- "Timer has not been requested."
+    }
     outputlist <- list(CImu = CImu, Rt_LPS = Rt_LPS, CIRt_LPS = CIRt_LPS,
                        epifit = epifit, incidence = y,
                        serial_interval = serial_interval,
@@ -497,8 +504,12 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
     Rt_LPSMALA_CImean <- round(colMeans(CI_R[8:n, ]), 3)
     epifit <- data.frame(Date = datevec, R_estim, CI_R, mu_estim, CI_mu)
     rownames(epifit) <- seq_len(n)
-    toc <- proc.time() - tic
-    toc <- round(toc[3], 3)
+    if (tictoc == TRUE) {
+      toc <- proc.time() - tic
+      toc <- round(toc[3], 3)
+    } else{
+      toc <- "Timer has not been requested."
+    }
     outputlist <- list(chain_length = chain_length, burn = burn,
                        thetaMALA = thetaMALA, Rt_MALA = Rt_MALA,
                        CIRt_MALA = CIRt_MALA, epifit = epifit, K = K,
@@ -516,7 +527,11 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
      cat("Mean ",paste0(ci_level * 100,"%"),
          " CI of R(t) discarding first 7 days: (", Rt_LPS_CImean[1], ",",
          Rt_LPS_CImean[2],") \n",sep="")
-     cat("Elapsed real time (wall clock time): ", toc, " seconds. \n",sep="")
+     if (tictoc == TRUE) {
+       cat("Elapsed real time (wall clock time): ", toc, " seconds. \n", sep ="")
+     } else{
+       cat("Timing of routine not requested. \n")
+     }
    } else if(chosen_method == "LPSMALA"){
      cat("Inference method chosen: LPSMALA with chain length ", chain_length,
      " and warmup ", burn, ".\n", sep="")
@@ -528,7 +543,11 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
      cat("Mean ", paste0(ci_level * 100,"%"),
          " CI of R(t) discarding first 7 days: (", Rt_LPSMALA_CImean[1], ",",
          Rt_LPSMALA_CImean[2],"). \n",sep="")
-     cat("Elapsed real time (wall clock time): ", toc, " seconds. \n",sep="")
+     if (tictoc == TRUE) {
+       cat("Elapsed real time (wall clock time): ", toc, " seconds. \n", sep = "")
+     } else{
+       cat("Timing of routine not requested. \n")
+     }
    }
   }
 
