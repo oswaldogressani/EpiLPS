@@ -1,19 +1,21 @@
 Package: EpiLPS
 Type: Package
-Title: EpiLPS: a fast and flexible Bayesian tool for near real-time estimation
- of the time-varying reproduction number
+Title: EpiLPS: a Fast and Flexible Bayesian Tool for Near Real-Time Estimation
+ of the Time-Varying Reproduction Number
 Version: 1.0.1
+Depends: R (>= 4.1.0)
 Authors@R: c(person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
  comment="Author"))
 Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
 Description: This package uses Laplacian-P-splines for estimating the
- instantaneous reproduction number R(t). The Negative Binomial distribution is 
- used to model the time series of incidence counts. Two methods are available
- for fitting R(t): (1) LPSMAP is a fully sampling-free approach based on a 
- maximum a posteriori calibration of the hyperparameter vector and (2) LPSMALA
- is a fully stochastic approach with a Metropolis-within-Gibbs algorithm and
+ instantaneous reproduction number R. The negative Binomial distribution is 
+ used to model the time series of case counts per unit of time. Two methods are 
+ available for fitting R: (1) a fully sampling-free approach based on a 
+ maximum a posteriori calibration of the hyperparameter vector and (2) a fully 
+ stochastic approach with a Metropolis-within-Gibbs algorithm and
  Langevin diffusions for efficient sampling of the posterior distribution.
+URL: <https://github.com/oswaldogressani/EpiLPS>
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -31,3 +33,7 @@ Imports:
     ggplot2 (>= 3.3.5),
     grDevices (>= 4.1.1),
     gridExtra (>= 2.3)
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr

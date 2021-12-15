@@ -1,3 +1,6 @@
 .Rproj.user
 README.Rmd
 EpiLPS.Rproj
+inst/doc
+inst/
+vignettes/
