@@ -14,7 +14,7 @@ episim(serial_interval, endepi = 50, Rpattern = 1, verbose = FALSE, plotsim = FA
 \item{Rpattern}{Different scenarios for the true underlying curve of
 Rt. Four scenarios are possible with 1,2,3,4.}
 
-\item{verbose}{Should metadata on simulated edpidemic be printed?}
+\item{verbose}{Should metadata on simulated epidemic be printed?}
 
 \item{plotsim}{Create a plot of the incidence time series, the true
 reproduction number curve and the serial interval.}

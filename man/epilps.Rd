@@ -16,7 +16,7 @@ epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 
 \item{method}{Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).}
 
-\item{serial_interval}{The serial interval distribtuion.}
+\item{serial_interval}{The serial interval distribution.}
 
 \item{penorder}{The order of the penalty (Default is second-order).}
 

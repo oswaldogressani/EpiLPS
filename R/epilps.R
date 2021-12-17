@@ -26,7 +26,7 @@
 #' @param incidence A vector containing the case counts per unit of time.
 #' @param K Number of (cubic) B-splines in the basis.
 #' @param method Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).
-#' @param serial_interval The serial interval distribtuion.
+#' @param serial_interval The serial interval distribution.
 #' @param penorder The order of the penalty (Default is second-order).
 #' @param hyperprior Parameters for the Gamma prior on the dispersion parameter.
 #' @param chain_length The length of the MCMC chain for method "LPSMALA"

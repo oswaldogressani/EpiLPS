@@ -11,5 +11,5 @@
 * Version name: "EpiLPS smoothing"
 * The *epilps()* routine can now be fitted to count data containing NAs.
 * Possibility to add dates to the *epilps()* routine.
-
+* Version 1.0.1 first submitted to CRAN on (2021-12-17)
 

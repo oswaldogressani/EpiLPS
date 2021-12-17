@@ -15,7 +15,7 @@
 #' @param endepi The total number of days of the epidemic.
 #' @param Rpattern Different scenarios for the true underlying curve of
 #'  Rt. Four scenarios are possible with 1,2,3,4.
-#' @param verbose Should metadata on simulated edpidemic be printed?
+#' @param verbose Should metadata on simulated epidemic be printed?
 #' @param plotsim Create a plot of the incidence time series, the true
 #'  reproduction number curve and the serial interval.
 #'
