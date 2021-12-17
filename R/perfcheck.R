@@ -29,15 +29,13 @@
 #' @references Cori, A., Ferguson, N.M., Fraser, C., Cauchemez, S. (2013).
 #'  A new framework and software to estimate time-varying reproduction numbers
 #'  during epidemics. \emph{American Journal of Epidemiology},
-#'  \strong{178}(9):1505-1512. \url{https://doi.org/10.1093/aje/kwt133}
+#'  \strong{178}(9):1505-1512.
 #'
 #' @examples
 #' simex <- perfcheck(S = 10, serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
 #'                    scenario = 3, ci_level = 0.95,  seed = 1234, themetype = "gray")
 #'
 #' @export
-
-
 
 perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
                       method = "LPSMAP", slidewindow = 6, ci_level = 0.95,

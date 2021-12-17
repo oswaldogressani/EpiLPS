@@ -36,7 +36,7 @@ epidemic <- episim(serial_interval = si, Rpattern = 1)
 \references{
 Azmon, A., Faes, C., Hens, N. (2014). On the estimation of the
 reproduction number based on misreported epidemic data. \emph{Statistics in
-medicine}, \strong{33}(7):1176-1192. \url{https://doi.org/10.1002/sim.6015}
+medicine}, \strong{33}(7):1176-1192.
 }
 \author{
 Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}

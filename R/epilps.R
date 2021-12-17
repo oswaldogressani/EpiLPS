@@ -43,14 +43,13 @@
 #' @references Gressani, O., Wallinga, J., Althaus, C., Hens, N. and Faes, C.
 #'  (2021). EpiLPS: a fast and flexible Bayesian tool for near real-time
 #'  estimation of the time-varying reproduction number.
-#'  \emph{MedRxiv preprint}, \url{https://doi.org/10.1101/2021.12.02.21267189}
+#'  \emph{MedRxiv preprint}.
 #' @references White, L.F., Moser, C.B., Thompson, R.N., Pagano, M. (2021).
 #'  Statistical estimation of the reproductive number from case notification
 #'  data. \emph{American Journal of Epidemiology}, \strong{190}(4):611-620.
-#'  \url{https://doi.org/10.1093/aje/kwaa211}
 #' @references Eilers, P.H.C. and Marx, B.D. (1996). Flexible smoothing
 #'  with B-splines and penalties. \emph{Statistical Science},
-#'  \strong{11}(2):89-121. \url{https://doi.org/10.1214/ss/1038425655}
+#'  \strong{11}(2):89-121.
 #'
 #' @examples
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)

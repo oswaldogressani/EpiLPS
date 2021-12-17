@@ -46,7 +46,7 @@ simex <- perfcheck(S = 10, serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
 Cori, A., Ferguson, N.M., Fraser, C., Cauchemez, S. (2013).
  A new framework and software to estimate time-varying reproduction numbers
  during epidemics. \emph{American Journal of Epidemiology},
- \strong{178}(9):1505-1512. \url{https://doi.org/10.1093/aje/kwt133}
+ \strong{178}(9):1505-1512.
 }
 \author{
 Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}

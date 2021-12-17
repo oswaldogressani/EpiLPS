@@ -1,22 +1,25 @@
 Package: EpiLPS
 Type: Package
-Title: EpiLPS: a Fast and Flexible Bayesian Tool for Near Real-Time Estimation
- of the Time-Varying Reproduction Number
+Title: A Fast and Flexible Bayesian Tool for Near Real-Time Estimation
+ of the Time-Varying Reproduction Number with Laplacian-P-Splines
 Version: 1.0.1
 Depends: R (>= 4.1.0)
 Authors@R: c(person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
- comment="Author"))
+ comment=c(ORCID ="0000-0003-4152-6159")), person("EpiPose (101003688)",
+ role="fnd"))
 Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
-Description: This package uses Laplacian-P-splines for estimating the
- instantaneous reproduction number R. The negative Binomial distribution is 
- used to model the time series of case counts per unit of time. Two methods are 
- available for fitting R: (1) a fully sampling-free approach based on a 
- maximum a posteriori calibration of the hyperparameter vector and (2) a fully 
- stochastic approach with a Metropolis-within-Gibbs algorithm and
- Langevin diffusions for efficient sampling of the posterior distribution.
+BugReports: https://github.com/oswaldogressani/EpiLPS/issues
+Description: Estimation of the instantaneous reproduction number with 
+ Laplacian-P-splines following the methodology of Gressani et al.(2021)
+ <doi:10.1101/2021.12.02.21267189>. The negative Binomial 
+ distribution is used to model the time series of case counts. Two methods are 
+ available for inference : (1) a sampling-free approach based on a maximum a 
+ posteriori calibration of the hyperparameter vector and (2) a fully stochastic 
+ approach with a Metropolis-within-Gibbs algorithm and Langevin diffusions for
+ efficient sampling of the posterior distribution.
 URL: <https://github.com/oswaldogressani/EpiLPS>
-License: file LICENSE
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1

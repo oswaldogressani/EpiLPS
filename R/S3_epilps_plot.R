@@ -27,11 +27,11 @@
 #' @param epicol The color for the epidemic curve.
 #' @param epiestimcol The color for the EpiEstim Rt estimate.
 #' @param incibars Should the bars of the incidence time series be shown?
-#' @param barwidth The barwidth associated to the incidence time series.
+#' @param barwidth The bar width associated to the incidence time series.
 #' @param themetype Type of theme for the plot.
 #' @param titlesize The size of the plot title. Default is 15.
 #' @param xtitlesize The size of title and text on x axis. Default is 13.
-#' @param ytitlesize The sizt of title and text on y axis. Default is 13.
+#' @param ytitlesize The size of title and text on y axis. Default is 13.
 #' @param ... Further arguments to be passed to plot.
 #'
 #' @examples

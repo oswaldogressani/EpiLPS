@@ -41,7 +41,7 @@ number or "epicurve" for showing the epidemic curve.}
 
 \item{incibars}{Should the bars of the incidence time series be shown?}
 
-\item{barwidth}{The barwidth associated to the incidence time series.}
+\item{barwidth}{The bar width associated to the incidence time series.}
 
 \item{themetype}{Type of theme for the plot.}
 
@@ -49,7 +49,7 @@ number or "epicurve" for showing the epidemic curve.}
 
 \item{xtitlesize}{The size of title and text on x axis. Default is 13.}
 
-\item{ytitlesize}{The sizt of title and text on y axis. Default is 13.}
+\item{ytitlesize}{The size of title and text on y axis. Default is 13.}
 
 \item{...}{Further arguments to be passed to plot.}
 }
