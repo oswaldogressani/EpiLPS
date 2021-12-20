@@ -19,6 +19,12 @@ Rt. Four scenarios are possible with 1,2,3,4.}
 \item{plotsim}{Create a plot of the incidence time series, the true
 reproduction number curve and the serial interval.}
 }
+\value{
+An object of class \code{episim} consisting of a list with the
+ generated time series of cases, the mean vector of the Poisson distribution,
+ the true underlying R function for the data generating process and the
+ chosen serial interval distribution.
+}
 \description{
 Based on a serial interval and a functional input for the reproduction number
 over T days, the routine generates a set of incidence counts following a

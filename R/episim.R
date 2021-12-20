@@ -19,6 +19,11 @@
 #' @param plotsim Create a plot of the incidence time series, the true
 #'  reproduction number curve and the serial interval.
 #'
+#' @return An object of class \code{episim} consisting of a list with the
+#'  generated time series of cases, the mean vector of the Poisson distribution,
+#'  the true underlying R function for the data generating process and the
+#'  chosen serial interval distribution.
+#'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
 #' @references Azmon, A., Faes, C., Hens, N. (2014). On the estimation of the

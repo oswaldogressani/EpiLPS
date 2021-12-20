@@ -38,6 +38,10 @@
 #' @param dates A vector of date values (optional).
 #' @param tictoc Should routine timing (in seconds) be measured?
 #'
+#' @return An object of class \code{epilps} containing the pointwise and set
+#'  estimates of the time-varying reproduction number and the epidemic curve
+#'  respectively.
+#'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
 #' @references Gressani, O., Wallinga, J., Althaus, C., Hens, N. and Faes, C.

@@ -42,6 +42,9 @@
 #'                         plot(epifit, plotout = "epicurve", epicol = "blue",
 #'                         epititle = "Epidemic curve"), nrow = 2)
 #'
+#' @return A plot of the fitted time-varying reproduction number (default) or
+#'  the epidemic curve.
+#'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
 #' @export

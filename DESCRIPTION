@@ -1,7 +1,7 @@
 Package: EpiLPS
 Type: Package
-Title: A Fast and Flexible Bayesian Tool for Near Real-Time Estimation
- of the Time-Varying Reproduction Number with Laplacian-P-Splines
+Title: A Bayesian Tool for Near Real-Time Estimation
+ of the Reproduction Number
 Version: 1.0.1
 Depends: R (>= 4.1.0)
 Authors@R: person("Oswaldo","Gressani", 

@@ -24,6 +24,9 @@
 #' @param themetype What theme should be use for plotting the R curves?
 #' @param seed A seed for reproducibility.
 #'
+#' @return An object of class \code{perfcheck} containing a table of summary
+#'  statistics for the EpiLPS and EpiEstim routines.
+#'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
 #' @references Cori, A., Ferguson, N.M., Fraser, C., Cauchemez, S. (2013).

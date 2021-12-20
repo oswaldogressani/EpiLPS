@@ -27,6 +27,10 @@ perfcheck(S = 10, serial_interval, scenario = 3, K = 30, method = "LPSMAP",
 
 \item{seed}{A seed for reproducibility.}
 }
+\value{
+An object of class \code{perfcheck} containing a table of summary
+ statistics for the EpiLPS and EpiEstim routines.
+}
 \description{
 The \code{perfcheck()} routine can be used to check the performance of EpiLPS
 in various epidemic scenarios. The user can choose between 4 scenarios,

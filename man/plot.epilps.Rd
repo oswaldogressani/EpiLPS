@@ -53,6 +53,10 @@ number or "epicurve" for showing the epidemic curve.}
 
 \item{...}{Further arguments to be passed to plot.}
 }
+\value{
+A plot of the fitted time-varying reproduction number (default) or
+ the epidemic curve.
+}
 \description{
 This routine can be used to plot the estimated epidemic curve
  and reproduction number with EpiLPS.
