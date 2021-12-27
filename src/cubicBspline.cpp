@@ -50,7 +50,7 @@ NumericMatrix Rcpp_cubicBspline(NumericVector x, double lower, double upper, int
             }
           }
           B(i,j) = temp / (6*pow(dx,3));
-            if(abs(B(i,j))<1e-10){
+            if(std::abs(B(i,j))<1e-10){
               B(i,j)=0;
               }
         }
