@@ -13,3 +13,9 @@
 * Possibility to add dates to the *epilps()* routine.
 * Version 1.0.1 first submitted to CRAN on (2021-12-17)
 
+### Version 1.0.2 ###
+
+* **2021-12-29:**
+
+* Version name: "EpiLPS smoothing"
+* Patched cubicBspline.cpp

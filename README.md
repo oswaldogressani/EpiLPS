@@ -5,7 +5,7 @@ Oswaldo Gressani
 
 <!-- Introduce badges -->
 
-![Version](https://img.shields.io/badge/Version-1.0.1-lightgrey)
+![Version](https://img.shields.io/badge/Version-1.0.2-lightgrey)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-postexperimental-yellow)
 ![CodeSize](https://img.shields.io/github/languages/code-size/oswaldogressani/EpiLPS?color=orange&label=Code%20size&style=plastic)
@@ -127,9 +127,10 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  16   3  12  16  23  22  46  40  65  85 117 135 171 202 270 258 376 370 438
-    ## [20] 445 487 463 489 484 424 393 385 311 258 217 190 154 122  77  84  53  39  30
-    ## [39]  30  20  14   8   3   1   1   0   1   0   0   1
+    ##  [1]   16    4   18   22   47   50   68  104  134  178  228  287  363  456  546
+    ## [16]  645  745  815  889  931  996 1000  966  960  888  844  746  654  560  478
+    ## [31]  383  309  239  190  137  118   83   65   50   36   30   12   16    6    9
+    ## [46]    5    4    1    5    1
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -142,8 +143,8 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRU
 
     ## Inference method chosen: LPSMAP. 
     ## Total number of days: 50. 
-    ## Mean R(t) discarding first 7 days: 0.923.
-    ## Mean 95% CI of R(t) discarding first 7 days: (0.733,1.189) 
+    ## Mean R(t) discarding first 7 days: 0.971.
+    ## Mean 95% CI of R(t) discarding first 7 days: (0.789,1.202) 
     ## Elapsed real time (wall clock time): 0.2 seconds.
 
 ``` r
@@ -179,13 +180,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.126634 |   1.686648 |  2.681395 |
-| 9   | 2.145223 |   1.723953 |  2.669436 |
-| 10  | 2.125272 |   1.715061 |  2.633598 |
-| 11  | 2.067192 |   1.684601 |  2.536674 |
-| 12  | 1.982662 |   1.613981 |  2.435560 |
-| 13  | 1.886721 |   1.546237 |  2.302180 |
-| 14  | 1.794323 |   1.469596 |  2.190803 |
+| 8   | 2.398584 |   1.966202 |  2.926049 |
+| 9   | 2.302569 |   1.904284 |  2.784155 |
+| 10  | 2.199451 |   1.819204 |  2.659177 |
+| 11  | 2.098837 |   1.747610 |  2.520652 |
+| 12  | 2.006398 |   1.667633 |  2.413980 |
+| 13  | 1.922616 |   1.605188 |  2.302816 |
+| 14  | 1.840623 |   1.533969 |  2.208581 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
@@ -288,7 +289,7 @@ simexample <- perfcheck(S = 25, method = "LPSMALA",
 
 ## Package version
 
-This is version 1.0.1 (2021-12-08) - “EpiLPS smoothing”.
+This is version 1.0.2 (2021-12-29) - “EpiLPS smoothing”.
 
 ## Acknowledgments
 

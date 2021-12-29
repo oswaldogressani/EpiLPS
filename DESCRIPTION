@@ -1,7 +1,7 @@
 Package: EpiLPS
 Type: Package
 Title: A Bayesian Tool for Near Real-Time Estimation of the Reproduction Number
-Version: 1.0.1
+Version: 1.0.2
 Depends: R (>= 4.1.0)
 Authors@R: person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
@@ -32,7 +32,7 @@ Imports:
     MASS (>= 7.3-54),
     EpiEstim (>= 2.2-4),
     ggplot2 (>= 3.3.5),
-    grDevices (>= 4.1.1),
+    grDevices (>= 4.1.0),
     gridExtra (>= 2.3)
 Suggests: 
     rmarkdown,
