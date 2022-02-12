@@ -12,6 +12,8 @@ Oswaldo Gressani
 ![UserStars](https://img.shields.io/github/stars/oswaldogressani/EpiLPS?style=social)
 ![MyTwitter](https://img.shields.io/twitter/follow/OswaldoGressani?style=social)
 
+<img src="man/figures/gplv3-or-later.png" width="10%" style="display: block; margin: auto auto auto 0;" />
+
 ## Aim and scope
 
 EpiLPS <span style="color: blue;"> (Gressani et al. 2021)</span>, is the
@@ -127,10 +129,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]   16    4   18   22   47   50   68  104  134  178  228  287  363  456  546
-    ## [16]  645  745  815  889  931  996 1000  966  960  888  844  746  654  560  478
-    ## [31]  383  309  239  190  137  118   83   65   50   36   30   12   16    6    9
-    ## [46]    5    4    1    5    1
+    ##  [1]  15   5  11  24  31  43  51  99 119 136 217 259 337 368 503 532 610 716 729
+    ## [20] 816 808 816 839 766 730 646 583 555 465 409 301 287 222 153 125 105  82  60
+    ## [39]  56  31  24  17  13  12   7   9   2   7   2   2
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -143,9 +144,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRU
 
     ## Inference method chosen: LPSMAP. 
     ## Total number of days: 50. 
-    ## Mean R(t) discarding first 7 days: 0.971.
-    ## Mean 95% CI of R(t) discarding first 7 days: (0.789,1.202) 
-    ## Elapsed real time (wall clock time): 0.2 seconds.
+    ## Mean R(t) discarding first 7 days: 0.989.
+    ## Mean 95% CI of R(t) discarding first 7 days: (0.803,1.224) 
+    ## Elapsed real time (wall clock time): 0.15 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -180,13 +181,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.398584 |   1.966202 |  2.926049 |
-| 9   | 2.302569 |   1.904284 |  2.784155 |
-| 10  | 2.199451 |   1.819204 |  2.659177 |
-| 11  | 2.098837 |   1.747610 |  2.520652 |
-| 12  | 2.006398 |   1.667633 |  2.413980 |
-| 13  | 1.922616 |   1.605188 |  2.302816 |
-| 14  | 1.840623 |   1.533969 |  2.208581 |
+| 8   | 2.484195 |   2.028427 |  3.042370 |
+| 9   | 2.413019 |   1.988712 |  2.927854 |
+| 10  | 2.302628 |   1.900980 |  2.789139 |
+| 11  | 2.182494 |   1.817222 |  2.621186 |
+| 12  | 2.060743 |   1.713027 |  2.479039 |
+| 13  | 1.938438 |   1.617075 |  2.323667 |
+| 14  | 1.820834 |   1.515821 |  2.187222 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
@@ -295,6 +296,25 @@ This is version 1.0.2 (2021-12-29) - “EpiLPS smoothing”.
 
 This project is funded by the European Union’s Research and Innovation
 Action under the H2020 work programme, EpiPose (grant number 101003688).
+
+## License
+
+EpiLPS: a fast and flexible Bayesian tool for near real-time estimation
+of the time-varying reproduction number. Copyright (C) 2021-2022 Oswaldo
+Gressani.
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ## References
 
