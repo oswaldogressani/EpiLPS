@@ -5,12 +5,11 @@
 \title{Plot the EpiLPS fitted epidemic curve and reproduction number}
 \usage{
 \method{plot}{epilps}(x, plotout = c("rt", "epicurve"), dates = NULL,
-     datelab = c("7d", "1m", "3m", "6m"),
-     overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
-     transparency = 0.5, epicol = "red", epiestimcol = "lightslateblue",
-     incibars = FALSE, barwidth = 0.35,
-     themetype = c("gray", "classic", "light", "dark"), titlesize = 15,
-     xtitlesize = 13, ytitlesize = 13,  ...)
+     datelab = c("7d", "1m", "3m", "6m"), overlayEpiestim = FALSE, Rtitle = "",
+     epititle = "", rtcol = "red", cicol = "gray", transparency = 0.5,
+     epicol = "red", epiestimcol = "lightslateblue", incibars = FALSE, barwidth = 0.35,
+     themetype = c("gray", "classic", "light", "dark"),  tcut = NULL, titlesize = 15,
+     xtitlesize = 13, ytitlesize = 13, ...)
 }
 \arguments{
 \item{x}{An object of class \code{epilps}.}
@@ -45,6 +44,8 @@ number or "epicurve" for showing the epidemic curve.}
 
 \item{themetype}{Type of theme for the plot.}
 
+\item{tcut}{Remove early estimates (starting day 8 in plot).}
+
 \item{titlesize}{The size of the plot title. Default is 15.}
 
 \item{xtitlesize}{The size of title and text on x axis. Default is 13.}
@@ -63,11 +64,11 @@ This routine can be used to plot the estimated epidemic curve
 }
 \examples{
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-epidemic <- episim(serial_interval = si, Rpattern = 2)
+epidemic <- episim(serial_interval = si, Rpattern = 2, endepi = 30)
 epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si)
-gridExtra::grid.arrange(plot(epifit, Rtitle = "Estimated R"),
-                        plot(epifit, plotout = "epicurve", epicol = "blue",
-                        epititle = "Epidemic curve"), nrow = 2)
+# gridExtra::grid.arrange(plot(epifit, Rtitle = "Estimated R"),
+#                         plot(epifit, plotout = "epicurve", epicol = "blue",
+#                         epititle = "Epidemic curve"), nrow = 2)
 
 }
 \author{

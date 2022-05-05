@@ -5,12 +5,11 @@
 #'
 #' @usage
 #' \method{plot}{epilps}(x, plotout = c("rt", "epicurve"), dates = NULL,
-#'      datelab = c("7d", "1m", "3m", "6m"),
-#'      overlayEpiestim = FALSE, Rtitle = "", epititle = "", rtcol = "red", cicol = "gray",
-#'      transparency = 0.5, epicol = "red", epiestimcol = "lightslateblue",
-#'      incibars = FALSE, barwidth = 0.35,
-#'      themetype = c("gray", "classic", "light", "dark"), titlesize = 15,
-#'      xtitlesize = 13, ytitlesize = 13,  ...)
+#'      datelab = c("7d", "1m", "3m", "6m"), overlayEpiestim = FALSE, Rtitle = "",
+#'      epititle = "", rtcol = "red", cicol = "gray", transparency = 0.5,
+#'      epicol = "red", epiestimcol = "lightslateblue", incibars = FALSE, barwidth = 0.35,
+#'      themetype = c("gray", "classic", "light", "dark"),  tcut = NULL, titlesize = 15,
+#'      xtitlesize = 13, ytitlesize = 13, ...)
 #'
 #' @param x An object of class \code{epilps}.
 #' @param plotout The type of plot, either "rt" for showing the reproduction
@@ -29,6 +28,7 @@
 #' @param incibars Should the bars of the incidence time series be shown?
 #' @param barwidth The bar width associated to the incidence time series.
 #' @param themetype Type of theme for the plot.
+#' @param tcut Remove early estimates (starting day 8 in plot).
 #' @param titlesize The size of the plot title. Default is 15.
 #' @param xtitlesize The size of title and text on x axis. Default is 13.
 #' @param ytitlesize The size of title and text on y axis. Default is 13.
@@ -36,11 +36,11 @@
 #'
 #' @examples
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-#' epidemic <- episim(serial_interval = si, Rpattern = 2)
+#' epidemic <- episim(serial_interval = si, Rpattern = 2, endepi = 30)
 #' epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si)
-#' gridExtra::grid.arrange(plot(epifit, Rtitle = "Estimated R"),
-#'                         plot(epifit, plotout = "epicurve", epicol = "blue",
-#'                         epititle = "Epidemic curve"), nrow = 2)
+#' # gridExtra::grid.arrange(plot(epifit, Rtitle = "Estimated R"),
+#' #                         plot(epifit, plotout = "epicurve", epicol = "blue",
+#' #                         epititle = "Epidemic curve"), nrow = 2)
 #'
 #' @return A plot of the fitted time-varying reproduction number (default) or
 #'  the epidemic curve.
@@ -53,8 +53,10 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                         datelab = c("7d", "1m", "3m", "6m"),
                         overlayEpiestim = FALSE, Rtitle = "", epititle = "",
                         rtcol = "red", cicol = "gray", transparency = 0.5,
-                        epicol = "red", epiestimcol = "lightslateblue", incibars = FALSE, barwidth = 0.35,
+                        epicol = "red", epiestimcol = "lightslateblue",
+                        incibars = FALSE, barwidth = 0.35,
                         themetype = c("gray","classic","light","dark"),
+                        tcut = NULL,
                         titlesize = 15, xtitlesize = 13, ytitlesize = 13, ...) {
 
   n <- nrow(x$epifit)
@@ -117,6 +119,9 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
     themeval <- eval(parse(text = "ggplot2::theme_dark()"))
   }
 
+  if(!is.null(tcut)){
+    Rlps <- Rlps[-seq_len(tcut),]
+  }
 
   out_type <- match.arg(plotout)
   if (out_type == "rt") {
@@ -150,7 +155,8 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                       ggplot2::geom_ribbon(ggplot2::aes(ymin = Repiestim_CIlow,
                                                         ymax = Repiestim_CIup),
                                            alpha = transparency,
-                                           color = epiestimcol, linetype = "dashed",
+                                           color = epiestimcol,
+                                           linetype = "dashed",
                                            fill = NA) +
                       ggplot2::geom_line(ggplot2::aes(y = Repiestim,
                                                       color = "EpiEstim",
@@ -170,11 +176,11 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                                           size = 1.1) +
                       xlabtype + themeval +
                       ggplot2::theme(
-                        plot.title = ggplot2::element_text(size = titlesize),
-                        axis.title.x = ggplot2::element_text(size =  xtitlesize),
-                        axis.title.y = ggplot2::element_text(size =  ytitlesize),
-                        axis.text.x = ggplot2::element_text(size =  xtitlesize),
-                        axis.text.y = ggplot2::element_text(size =  ytitlesize))
+                      plot.title = ggplot2::element_text(size = titlesize),
+                      axis.title.x = ggplot2::element_text(size =  xtitlesize),
+                      axis.title.y = ggplot2::element_text(size =  ytitlesize),
+                      axis.text.x = ggplot2::element_text(size =  xtitlesize),
+                      axis.text.y = ggplot2::element_text(size =  ytitlesize))
       return(plotR_EpiLPS)
     }
 

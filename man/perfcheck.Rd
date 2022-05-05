@@ -4,26 +4,56 @@
 \alias{perfcheck}
 \title{Check the statistical performance of EpiLPS with simulations}
 \usage{
-perfcheck(S = 10, serial_interval, scenario = 3, K = 30, method = "LPSMAP",
-          slidewindow = 6, ci_level = 0.95,
-          themetype = c("classic","gray","light","dark"), seed = 123)
+perfcheck(S = 10, serial_interval, scenario = 3, epidays = 50,
+          K = 30, method = "LPSMAP", penorder = 2, hyperprior = c(10,10),
+          slidewindow = 6, ci_level = 0.95, cimethod = 1, chain_length = 5000,
+          burn = 2000, dist = c("poiss", "negbin"), overdisp = 1,
+          Rconst = 2.5, themetype = c("classic","gray","light","dark"),
+          coltraj = 1, seed = 123)
 }
 \arguments{
 \item{S}{The total number of replications.}
 
-\item{serial_interval}{The serial interval distribution.}
+\item{serial_interval}{The (discrete) serial interval distribution.}
 
 \item{scenario}{The scenario (1,2,3 or 4).}
+
+\item{epidays}{The total number of days of the epidemic. Default is 50.}
 
 \item{K}{Number of (cubic) B-splines in the basis.}
 
 \item{method}{Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).}
 
+\item{penorder}{The order of the penalty (Default is second-order).}
+
+\item{hyperprior}{Parameters for the Gamma prior on the dispersion parameter.}
+
 \item{slidewindow}{The sliding window for EpiEstim (defaults to 1 week).}
 
 \item{ci_level}{Level of the credible intervals to be computed.}
 
+\item{cimethod}{The method used to construct credible intervals for R(t) with
+method LPSMAP. Default is 1 (log-normal approx with correction). Setting it
+to 2 ignores the correction.}
+
+\item{chain_length}{the length of the MCMC chain for method "LPSMALA"
+(default 5,000).}
+
+\item{burn}{The burn-in period for method "LPSMALA" (default 2,000).}
+
+\item{dist}{Distribution to sample incidence case data. Either "poiss" for
+the Poisson distribution or "negbin" for the negative binomial distribution.}
+
+\item{overdisp}{Overdispersion parameter for the negative binomial setting.}
+
+\item{Rconst}{The constant value of R (if scenario 1 is selected),
+default is 2.5.}
+
 \item{themetype}{What theme should be use for plotting the R curves?}
+
+\item{coltraj}{Either 1 (default) or 2 to color the esimated R trajectories.
+Number 1 results in blue (for EpiLPS) and green (for EpiEstim). Number 2
+results in orange (for EpiLPS) and pink (for EpiEstim).}
 
 \item{seed}{A seed for reproducibility.}
 }
@@ -33,17 +63,18 @@ An object of class \code{perfcheck} containing a table of summary
 }
 \description{
 The \code{perfcheck()} routine can be used to check the performance of EpiLPS
-in various epidemic scenarios. The user can choose between 4 scenarios,
+in various epidemic scenarios. The user can choose between 6 scenarios,
 each scenario corresponding to a different data generating process for the
 incidence data with a specific target dynamics for the reproduction number.
 The aim of these simulations is to assess how close EpiLPS can reproduce
-the target reproduction number curve. Different metrics are given as outputs
-and comparisons with the \code{estimate_R()} routine of the
+the target reproduction number curve. Different performance measures are
+computed and comparisons with the \code{estimate_R()} routine of the
 EpiEstim package (Cori et al. 2013) is also shown.
 }
 \examples{
-simex <- perfcheck(S = 10, serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
-                   scenario = 3, ci_level = 0.95,  seed = 1234, themetype = "gray")
+# simex <- perfcheck(S = 5, serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
+#             scenario = 3, ci_level = 0.95,  seed = 1234, epidays = 30,
+#             themetype = "gray")
 
 }
 \references{

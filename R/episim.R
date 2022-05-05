@@ -1,27 +1,33 @@
-#' Simulation of epidemic data based on Poisson counts
+#' Simulation of incidence count data
 #'
 #' @description
 #' Based on a serial interval and a functional input for the reproduction number
 #' over T days, the routine generates a set of incidence counts following a
-#' Poisson model. The link between the reproduction number and the generated
-#' incidence data is governed by the renewal equation. The baseline mean number
-#' of cases at day 1 is fixed at 15. The mean number of cases for the remaining
-#' days of the epidemic are generated following equation (2) of Azmon et al.
-#' (2013).
+#' Poisson or negative binomial model. The link between the reproduction number
+#' and the generated incidence data is governed by the renewal equation. The
+#' baseline (mean) number of cases at day 1 is fixed at 10. The mean number of
+#' cases for the remaining days of the epidemic are generated following
+#' equation (2) of Azmon et al. (2013).
 #'
-#' @usage episim(serial_interval, endepi = 50, Rpattern = 1, verbose = FALSE, plotsim = FALSE)
+#' @usage episim(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
+#'        dist = c("poiss", "negbin"), overdisp = 1, verbose = FALSE, plotsim = FALSE)
 #'
-#' @param serial_interval A vector of values for the serial interval.
+#' @param serial_interval A vector of values for the discrete serial interval
+#'  (must sum to 1).
 #' @param endepi The total number of days of the epidemic.
 #' @param Rpattern Different scenarios for the true underlying curve of
-#'  Rt. Four scenarios are possible with 1,2,3,4.
+#'  Rt. Six scenarios are possible with 1,2,3,4,5,6.
+#' @param Rconst The constant value of R (if scenario 1 is selected), default is 2.5.
+#' @param dist The distribution from which to sample the incidence of cases.
+#'  Either Poisson (default) or negative binomial.
+#' @param overdisp Overdispersion parameter for the negative binomial setting.
 #' @param verbose Should metadata on simulated epidemic be printed?
 #' @param plotsim Create a plot of the incidence time series, the true
 #'  reproduction number curve and the serial interval.
 #'
 #' @return An object of class \code{episim} consisting of a list with the
-#'  generated time series of cases, the mean vector of the Poisson distribution,
-#'  the true underlying R function for the data generating process and the
+#'  generated time series of cases, the mean vector of the Poisson/negative binomial
+#'  distribution, the true underlying R function for the data generating process and the
 #'  chosen serial interval distribution.
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
@@ -36,37 +42,50 @@
 #'
 #' @export
 
-episim <- function(serial_interval, endepi = 50, Rpattern = 1,
+episim <- function(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
+                   dist = c("poiss", "negbin"), overdisp = 1,
                    verbose = FALSE, plotsim = FALSE) {
 
   #-- Scenarios for the true R(t)
-  if (Rpattern == 1) Rtrue <- function(t) {2.5} else if
-     (Rpattern == 2) Rtrue <-function(t){if (t < 20) {res <- 2.5}
-                                                else if (t >= 20) {res <- 0.7}
+  if (Rpattern == 1) Rtrue <- function(t) {Rconst} else if
+     (Rpattern == 2) Rtrue <- function(t){if (t < 20) {res <- 2}
+                                                else if (t >= 20) {res <- 0.9}
                                                 return(res)}     else if
-     (Rpattern == 3) Rtrue <- function(t){0.4 + exp(cos(t / 5))} else if
-     (Rpattern == 4) Rtrue <- function(t){exp(cos(t / 15))}
+     (Rpattern == 3) Rtrue <- function(t){0.25 + exp(cos(t / 7))} else if
+     (Rpattern == 4) Rtrue <- function(t){exp(cos(t / 15))} else if
+     (Rpattern == 5) Rtrue <- function(t){0.5 * (exp(sin(pi * t / 9)) +
+                                              1.5 * exp(cos(t / 4)))} else if
+     (Rpattern == 6) Rtrue <- function(t){1.5 + cos(0.8 * pi * t / 15) +
+                                          0.5 * t ^ 2 / 400
+     }
 
   smax <- length(serial_interval)      # Length of serial_interval
   mu_y <- c()                          # Mean of y
   y <- c()                             # Incidence count
 
+  sampling_dist <- match.arg(dist)     # Chosen distribution to sample from
+
   for (t in 1:endepi) {
     if (t == 1) {
-      mu_y[t] <- 15 # Mean of incidence count at day = 1.
-      y[t] <- 0
-      while (y[t] <= 10) { # Force a minimum number of cases at day 1
-        y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
-      }
+      mu_y[t] <- 10 # Mean of incidence count at day = 1.
+      y[t] <- 10
     } else if (t >= 2 && t <= smax) {
       mu_y[t] <- Rtrue(t) *
         sum(rev(y[1:(smax - 1)][1:(t - 1)]) *
               serial_interval[1:(smax - 1)][1:(t - 1)])
-      y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
+      if (sampling_dist == "poiss") {
+        y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
+      } else if (sampling_dist == "negbin") {
+        y[t] <- stats::rnbinom(n = 1, mu = mu_y[t], size = overdisp)
+      }
     } else if (t > smax && t <= endepi) {
       mu_y[t] <-
         Rtrue(t) * sum(rev(y[(t - smax):(t - 1)]) * serial_interval)
-      y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
+      if (sampling_dist == "poiss") {
+        y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
+      } else if (sampling_dist == "negbin") {
+        y[t] <- stats::rnbinom(n = 1, mu = mu_y[t], size = overdisp)
+      }
     }
   }
 
@@ -80,8 +99,18 @@ episim <- function(serial_interval, endepi = 50, Rpattern = 1,
       pattern = "Wiggly Rt"
     } else if (Rpattern == 4) {
       pattern = "Decaying Rt"
+    } else if (Rpattern == 5) {
+      pattern = "Wiggly then stable Rt"
+    } else if (Rpattern == 6) {
+      pattern = "Increasing Rt"
     }
     cat("Chosen scenario: ", Rpattern, " '", pattern, "'",  ".\n", sep = "")
+    if (sampling_dist == "poiss") {
+      cat("Incidence of cases generated from a Poisson distribution. \n")
+    } else if (sampling_dist == "negbin"){
+   cat("Incidence of cases generated from a negative binomial distribution. \n")
+   cat("Overdispersion parameter value: ", overdisp, ".\n", sep = "")
+    }
     cat("Total number of days of epidemic: ", endepi, ".\n", sep = "")
   }
 

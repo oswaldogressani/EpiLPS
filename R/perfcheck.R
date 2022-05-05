@@ -2,26 +2,46 @@
 #'
 #' @description
 #' The \code{perfcheck()} routine can be used to check the performance of EpiLPS
-#' in various epidemic scenarios. The user can choose between 4 scenarios,
+#' in various epidemic scenarios. The user can choose between 6 scenarios,
 #' each scenario corresponding to a different data generating process for the
 #' incidence data with a specific target dynamics for the reproduction number.
 #' The aim of these simulations is to assess how close EpiLPS can reproduce
-#' the target reproduction number curve. Different metrics are given as outputs
-#' and comparisons with the \code{estimate_R()} routine of the
+#' the target reproduction number curve. Different performance measures are
+#' computed and comparisons with the \code{estimate_R()} routine of the
 #' EpiEstim package (Cori et al. 2013) is also shown.
 #'
-#' @usage perfcheck(S = 10, serial_interval, scenario = 3, K = 30, method = "LPSMAP",
-#'           slidewindow = 6, ci_level = 0.95,
-#'           themetype = c("classic","gray","light","dark"), seed = 123)
+#' @usage perfcheck(S = 10, serial_interval, scenario = 3, epidays = 50,
+#'           K = 30, method = "LPSMAP", penorder = 2, hyperprior = c(10,10),
+#'           slidewindow = 6, ci_level = 0.95, cimethod = 1, chain_length = 5000,
+#'           burn = 2000, dist = c("poiss", "negbin"), overdisp = 1,
+#'           Rconst = 2.5, themetype = c("classic","gray","light","dark"),
+#'           coltraj = 1, seed = 123)
 #'
 #' @param S The total number of replications.
 #' @param scenario The scenario (1,2,3 or 4).
-#' @param serial_interval The serial interval distribution.
+#' @param epidays The total number of days of the epidemic. Default is 50.
+#' @param serial_interval The (discrete) serial interval distribution.
 #' @param method Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).
+#' @param penorder The order of the penalty (Default is second-order).
+#' @param hyperprior Parameters for the Gamma prior on the dispersion parameter.
 #' @param K Number of (cubic) B-splines in the basis.
 #' @param slidewindow The sliding window for EpiEstim (defaults to 1 week).
 #' @param ci_level Level of the credible intervals to be computed.
+#' @param cimethod The method used to construct credible intervals for R(t) with
+#'  method LPSMAP. Default is 1 (log-normal approx with correction). Setting it
+#'  to 2 ignores the correction.
+#' @param chain_length the length of the MCMC chain for method "LPSMALA"
+#'  (default 5,000).
+#' @param burn The burn-in period for method "LPSMALA" (default 2,000).
+#' @param dist Distribution to sample incidence case data. Either "poiss" for
+#'  the Poisson distribution or "negbin" for the negative binomial distribution.
+#' @param overdisp Overdispersion parameter for the negative binomial setting.
+#' @param Rconst The constant value of R (if scenario 1 is selected),
+#'  default is 2.5.
 #' @param themetype What theme should be use for plotting the R curves?
+#' @param coltraj Either 1 (default) or 2 to color the esimated R trajectories.
+#'  Number 1 results in blue (for EpiLPS) and green (for EpiEstim). Number 2
+#'  results in orange (for EpiLPS) and pink (for EpiEstim).
 #' @param seed A seed for reproducibility.
 #'
 #' @return An object of class \code{perfcheck} containing a table of summary
@@ -35,18 +55,21 @@
 #'  \strong{178}(9):1505-1512.
 #'
 #' @examples
-#' simex <- perfcheck(S = 10, serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
-#'                    scenario = 3, ci_level = 0.95,  seed = 1234, themetype = "gray")
+#' # simex <- perfcheck(S = 5, serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
+#' #             scenario = 3, ci_level = 0.95,  seed = 1234, epidays = 30,
+#' #             themetype = "gray")
 #'
 #' @export
 
-perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
-                      method = "LPSMAP", slidewindow = 6, ci_level = 0.95,
+perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 30,
+                      method = "LPSMAP", penorder = 2, hyperprior = c(10,10),
+                      slidewindow = 6, ci_level = 0.95, cimethod = 1,
+                      chain_length = 5000, burn = 2000,
+                      dist = c("poiss", "negbin"), overdisp = 1, Rconst = 2.5,
                       themetype = c("classic","gray","light","dark"),
-                      seed = 123){
+                      coltraj = 1, seed = 123){
 
   #-- Declare elements to host simulation results
-  epidays <- 50
   Repilps <- matrix(0, nrow = S, ncol = epidays)
   colnames(Repilps) <- paste0("Day ", seq_len(epidays))
   Repiestim <- matrix(0, nrow = S, ncol = epidays - (slidewindow + 1))
@@ -56,6 +79,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
   epiestimCI <- matrix(0, nrow = S, ncol = epidays - (slidewindow + 1))
   colnames(epiestimCI) <- paste0("Day ", seq(slidewindow + 2, epidays))
   sim_incid <- matrix(0, nrow = S, ncol = epidays)
+  sim_muy <- matrix(0, nrow = S, ncol = epidays)
   ciwidth_epilps   <- matrix(0, nrow = S, ncol = epidays)
   ciwidth_epiestim <- matrix(0, nrow = S, ncol = epidays - (slidewindow + 1))
   epilps_timing <- c()
@@ -69,21 +93,35 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
     clear = FALSE
   )
 
+
+  for(s in 1:S){
+    #-- Simulate epidemic with episim() routine
+    simdist <- match.arg(dist)
+    if (simdist == "poiss") {
+      epidemic <- episim(serial_interval = serial_interval, endepi = epidays,
+                       Rpattern = scenario, Rconst = Rconst)
+    } else if (simdist == "negbin"){
+    epidemic <- episim(serial_interval = serial_interval, endepi = epidays,
+                       Rpattern = scenario, Rconst = Rconst, dist = "negbin",
+                       overdisp = overdisp)
+    }
+    sim_incid[s,] <- epidemic$y
+    sim_muy[s,] <- epidemic$mu_y
+  }
+
   #-- Start loop
   for(s in 1:S) {
-
-    #-- Simulate epidemic with episim() routine
-    epidemic <- episim(serial_interval = serial_interval, endepi = epidays,
-                       Rpattern = scenario)
-    sim_incid[s,] <- epidemic$y
-    incidence <- epidemic$y
+    incidence <- sim_incid[s, ]
     n <- epidays
     p <- epidemic$serial_interval
     Rtarget <- sapply(seq_len(epidays), epidemic$Rtrue)
 
     #-- Estimation with epilps
     epilps_fit <- epilps(incidence = incidence, K = K, method = method,
-                         serial_interval = p, ci_level = ci_level,
+                         serial_interval = p, penorder = penorder,
+                         ci_level = ci_level, cimethod = cimethod,
+                         hyperprior = hyperprior,
+                         chain_length = chain_length, burn = burn,
                          verbose = FALSE, progmala = FALSE, tictoc = TRUE)
     epilps_timing[s] <- epilps_fit$elapsed
     ciwidth_epilps[s,] <- (epilps_fit$epifit[, 4] - epilps_fit$epifit[, 3])
@@ -136,41 +174,58 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
 
   Repilps <- Repilps[, t_end[1]:epidays]
   epilpsCI <- epilpsCI[, t_end[1]:epidays]
+  colnames(ciwidth_epilps) <-  paste0("Day ", seq_len(epidays))
+  colnames(ciwidth_epiestim) <- paste0("Day ", seq(slidewindow + 2, epidays))
   meanciwidth_epilps   <- colMeans(ciwidth_epilps[, t_end[1]:epidays])
+  meanciwidth_epilps <- meanciwidth_epilps[which(names(meanciwidth_epilps)==
+                                          "Day 8"):length(meanciwidth_epilps)]
   meanciwidth_epiestim <- colMeans(ciwidth_epiestim)
+  meanciwidth_epiestim <- meanciwidth_epiestim[which(names(meanciwidth_epiestim)
+                          =="Day 8"):length(meanciwidth_epiestim)]
 
   #-- Compute metrics starting from day t_end[1] to 50
   Rtruth <- Rtarget[t_end[1]:epidays]
 
   # Bias
   Bias_epilps <- colMeans(Repilps - matrix(rep(Rtruth,S), nrow = S, byrow = T))
+  Bias_epilps <- Bias_epilps[which(names(Bias_epilps)=="Day 8"):
+                               length(Bias_epilps)]
   Bias_epiestim <- colMeans(Repiestim - matrix(rep(Rtruth,S),
                                                nrow = S, byrow = T))
+  Bias_epiestim <- Bias_epiestim[which(names(Bias_epiestim)==
+                                         "Day 8"):length(Bias_epiestim)]
+
   # MSE
   MSE_epilps <- colMeans((Repilps -
                             matrix(rep(Rtruth,S), nrow = S, byrow = T)) ^ 2)
+  MSE_epilps <- MSE_epilps[which(names(MSE_epilps)=="Day 8"):length(MSE_epilps)]
   MSE_epiestim <- colMeans((Repiestim -
                               matrix(rep(Rtruth,S), nrow = S, byrow = T)) ^ 2)
+  MSE_epiestim <- MSE_epiestim[which(names(MSE_epiestim)==
+                                       "Day 8"):length(MSE_epiestim)]
 
   #-- Coverage of credible interval at day t
   coverage_epilps   <- round(colMeans(epilpsCI) * 100, 2)
+  coverage_epilps <- coverage_epilps[which(names(coverage_epilps)==
+                                             "Day 8"):length(coverage_epilps)]
   coverage_epiestim <- round(colMeans(epiestimCI) * 100, 2)
+  coverage_epiestim <- coverage_epiestim[which(names(coverage_epiestim)==
+                                        "Day 8"):length(coverage_epiestim)]
 
   #-- Summarize performance metrics
-  perf_metrics <- matrix(0, nrow = length(t_end), ncol = 6)
+  perf_metrics <- matrix(0, nrow = n-7, ncol = 6)
   colnames(perf_metrics) <- c("Bias (EpiLPS)", "Bias (EpiEstim)",
                               "MSE (EpiLPS)", "MSE (EpiEstim)",
                               paste0("CP",ci_level * 100,"% (EpiLPS)"),
                               paste0("CP",ci_level * 100,"% (EpiEstim)"))
-  rownames(perf_metrics) <- paste0("Day ", t_end)
+  rownames(perf_metrics) <- paste0("Day ", seq(8,n))
   perf_metrics[, 1] <- Bias_epilps
   perf_metrics[, 2] <- Bias_epiestim
   perf_metrics[, 3] <- MSE_epilps
   perf_metrics[, 4] <- MSE_epiestim
   perf_metrics[, 5] <- coverage_epilps
   perf_metrics[, 6] <- coverage_epiestim
-
-  simul_summary <- round(perf_metrics[seq(1, length(t_end), by = 1), ], 3)
+  simul_summary <- round(perf_metrics, 3)
 
   #-- Plot results with ggplot2
 
@@ -211,10 +266,17 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
                epilpsmedian = epilpsmedian,
                epiestimedian = epiestimedian))
   datcolnames <- colnames(Repilps_datframe)
+  Repilps_datframe <- base::subset(Repilps_datframe, Days > 7)
   # define colors
-  myepilpscol <- grDevices::rgb(0, 211, 255, maxColorValue = 255)
-  medepiescol <- grDevices::rgb(212, 0, 52, maxColorValue = 255)
-  medepilpscol <- grDevices::rgb(0, 69, 245, maxColorValue = 255)
+  if (coltraj == 1) {
+    myepilpscol <- grDevices::rgb(0, 211, 255, maxColorValue = 255)
+    medepiescol <- grDevices::rgb(212, 0, 52, maxColorValue = 255)
+    medepilpscol <- grDevices::rgb(0, 69, 245, maxColorValue = 255)
+  } else if (coltraj == 2){
+    myepilpscol <- grDevices::rgb(255, 184, 64, maxColorValue = 255)
+    medepiescol <- grDevices::rgb(212, 0, 52, maxColorValue = 255)
+    medepilpscol <- grDevices::rgb(0, 69, 245, maxColorValue = 255)
+  }
   # see https://color.adobe.com/create/color-wheel for color definition
   colors <- c("Target R" = "black", "EpiLPS" = myepilpscol,
               "EpiLPS median" = medepilpscol, "EpiEstim median" = medepiescol)
@@ -222,7 +284,10 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
                  "EpiLPS median" = 4, "EpiEstim median" = 3)
 
   Rlpsplot <- ggplot2::ggplot(data = Repilps_datframe, ggplot2::aes(x = Days)) +
-    ggplot2::ylim(0, max(Repilps) + 0.4) +
+    ggplot2::ylim(0,
+            max(rbind(Repilps[,which(colnames(Repilps)=="Day 8"):ncol(Repilps)],
+            Repiestim[,which(colnames(Repiestim)=="Day 8"):ncol(Repiestim)]),
+            na.rm = TRUE)+ 0.3) +
     ggplot2::geom_line(ggplot2::aes(y = Rtruth, color = "Target R",
                                     linetype = "Target R"), size = 1.2) +
     ggplot2::labs(x = "Time (days)", y = "R", color = "Legend",
@@ -230,10 +295,17 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
     ggplot2::scale_color_manual(values = colors) +
     ggplot2::scale_linetype_manual(values = linetypes)
 
+  if(coltraj == 1){
   for(s in 3:(S+2)){
     Rlpsplot <- Rlpsplot + eval(parse(
       text = paste("ggplot2::geom_line(ggplot2::aes(y=",datcolnames[s],
                    "),colour='#00D3FF')",sep = "")))
+  }} else if (coltraj == 2){
+    for(s in 3:(S+2)){
+      Rlpsplot <- Rlpsplot + eval(parse(
+        text = paste("ggplot2::geom_line(ggplot2::aes(y=",datcolnames[s],
+                     "),colour='#FFB840')",sep = "")))
+    }
   }
 
   Rlpsplot <- Rlpsplot +
@@ -261,8 +333,14 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
                epilpsmedian = epilpsmedian,
                epiestimedian = epiestimedian))
   datcolnames <- colnames(Repiestim_datframe)
+  Repiestim_datframe <- base::subset(Repiestim_datframe, Days > 7)
+
   # define colors
-  myepiestimcol <- grDevices::rgb(42, 211, 134, maxColorValue = 255)
+  if(coltraj == 1) {
+    myepiestimcol <- grDevices::rgb(42, 211, 134, maxColorValue = 255)
+  } else if (coltraj == 2){
+    myepiestimcol <- grDevices::rgb(255, 141, 216, maxColorValue = 255)
+  }
   # see https://color.adobe.com/create/color-wheel for color definition
   colors <- c("Target R" = "black", "EpiEstim" = myepiestimcol,
               "EpiLPS median" = medepilpscol, "EpiEstim median" = medepiescol)
@@ -271,7 +349,10 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
 
   Repiesplot <- ggplot2::ggplot(data = Repiestim_datframe,
                                 ggplot2::aes(x = Days)) +
-    ggplot2::ylim(0, max(Repiestim) + 0.2) +
+    ggplot2::ylim(0,
+            max(rbind(Repilps[,which(colnames(Repilps)=="Day 8"):ncol(Repilps)],
+            Repiestim[,which(colnames(Repiestim)=="Day 8"):ncol(Repiestim)]),
+            na.rm = TRUE)+ 0.3) +
     ggplot2::geom_line(ggplot2::aes(y = Rtruth, color = "Target R",
                                     linetype = "Target R"), size = 1.2) +
     ggplot2::labs(x = "Time (days)", y = "R", color = "Legend",
@@ -279,12 +360,18 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
     ggplot2::scale_color_manual(values = colors) +
     ggplot2::scale_linetype_manual(values = linetypes)
 
+  if(coltraj == 1){
   for(s in 3:(S+2)){
     Repiesplot <- Repiesplot + eval(parse(
       text = paste("ggplot2::geom_line(ggplot2::aes(y=",datcolnames[s],
                    "),colour='#2AD386')",sep = "")))
+  }} else if (coltraj == 2){
+    for(s in 3:(S+2)){
+      Repiesplot <- Repiesplot + eval(parse(
+        text = paste("ggplot2::geom_line(ggplot2::aes(y=",datcolnames[s],
+                     "),colour='#FF8DD8')",sep = "")))
+    }
   }
-
 
   Repiesplot <- Repiesplot +
     ggplot2::geom_line(ggplot2::aes(y = Rtruth), size = 1.2) +
@@ -304,27 +391,32 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
       legend.text = ggplot2::element_text(size = 9)
     )
 
-
-  summary_plot <- gridExtra::grid.arrange(inciplot, Rlpsplot,
-                                          Repiesplot, nrow = 1)
+  summary_plot <- base::suppressWarnings(gridExtra::grid.arrange(
+                  inciplot, Rlpsplot, Repiesplot,
+                  nrow = 1))
 
 
   outputlist <- list(simul_summary = simul_summary,
+                     sim_incid = sim_incid,
+                     sim_muy = sim_muy,
+                     inciplot = inciplot,
+                     Rlpsplot = Rlpsplot,
+                     Repiesplot = Repiesplot,
                      plot_summary = summary_plot,
-                     ciwidth_epilps = ciwidth_epilps,
-                     ciwidth_epiestim = ciwidth_epiestim)
+                     ciwidthepilps = meanciwidth_epilps,
+                     ciwidthepiestim = meanciwidth_epiestim)
 
   cat("Comparing ",method," vs EpiEstim in S=",S,
-      " replications (epidemic T=50 days). \n", sep ="")
-  cat("Mean Bias on days ",t_end[1],"-",epidays, ":\n", sep = "")
+      " replications (epidemic T=", epidays, " days)", "\n", sep ="")
+  cat("Mean Bias on days ",8,"-",epidays, ":\n", sep = "")
   cat("-- EpiLPS mean Bias: ", round(mean(Bias_epilps),5), "\n", sep = "")
   cat("-- EpiEstim mean Bias: ", round(mean(Bias_epiestim, na.rm = TRUE),5),
       "\n", sep = "")
-  cat("Mean MSE on days ",t_end[1],"-",epidays, ":\n", sep = "")
+  cat("Mean MSE on days ",8,"-",epidays, ":\n", sep = "")
   cat("-- EpiLPS mean MSE:   ", round(mean(MSE_epilps),5), "\n", sep = "")
   cat("-- EpiEstim mean MSE: ", round(mean(MSE_epiestim, na.rm = TRUE),5),
       "\n", sep = "")
-  cat("Mean credible interval coverage on days ",t_end[1],"-",epidays,
+  cat("Mean credible interval coverage on days ",8,"-",epidays,
       " (nominal level: ",ci_level * 100," %)",":\n", sep = "")
   cat("-- EpiLPS mean coverage:   ", round(mean(coverage_epilps),5),
       "\n", sep = "")
@@ -336,6 +428,25 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, K = 30,
   cat("-- EpiEstim mean CI width: ", round(mean(meanciwidth_epiestim,
                                                 na.rm = TRUE),2),
       "\n", sep = "")
+  if (simdist == "poiss") {
+    cat("Incidence of cases generated from a Poisson distribution. \n")
+  } else if (simdist == "negbin"){
+    cat("Incidence of cases generated from a negative binomial distribution. \n")
+    cat("Overdispersion parameter value: ", overdisp, ".\n", sep = "")
+  }
+  cat("EpiEstim window size: ", slidewindow + 1, " day(s)", ".\n", sep = "")
+  cat("Average values computed over period t=", 8, " to T=", epidays,
+      ".\n", sep = "")
+  cat("Penalty order for P-splines: ", penorder, ".\n", sep = "")
+  cat("Parameters for the Gamma prior on dispersion parameter: a=",
+      hyperprior[1], " b=", hyperprior[2], ".\n", sep = "")
+  if(method == "LPSMAP"){
+  if(cimethod == 1){
+    cat("CI for LPSMAP computed with a scaling correction.")
+  } else if (cimethod == 2){
+    cat("CI for LPSMAP computed without scaling correction")
+  }
+  }
 
 
   attr(outputlist, "class") <- "perfcheck"
