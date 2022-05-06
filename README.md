@@ -50,7 +50,7 @@ completely sampling-free and fully relies on Laplace approximations and
 estimation. Routines for Laplace approximations and B-splines
 evaluations are typically the ones that are computationally most
 intensive and are therefore coded in C++ and integrated in R via the
-[Rcpp package](http://www.rcpp.org/), making them time irrelevant. The
+[Rcpp package](https://www.rcpp.org/), making them time irrelevant. The
 second approach is called LPSMALA (Laplacian-P-splines with a
 Metropolis-adjusted Langevin algorithm) and is fully stochastic. It
 samples the posterior of the model by using Langevin diffusions in a
@@ -129,9 +129,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  10   0  11  11  24  24  39  45  73  75 129 140 185 209 259 323 340 397 404
-    ## [20] 439 439 456 444 411 452 384 350 277 289 207 172 152 122  75  71  47  36  24
-    ## [39]  19  14  17  13  11   9   5   7   3   2   2   1
+    ##  [1]  10   3   6  12  12  22  29  33  62  63  81 110 126 160 196 210 263 308 299
+    ## [20] 313 362 314 321 327 281 267 238 224 187 157 148 114  86  77  64  44  31  17
+    ## [39]  21  16  13   6  13   6   4   3   1   1   0   1
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval \[1; 50\]
@@ -144,8 +144,8 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRU
 
     ## Inference method chosen: LPSMAP. 
     ## CI for LPSMAP computed via lognormal posterior approx. of Rt.Total number of days: 50. 
-    ## Mean Rt discarding first 7 days: 0.981.
-    ## Mean 95% CI of Rt discarding first 7 days: (0.883,1.103) 
+    ## Mean Rt discarding first 7 days: 0.961.
+    ## Mean 95% CI of Rt discarding first 7 days: (0.847,1.112) 
     ## Elapsed real time (wall clock time): 0.19 seconds.
 
 ``` r
@@ -181,13 +181,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     | R\_estim | R95CI\_low | R95CI\_up |
 |:----|---------:|-----------:|----------:|
-| 8   | 2.333111 |   2.045686 |  2.660921 |
-| 9   | 2.264281 |   2.024122 |  2.532935 |
-| 10  | 2.186586 |   1.979944 |  2.414796 |
-| 11  | 2.101762 |   1.929943 |  2.288879 |
-| 12  | 2.007508 |   1.858038 |  2.169003 |
-| 13  | 1.905146 |   1.779089 |  2.040135 |
-| 14  | 1.805344 |   1.695321 |  1.922507 |
+| 8   | 2.364059 |   2.001912 |  2.791718 |
+| 9   | 2.299278 |   1.995809 |  2.648890 |
+| 10  | 2.175783 |   1.916284 |  2.470422 |
+| 11  | 2.039616 |   1.827749 |  2.276041 |
+| 12  | 1.921321 |   1.737508 |  2.124579 |
+| 13  | 1.831518 |   1.675566 |  2.001985 |
+| 14  | 1.760867 |   1.621291 |  1.912459 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
