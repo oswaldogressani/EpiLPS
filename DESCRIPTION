@@ -1,7 +1,7 @@
 Package: EpiLPS
 Type: Package
-Title: A Bayesian Tool for Approximate Real-Time Estimation of the Reproduction Number
-Version: 1.0.5
+Title: A Bayesian Tool for Fast and Flexible Estimation of the Reproduction Number
+Version: 1.0.6
 Depends: R (>= 4.1.0)
 Authors@R: person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),

@@ -5,10 +5,10 @@
 \title{Check the statistical performance of EpiLPS with simulations}
 \usage{
 perfcheck(S = 10, serial_interval, scenario = 3, epidays = 50,
-          K = 30, method = "LPSMAP", penorder = 2, hyperprior = c(10,10),
-          slidewindow = 6, ci_level = 0.95, cimethod = 1, chain_length = 5000,
-          burn = 2000, dist = c("poiss", "negbin"), overdisp = 1,
-          Rconst = 2.5, themetype = c("classic","gray","light","dark"),
+          K = 30, method = "LPSMAP", midwindow = FALSE, penorder = 2,
+          hyperprior = c(10,10), slidewindow = 6, ci_level = 0.95,
+          cimethod = 1, chain_length = 5000, burn = 2000, dist = c("poiss", "negbin"),
+          overdisp = 1, Rconst = 2.5, themetype = c("classic","gray","light","dark"),
           coltraj = 1, seed = 123)
 }
 \arguments{
@@ -23,6 +23,9 @@ perfcheck(S = 10, serial_interval, scenario = 3, epidays = 50,
 \item{K}{Number of (cubic) B-splines in the basis.}
 
 \item{method}{Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).}
+
+\item{midwindow}{Should Rt be reported at the middle of the window for EpiEstim
+as recommended by Gostic et al. (2020)? Default is FALSE.}
 
 \item{penorder}{The order of the penalty (Default is second-order).}
 

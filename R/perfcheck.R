@@ -11,10 +11,10 @@
 #' EpiEstim package (Cori et al. 2013) is also shown.
 #'
 #' @usage perfcheck(S = 10, serial_interval, scenario = 3, epidays = 50,
-#'           K = 30, method = "LPSMAP", penorder = 2, hyperprior = c(10,10),
-#'           slidewindow = 6, ci_level = 0.95, cimethod = 1, chain_length = 5000,
-#'           burn = 2000, dist = c("poiss", "negbin"), overdisp = 1,
-#'           Rconst = 2.5, themetype = c("classic","gray","light","dark"),
+#'           K = 30, method = "LPSMAP", midwindow = FALSE, penorder = 2,
+#'           hyperprior = c(10,10), slidewindow = 6, ci_level = 0.95,
+#'           cimethod = 1, chain_length = 5000, burn = 2000, dist = c("poiss", "negbin"),
+#'           overdisp = 1, Rconst = 2.5, themetype = c("classic","gray","light","dark"),
 #'           coltraj = 1, seed = 123)
 #'
 #' @param S The total number of replications.
@@ -22,6 +22,8 @@
 #' @param epidays The total number of days of the epidemic. Default is 50.
 #' @param serial_interval The (discrete) serial interval distribution.
 #' @param method Either LPSMAP (fully sampling-free) or LPSMALA (MCMC-based).
+#' @param midwindow Should Rt be reported at the middle of the window for EpiEstim
+#'  as recommended by Gostic et al. (2020)? Default is FALSE.
 #' @param penorder The order of the penalty (Default is second-order).
 #' @param hyperprior Parameters for the Gamma prior on the dispersion parameter.
 #' @param K Number of (cubic) B-splines in the basis.
@@ -62,12 +64,26 @@
 #' @export
 
 perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 30,
-                      method = "LPSMAP", penorder = 2, hyperprior = c(10,10),
+                      method = "LPSMAP", midwindow = FALSE, penorder = 2, hyperprior = c(10,10),
                       slidewindow = 6, ci_level = 0.95, cimethod = 1,
                       chain_length = 5000, burn = 2000,
                       dist = c("poiss", "negbin"), overdisp = 1, Rconst = 2.5,
                       themetype = c("classic","gray","light","dark"),
                       coltraj = 1, seed = 123){
+
+  if(slidewindow < 0)
+    stop("Slidewindow must either be 0, 2 or 6")
+  if(slidewindow == 1)
+    stop("Slidewindow must either be 0, 2 or 6")
+  if(slidewindow == 3)
+    stop("Slidewindow must either be 0, 2 or 6")
+  if(slidewindow == 4)
+    stop("Slidewindow must either be 0, 2 or 6")
+  if(slidewindow == 5)
+    stop("Slidewindow must either be 0, 2 or 6")
+  if(slidewindow > 6)
+    stop("Slidewindow must either be 0, 2 or 6")
+
 
   #-- Declare elements to host simulation results
   Repilps <- matrix(0, nrow = S, ncol = epidays)
@@ -84,6 +100,8 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
   ciwidth_epiestim <- matrix(0, nrow = S, ncol = epidays - (slidewindow + 1))
   epilps_timing <- c()
   epiestim_timing <- c()
+  dispvec <- c()
+  NAnums <- 0
   set.seed(seed)
 
   #-- Progress bar
@@ -92,7 +110,6 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
     total = S,
     clear = FALSE
   )
-
 
   for(s in 1:S){
     #-- Simulate epidemic with episim() routine
@@ -125,6 +142,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
                          verbose = FALSE, progmala = FALSE, tictoc = TRUE)
     epilps_timing[s] <- epilps_fit$elapsed
     ciwidth_epilps[s,] <- (epilps_fit$epifit[, 4] - epilps_fit$epifit[, 3])
+    dispvec[s] <- epilps_fit$disphat
 
     #-- Estimation with epiestim
     t_start <- seq(2, epidays - slidewindow)
@@ -148,6 +166,11 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
     # Store point estimation
     Repilps[s, ]   <- epilps_fit$epifit$R_estim
     Repiestim[s, ] <- epiestim_fit$R$`Mean(R)`
+    if (midwindow == TRUE) {
+      NAnums <- slidewindow / 2
+      Repiestim[s,] <- c(epiestim_fit$R$`Mean(R)`[-(1:NAnums)],
+                         rep(NA, NAnums))
+    }
 
     # Check if credible interval contains the truth for epilps
     for (j in 1:epidays) {
@@ -156,6 +179,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
     }
 
     # Check if credible interval contains the truth for epiestim
+    if(midwindow == FALSE){
     for (j in 1:length(t_end)) {
       if (ci_level == 0.95) {
         epiestimCI[s, j] <- Rtarget[t_end[j]] >=
@@ -169,13 +193,62 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
           (epiestim_fit$R$`Quantile.0.95(R)`)[j]
       }
     }
+    } else{
+      if (slidewindow == 6) {
+        for (j in 1:length(t_end)) {
+          if (ci_level == 0.95) {
+            epiestimCI[s, j] <- Rtarget[t_end[j]] >=
+              (epiestim_fit$R$`Quantile.0.025(R)`)[j + 3] &&
+              Rtarget[t_end[j]] <=
+              (epiestim_fit$R$`Quantile.0.975(R)`)[j + 3]
+          } else if (ci_level == 0.90) {
+            epiestimCI[s, j] <- Rtarget[t_end[j]] >=
+              (epiestim_fit$R$`Quantile.0.05(R)`)[j + 3] &&
+              Rtarget[t_end[j]] <=
+              (epiestim_fit$R$`Quantile.0.95(R)`)[j + 3]
+          }
+        }
+      } else if (slidewindow == 2) {
+        for (j in 1:length(t_end)) {
+          if (ci_level == 0.95) {
+            epiestimCI[s, j] <- Rtarget[t_end[j]] >=
+              (epiestim_fit$R$`Quantile.0.025(R)`)[j + 1] &&
+              Rtarget[t_end[j]] <=
+              (epiestim_fit$R$`Quantile.0.975(R)`)[j + 1]
+          } else if (ci_level == 0.90) {
+            epiestimCI[s, j] <- Rtarget[t_end[j]] >=
+              (epiestim_fit$R$`Quantile.0.05(R)`)[j + 1] &&
+              Rtarget[t_end[j]] <=
+              (epiestim_fit$R$`Quantile.0.95(R)`)[j + 1]
+          }
+        }
+      }
+    }
+
+    #----------------------------------------
+
     progbar$tick()
   }
 
+  #-- Adjust values if midwindow is TRUE
+  if (midwindow == TRUE) {
+    ciwidth_epiestim <- ciwidth_epiestim[, -(1:NAnums)]
+    epidays <- n-NAnums
+    ciwidth_epilps <- ciwidth_epilps[, 1:epidays]
+    Repiestim <- Repiestim[, 1:(n-(slidewindow+1)-NAnums)]
+    epiestimCI <- epiestimCI[, 1:(n-(slidewindow+1)-NAnums)]
+  }
+
+
+  # Restructure Repilps on days 8-T
   Repilps <- Repilps[, t_end[1]:epidays]
   epilpsCI <- epilpsCI[, t_end[1]:epidays]
+
+  # Name columns of ciwidth
   colnames(ciwidth_epilps) <-  paste0("Day ", seq_len(epidays))
   colnames(ciwidth_epiestim) <- paste0("Day ", seq(slidewindow + 2, epidays))
+
+  # Compute mean CI width for EpiLPS and EpiEstim
   meanciwidth_epilps   <- colMeans(ciwidth_epilps[, t_end[1]:epidays])
   meanciwidth_epilps <- meanciwidth_epilps[which(names(meanciwidth_epilps)==
                                           "Day 8"):length(meanciwidth_epilps)]
@@ -183,7 +256,7 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
   meanciwidth_epiestim <- meanciwidth_epiestim[which(names(meanciwidth_epiestim)
                           =="Day 8"):length(meanciwidth_epiestim)]
 
-  #-- Compute metrics starting from day t_end[1] to 50
+  #-- Compute metrics starting from day t_end[1] to epidays
   Rtruth <- Rtarget[t_end[1]:epidays]
 
   # Bias
@@ -213,12 +286,12 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
                                         "Day 8"):length(coverage_epiestim)]
 
   #-- Summarize performance metrics
-  perf_metrics <- matrix(0, nrow = n-7, ncol = 6)
+  perf_metrics <- matrix(0, nrow = n-7-NAnums, ncol = 6)
   colnames(perf_metrics) <- c("Bias (EpiLPS)", "Bias (EpiEstim)",
                               "MSE (EpiLPS)", "MSE (EpiEstim)",
                               paste0("CP",ci_level * 100,"% (EpiLPS)"),
                               paste0("CP",ci_level * 100,"% (EpiEstim)"))
-  rownames(perf_metrics) <- paste0("Day ", seq(8,n))
+  rownames(perf_metrics) <- paste0("Day ", seq(8,n-NAnums))
   perf_metrics[, 1] <- Bias_epilps
   perf_metrics[, 2] <- Bias_epiestim
   perf_metrics[, 3] <- MSE_epilps
@@ -404,7 +477,8 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
                      Repiesplot = Repiesplot,
                      plot_summary = summary_plot,
                      ciwidthepilps = meanciwidth_epilps,
-                     ciwidthepiestim = meanciwidth_epiestim)
+                     ciwidthepiestim = meanciwidth_epiestim,
+                     dispvec = dispvec)
 
   cat("Comparing ",method," vs EpiEstim in S=",S,
       " replications (epidemic T=", epidays, " days)", "\n", sep ="")
@@ -440,12 +514,15 @@ perfcheck <- function(S = 10, serial_interval, scenario = 3, epidays = 50, K = 3
   cat("Penalty order for P-splines: ", penorder, ".\n", sep = "")
   cat("Parameters for the Gamma prior on dispersion parameter: a=",
       hyperprior[1], " b=", hyperprior[2], ".\n", sep = "")
-  if(method == "LPSMAP"){
-  if(cimethod == 1){
-    cat("CI for LPSMAP computed with a scaling correction.")
-  } else if (cimethod == 2){
-    cat("CI for LPSMAP computed without scaling correction")
+  if (method == "LPSMAP") {
+    if (cimethod == 1) {
+      cat("CI for LPSMAP computed with a scaling correction. \n")
+    } else if (cimethod == 2) {
+      cat("CI for LPSMAP computed without scaling correction. \n")
+    }
   }
+  if (midwindow == TRUE){
+    cat("Rt for EpiEstim reported on middle window following Gostic et al. (2020).")
   }
 
 
