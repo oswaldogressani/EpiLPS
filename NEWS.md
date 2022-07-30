@@ -25,5 +25,5 @@
 ### Version 1.0.6 ### (**2022-07-28**)
 
 * Version name: "Welcome to the Metaverse"
-* Added midwindow option to the perfcheck routine. It reports EpiEstim Rt 
-  estimates at the middle of the sliding window.
+* Added midwindow option to the perfcheck routine. It reports EpiEstim 
+  reproduction number (Rt) estimates at the middle of the sliding window.
