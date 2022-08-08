@@ -22,7 +22,7 @@
 * Added correction factor on LPSMAP covariance matrix.
 * episim() can now simulate from negative binomial distribution.
 
-### Version 1.0.6 ### (**2022-07-28**)
+### Version 1.0.6 ### (**2022-08-08**)
 
 * Version name: "Welcome to the Metaverse"
 * Added midwindow option to the perfcheck routine. It reports EpiEstim 
