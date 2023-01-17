@@ -120,9 +120,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  10   2   9   9  19  20  26  29  61  59 100  94 161 176 208 237 254 310 321
-    ## [20] 308 361 358 317 287 290 281 224 201 170 145 131  91  64  60  34  31  26  14
-    ## [39]  13  11   5   1   5   2   1   3   2   2   1   0
+    ##  [1]  10   4   7   8  21  15  25  35  58  66  82 115 147 165 195 258 291 299 349
+    ## [20] 354 354 386 376 356 359 302 275 256 227 190 150 122 102  88  68  55  37  40
+    ## [39]  24  21  12  12   4   8   7   4   4   1   4   0
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval $[1;50]$
@@ -135,8 +135,8 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRU
 
     ## Inference method chosen: LPSMAP. 
     ## CI for LPSMAP computed via lognormal posterior approx. of Rt.Total number of days: 50. 
-    ## Mean Rt discarding first 7 days: 0.962.
-    ## Mean 95% CI of Rt discarding first 7 days: (0.846,1.121) 
+    ## Mean Rt discarding first 7 days: 0.996.
+    ## Mean 95% CI of Rt discarding first 7 days: (0.891,1.129) 
     ## Elapsed real time (wall clock time): 0.18 seconds.
 
 ``` r
@@ -172,13 +172,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     |  R_estim | R95CI_low | R95CI_up |
 |:----|---------:|----------:|---------:|
-| 8   | 2.204270 |  1.894574 | 2.564590 |
-| 9   | 2.236554 |  1.964842 | 2.545839 |
-| 10  | 2.229905 |  1.988416 | 2.500723 |
-| 11  | 2.176162 |  1.973002 | 2.400241 |
-| 12  | 2.087442 |  1.912433 | 2.278466 |
-| 13  | 1.978134 |  1.832564 | 2.135269 |
-| 14  | 1.852436 |  1.726431 | 1.987637 |
+| 8   | 2.259382 |  1.944734 | 2.624938 |
+| 9   | 2.289891 |  2.013896 | 2.603711 |
+| 10  | 2.253986 |  2.011870 | 2.525240 |
+| 11  | 2.168438 |  1.967785 | 2.389551 |
+| 12  | 2.059429 |  1.887723 | 2.246753 |
+| 13  | 1.947241 |  1.803403 | 2.102551 |
+| 14  | 1.842764 |  1.717211 | 1.977498 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
@@ -332,7 +332,7 @@ simexample <- perfcheck(S = 20, method = "LPSMALA",
 
 ## Package version
 
-This is version 1.0.6 (2022-07-28) - “Welcome to the Metaverse”.
+This is version 1.0.7 (2023-01-17) - “Thunderlight”.
 
 ## Acknowledgments
 

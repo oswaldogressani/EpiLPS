@@ -27,3 +27,8 @@
 * Version name: "Welcome to the Metaverse"
 * Added midwindow option to the perfcheck routine. It reports EpiEstim 
   reproduction number (Rt) estimates at the middle of the sliding window.
+  
+### Version 1.0.7 ### (**2023-01-17**)
+
+* Version name: "Thunderlight"
+* Added epicurve() routine to plot the epidemic curve based on incidence data.
