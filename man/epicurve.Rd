@@ -11,7 +11,7 @@ title = "Epidemic curve", poslegend = "right", dirlegend = "vertical",
 xlabel = "Time (days)", ylabel = "Incidence")
 }
 \arguments{
-\item{epicounts}{A time series of counts.}
+\item{epicounts}{A time series of counts in data frame format.}
 
 \item{dates}{A vector of dates in format "YY-MM-DD".}
 

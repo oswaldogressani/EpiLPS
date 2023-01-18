@@ -9,8 +9,8 @@ Authors@R: person("Oswaldo","Gressani",
 Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
 BugReports: https://github.com/oswaldogressani/EpiLPS/issues
 Description: Estimation of the instantaneous reproduction number with 
- Laplacian-P-splines following the methodology of Gressani et al.(2021)
- <doi:10.1101/2021.12.02.21267189>. The negative Binomial 
+ Laplacian-P-splines following the methodology of Gressani et al. (2022)
+ <doi:10.1371/journal.pcbi.1010618>. The negative Binomial 
  distribution is used to model the time series of case counts. Two methods are 
  available for inference : (1) a sampling-free approach based on a maximum a 
  posteriori calibration of the hyperparameter vector and (2) a fully stochastic 

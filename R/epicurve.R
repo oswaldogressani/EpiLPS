@@ -10,7 +10,7 @@
 #' title = "Epidemic curve", poslegend = "right", dirlegend = "vertical",
 #' xlabel = "Time (days)", ylabel = "Incidence")
 #'
-#' @param epicounts A time series of counts.
+#' @param epicounts A time series of counts in data frame format.
 #' @param dates A vector of dates in format "YY-MM-DD".
 #' @param datelab The spacing for ticks on the x-axis. Either 7 days, 1 month,
 #'  3 months or 6 months.

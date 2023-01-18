@@ -32,3 +32,4 @@
 
 * Version name: "Thunderlight"
 * Added epicurve() routine to plot the epidemic curve based on incidence data.
+* Added minor changes to plot outputs.

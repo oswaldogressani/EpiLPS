@@ -5,7 +5,7 @@ Oswaldo Gressani
 
 <!-- Introduce badges -->
 
-![Version](https://img.shields.io/badge/Version-1.0.6-lightgrey)
+![Version](https://img.shields.io/badge/Version-1.0.7-lightgrey)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-postexperimental-yellow)
 ![CodeSize](https://img.shields.io/github/languages/code-size/oswaldogressani/EpiLPS?color=orange&label=Code%20size&style=plastic)
@@ -120,9 +120,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  10   4   7   8  21  15  25  35  58  66  82 115 147 165 195 258 291 299 349
-    ## [20] 354 354 386 376 356 359 302 275 256 227 190 150 122 102  88  68  55  37  40
-    ## [39]  24  21  12  12   4   8   7   4   4   1   4   0
+    ##  [1]  10   4   2   5  10  10  15  13  32  31  44  68  69 102 104 130 151 148 201
+    ## [20] 175 196 197 198 172 183 169 121 129  96  93  73  58  53  41  29  26   9  10
+    ## [39]  11   9   4   3   1   3   1   0   2   0   0   0
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval $[1;50]$
@@ -135,9 +135,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRU
 
     ## Inference method chosen: LPSMAP. 
     ## CI for LPSMAP computed via lognormal posterior approx. of Rt.Total number of days: 50. 
-    ## Mean Rt discarding first 7 days: 0.996.
-    ## Mean 95% CI of Rt discarding first 7 days: (0.891,1.129) 
-    ## Elapsed real time (wall clock time): 0.18 seconds.
+    ## Mean Rt discarding first 7 days: 0.951.
+    ## Mean 95% CI of Rt discarding first 7 days: (0.816,1.149) 
+    ## Elapsed real time (wall clock time): 0.16 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -172,13 +172,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     |  R_estim | R95CI_low | R95CI_up |
 |:----|---------:|----------:|---------:|
-| 8   | 2.259382 |  1.944734 | 2.624938 |
-| 9   | 2.289891 |  2.013896 | 2.603711 |
-| 10  | 2.253986 |  2.011870 | 2.525240 |
-| 11  | 2.168438 |  1.967785 | 2.389551 |
-| 12  | 2.059429 |  1.887723 | 2.246753 |
-| 13  | 1.947241 |  1.803403 | 2.102551 |
-| 14  | 1.842764 |  1.717211 | 1.977498 |
+| 8   | 2.075027 |  1.683394 | 2.557772 |
+| 9   | 2.206379 |  1.838787 | 2.647456 |
+| 10  | 2.261637 |  1.923711 | 2.658926 |
+| 11  | 2.241810 |  1.952498 | 2.573991 |
+| 12  | 2.158756 |  1.908214 | 2.442194 |
+| 13  | 2.031592 |  1.823449 | 2.263495 |
+| 14  | 1.887389 |  1.709116 | 2.084258 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
