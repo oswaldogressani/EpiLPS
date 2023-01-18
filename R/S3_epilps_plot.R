@@ -9,7 +9,7 @@
 #'      epititle = "", rtcol = "red", cicol = "gray", transparency = 0.5,
 #'      epicol = "red", epiestimcol = "lightslateblue", incibars = FALSE, barwidth = 0.35,
 #'      themetype = c("gray", "classic", "light", "dark"),  tcut = NULL, titlesize = 15,
-#'      xtitlesize = 13, ytitlesize = 13, ...)
+#'      xtitlesize = 13, ytitlesize = 13, poslegend = "right", dirlegend = "vertical", ...)
 #'
 #' @param x An object of class \code{epilps}.
 #' @param plotout The type of plot, either "rt" for showing the reproduction
@@ -32,6 +32,8 @@
 #' @param titlesize The size of the plot title. Default is 15.
 #' @param xtitlesize The size of title and text on x axis. Default is 13.
 #' @param ytitlesize The size of title and text on y axis. Default is 13.
+#' @param poslegend Position of the legend.
+#' @param dirlegend Direction of the legend.
 #' @param ... Further arguments to be passed to plot.
 #'
 #' @examples
@@ -57,7 +59,9 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                         incibars = FALSE, barwidth = 0.35,
                         themetype = c("gray","classic","light","dark"),
                         tcut = NULL,
-                        titlesize = 15, xtitlesize = 13, ytitlesize = 13, ...) {
+                        titlesize = 15, xtitlesize = 13, ytitlesize = 13,
+                        poslegend = "right",
+                        dirlegend = "vertical",...) {
 
   n <- nrow(x$epifit)
   incidence <- x$incidence
@@ -176,6 +180,10 @@ plot.epilps <- function(x, plotout = c("rt", "epicurve"), dates = NULL,
                                           size = 1.1) +
                       xlabtype + themeval +
                       ggplot2::theme(
+                      legend.position = poslegend,
+                      legend.direction = dirlegend,
+                      legend.title = ggplot2::element_text(size = 14),
+                      legend.text = ggplot2::element_text(size = 13),
                       plot.title = ggplot2::element_text(size = titlesize),
                       axis.title.x = ggplot2::element_text(size =  xtitlesize),
                       axis.title.y = ggplot2::element_text(size =  ytitlesize),

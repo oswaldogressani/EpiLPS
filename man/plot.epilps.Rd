@@ -9,7 +9,7 @@
      epititle = "", rtcol = "red", cicol = "gray", transparency = 0.5,
      epicol = "red", epiestimcol = "lightslateblue", incibars = FALSE, barwidth = 0.35,
      themetype = c("gray", "classic", "light", "dark"),  tcut = NULL, titlesize = 15,
-     xtitlesize = 13, ytitlesize = 13, ...)
+     xtitlesize = 13, ytitlesize = 13, poslegend = "right", dirlegend = "vertical", ...)
 }
 \arguments{
 \item{x}{An object of class \code{epilps}.}
@@ -51,6 +51,10 @@ number or "epicurve" for showing the epidemic curve.}
 \item{xtitlesize}{The size of title and text on x axis. Default is 13.}
 
 \item{ytitlesize}{The size of title and text on y axis. Default is 13.}
+
+\item{poslegend}{Position of the legend.}
+
+\item{dirlegend}{Direction of the legend.}
 
 \item{...}{Further arguments to be passed to plot.}
 }
