@@ -120,9 +120,9 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  10   4   2   5  10  10  15  13  32  31  44  68  69 102 104 130 151 148 201
-    ## [20] 175 196 197 198 172 183 169 121 129  96  93  73  58  53  41  29  26   9  10
-    ## [39]  11   9   4   3   1   3   1   0   2   0   0   0
+    ##  [1]  10   1   8  15   6  25  29  45  52  76 102 117 197 180 221 253 310 317 347
+    ## [20] 379 374 413 381 362 377 324 323 253 250 201 169 134 106  80  59  46  40  27
+    ## [39]  30   8  11   9   9   2   2   0   1   0   0   0
 
 The `epilps()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval $[1;50]$
@@ -135,9 +135,9 @@ epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRU
 
     ## Inference method chosen: LPSMAP. 
     ## CI for LPSMAP computed via lognormal posterior approx. of Rt.Total number of days: 50. 
-    ## Mean Rt discarding first 7 days: 0.951.
-    ## Mean 95% CI of Rt discarding first 7 days: (0.816,1.149) 
-    ## Elapsed real time (wall clock time): 0.16 seconds.
+    ## Mean Rt discarding first 7 days: 0.941.
+    ## Mean 95% CI of Rt discarding first 7 days: (0.847,1.072) 
+    ## Elapsed real time (wall clock time): 0.27 seconds.
 
 ``` r
 plot(epifit_LPSMAP)
@@ -172,13 +172,13 @@ knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
 
 |     |  R_estim | R95CI_low | R95CI_up |
 |:----|---------:|----------:|---------:|
-| 8   | 2.075027 |  1.683394 | 2.557772 |
-| 9   | 2.206379 |  1.838787 | 2.647456 |
-| 10  | 2.261637 |  1.923711 | 2.658926 |
-| 11  | 2.241810 |  1.952498 | 2.573991 |
-| 12  | 2.158756 |  1.908214 | 2.442194 |
-| 13  | 2.031592 |  1.823449 | 2.263495 |
-| 14  | 1.887389 |  1.709116 | 2.084258 |
+| 8   | 2.430813 |  2.093478 | 2.822503 |
+| 9   | 2.410348 |  2.124610 | 2.734516 |
+| 10  | 2.333723 |  2.090665 | 2.605038 |
+| 11  | 2.230679 |  2.032775 | 2.447849 |
+| 12  | 2.107274 |  1.938577 | 2.290650 |
+| 13  | 1.964609 |  1.824910 | 2.115003 |
+| 14  | 1.813097 |  1.692481 | 1.942308 |
 
 A smooth estimate of the epidemic curve can be obtained with the code
 below. The option `epicol` controls the color of the curve and
@@ -208,72 +208,28 @@ si <- c(0.2, 0.2, 0.2, 0.2, 0.2)
 
 # Luxembourg
 Luxembourg <- covid19(country = "LUX", level = 1, verbose = FALSE)
-```
-
-    ## Warning in require_bit64_if_needed(ans): Some columns are type 'integer64'
-    ## but package bit64 is not installed. Those columns will print as strange
-    ## looking floating point data. There is no need to reload the data. Simply
-    ## install.packages('bit64') to obtain the integer64 print method and print the
-    ## data again.
-
-``` r
 dateLUX <- Luxembourg$date[75:649]
 inciLUX <- Luxembourg$hosp[75:649]
 
 # Italy
 Italy <- covid19(country = "ITA", level = 1, verbose = FALSE)
-```
-
-    ## Warning in require_bit64_if_needed(ans): Some columns are type 'integer64'
-    ## but package bit64 is not installed. Those columns will print as strange
-    ## looking floating point data. There is no need to reload the data. Simply
-    ## install.packages('bit64') to obtain the integer64 print method and print the
-    ## data again.
-
-``` r
 dateITA <- Italy$date[42:616]
 inciITA <- Italy$hosp[42:616]
 
 # Canada
 Canada <- covid19(country = "CAN", level = 1, verbose = FALSE)
-```
-
-    ## Warning in require_bit64_if_needed(ans): Some columns are type 'integer64'
-    ## but package bit64 is not installed. Those columns will print as strange
-    ## looking floating point data. There is no need to reload the data. Simply
-    ## install.packages('bit64') to obtain the integer64 print method and print the
-    ## data again.
-
-``` r
-dateCAN <- Canada$date[71:645]
-inciCAN <- Canada$hosp[71:645]
+dateCAN <- Canada$date[92:645]
+inciCAN <- Canada$hosp[92:645]
 
 # Japan
 Japan<- covid19(country = "JPN", level = 1, verbose = FALSE)
-```
-
-    ## Warning in require_bit64_if_needed(ans): Some columns are type 'integer64'
-    ## but package bit64 is not installed. Those columns will print as strange
-    ## looking floating point data. There is no need to reload the data. Simply
-    ## install.packages('bit64') to obtain the integer64 print method and print the
-    ## data again.
-
-``` r
-dateJPN <- Japan$date[75:649]
-inciJPN <- Japan$hosp[75:649]
+dateJPN <- Japan$date[95:649]
+inciJPN <- Japan$hosp[95:649]
 
 # Fit with EpiLPS
 epiLUX <- epilps(incidence = inciLUX, serial_interval = si, verbose = FALSE)
 epiITA <- epilps(incidence = inciITA, serial_interval = si, verbose = FALSE)
 epiCAN <- epilps(incidence = inciCAN, serial_interval = si, verbose = FALSE)
-```
-
-    ## Warning in epilps(incidence = inciCAN, serial_interval = si, verbose =
-    ## FALSE): Count data contains 3.65% of NA values that have been replaced (see
-    ## documentation for details). A 'too high' percentage of NA values can bias the
-    ## analysis, so care should be taken in interpreting the results in this case.
-
-``` r
 epiJPN <- epilps(incidence = inciJPN, serial_interval = si, verbose = FALSE)
 
 gridExtra::grid.arrange(
