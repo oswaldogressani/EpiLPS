@@ -1,0 +1,132 @@
+#' Density function and discrete distribution for a disease interval
+#'
+#' @description
+#' This function computes the probability density function and probability mass
+#' function for a disease interval (e.g. the generation interval defined as the
+#' time delay between infections in an infector-infectee pair). It takes as
+#' input the mean and the standard deviation of the disease interval (usually
+#' expressed in days) and gives as an output the interval distribution based on
+#' a chosen parametric family (Gamma, Weibull or Log-normal).
+#'
+#' @usage Idist(mean, sd, dist = c("gamma", "weibull", "lognorm"), probs = NULL)
+#'
+#' @param mean The mean of the disease interval (must ber larger than 1).
+#' @param sd A positive and finite real number corresponding to the standard
+#' deviation of the disease interval.
+#' @param dist A choice among a Gamma, Weibul or Log-normal distribution for
+#' the disease interval.
+#' @param probs A vector of probabilities for the interval distribution.
+#'
+#' @return A list of class \code{Idist} containing a vector of probabilities
+#' corresonding to the discrete distribution of the disease interval,
+#' the name of the chosen parametric distribution and its parameters.
+#'
+#' @details The discretization is based on the formula in Held et al. (2019). The
+#' probability mass function \eqn{g(t)} for the discrete time variable
+#' \eqn{t \in \{1,\dots,D_{\text{max}}\}} is given by:
+#'
+#' \eqn{g(t) = \frac{F(t+0.5)-F(t-0.5)}{F(D_{\text{max}}+0.5)-F(0.5)}},
+#'
+#' where \eqn{D_{\text{max}}} is the greatest integer less than or equal
+#' to \eqn{F^{-1}(0.9999)}, and \eqn{F} is the cumulative distribution function
+#' of the chosen parametric distribution for the disease interval.
+#'
+#' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
+#'
+#' @references Held, L., Hens, N., D O'Neill, P., and Wallinga, J. (2019).
+#' Handbook of infectious disease data analysis. \emph{CRC Press}.
+#'
+#' @examples
+#' Idist(mean = 2.6, sd = 1.5)
+#' @export
+
+
+Idist <- function(mean, sd, dist = c("gamma", "weibull", "lognorm"),
+                  probs = NULL){
+
+  if(is.null(probs)){
+    if(mean <= 1)
+      stop("mean must be larger than 1")
+    if(sd < 0)
+      stop("sd must be strictly positive")
+    # If Gamma distribution with shape rate parameterization
+    cdist <- match.arg(dist)
+    if (cdist == "gamma") {
+      shape <- (mean / sd) ^ 2
+      rate <- mean / (sd ^ 2)
+      # Discrete upper bound (largest possible generatio time for instance)
+      Dmax <- floor(stats::qgamma(0.9999, shape, rate))
+      # gt pmf
+      gt <- function(t){
+        val <- (stats::pgamma(t + 0.5, shape, rate)-
+                  stats::pgamma(t - 0.5, shape, rate))/
+          (stats::pgamma(Dmax + 0.5, shape, rate)-
+             stats::pgamma(0.5, shape, rate))
+        return(val)
+      }
+      pvec <- sapply(seq_len(Dmax), gt)
+      outlist <- list(pvec = pvec, dist = cdist, shape = shape, rate = rate)
+    } else if (cdist == "weibull"){ # Weibull with shape rate
+
+      fa <- function(a) {
+        val <- (mean / gamma(1 + (1 / a))) ^ 2 *
+          (gamma(1 + (2 / a)) - gamma(1 + (1 / a)) ^ 2) - (sd ^ 2)
+        return(val)
+      }
+      # Approach lower bound from the left
+      lb <- 1e-5
+      fa_lb <- fa(lb)
+      while(is.na(fa_lb) || is.infinite(fa_lb)){
+        lb <- lb + 0.001
+        fa_lb <- fa(lb)
+      }
+      shape <- stats::uniroot(fa, lower = lb, upper = 2*mean)$root
+      scale <- mean / (gamma(1 + (1 / shape)))
+      Dmax <- floor(stats::qweibull(0.9999, shape, scale))
+      # gt pmf
+      gt <- function(t){
+        val <- (stats::pweibull(t + 0.5, shape, scale)-
+                  stats::pweibull(t - 0.5, shape, scale))/
+          (stats::pweibull(Dmax + 0.5, shape, scale)-
+             stats::pweibull(0.5, shape, scale))
+        return(val)
+      }
+      pvec <- sapply(seq_len(Dmax), gt)
+      outlist <- list(pvec = pvec, dist = cdist, shape = shape, scale = scale)
+    } else if (cdist == "lognorm"){ # Log normal with location scale
+      fmu <- function(mu) {
+        val <- exp(4 * log(mean) - 2 * mu) - mean^2 - (sd ^ 2)
+        return(val)
+      }
+      # Approach lower bound from the left
+      lb <- 1e-5
+      fmu_lb <- fmu(lb)
+      while(is.na(fmu_lb) || is.infinite(fmu_lb)){
+        lb <- lb + 0.001
+        fmu_lb <- fmu(lb)
+      }
+      location <- stats::uniroot(fmu, lower = lb, upper = 2 * mean)$root
+      scale2 <- 2 * (log(mean)-location)
+      scale <- sqrt(scale2)
+      Dmax <- floor(stats::qlnorm(0.9999, meanlog = location,
+                                  sdlog = sqrt(scale2)))
+      # gt pmf
+      gt <- function(t){
+        val <- (stats::plnorm(t + 0.5, meanlog = location, sdlog = scale)-
+                  stats::plnorm(t - 0.5, meanlog = location, sdlog = scale))/
+          (stats::plnorm(Dmax + 0.5, meanlog = location, sdlog = scale)-
+             stats::plnorm(0.5, meanlog = location, sdlog = scale))
+        return(val)
+      }
+      pvec <- sapply(seq_len(Dmax), gt)
+      outlist <- list(pvec = pvec, dist = cdist, location = location,
+                      scale = scale)
+    }
+  } else {
+    mean <- NA
+    sd <- NA
+    outlist <- list(pvec = probs)
+  }
+  attr(outlist, "class") <- "Idist"
+  outlist
+}

@@ -1,11 +1,11 @@
-EpiLPS: a fast and flexible Bayesian tool for approximate real-time
-estimation of the time-varying reproduction number
+EpiLPS: a fast and flexible Bayesian tool for estimation of the
+time-varying reproduction number
 ================
 Oswaldo Gressani
 
 <!-- Introduce badges -->
 
-![Version](https://img.shields.io/badge/Version-1.0.7-lightgrey)
+![Version](https://img.shields.io/badge/Version-1.0.8-lightgrey)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-postexperimental-yellow)
 ![CodeSize](https://img.shields.io/github/languages/code-size/oswaldogressani/EpiLPS?color=orange&label=Code%20size&style=plastic)
@@ -85,13 +85,12 @@ The package can then be loaded as follows:
 library("EpiLPS")
 ```
 
-The EpiLPS package structure is fairly simple. It has three main
-routines and an S3 method for plots:
+The EpiLPS package structure is fairly simple. The most important
+routines are:
 
-- `epilps()` The main routine for model fit.
+- `estimR()` The main routine to estimate the reproduction number.
 - `plot.epilps()` S3 method to plot an object of class `epilps`.
 - `episim()` A routine to simulate epidemic data.
-- `perfcheck()` Checks the performance of `epilps()` via simulations.
 
 ## A simulated example
 
@@ -120,26 +119,17 @@ The simulated incidence count data can be accessed by typing:
 simepi$y
 ```
 
-    ##  [1]  10   1   8  15   6  25  29  45  52  76 102 117 197 180 221 253 310 317 347
-    ## [20] 379 374 413 381 362 377 324 323 253 250 201 169 134 106  80  59  46  40  27
-    ## [39]  30   8  11   9   9   2   2   0   1   0   0   0
+    ##  [1]  10   4  13  14  18  34  39  50  75 114 122 164 192 234 297 324 341 413 451
+    ## [20] 476 465 484 472 441 431 386 338 330 248 198 197 151 106 106  74  60  44  35
+    ## [39]  20  17  10  10  10   5   2   2   0   1   0   1
 
-The `epilps()` routine can be used to fit the epidemic data. By default,
+The `estimR()` routine can be used to fit the epidemic data. By default,
 the LPSMAP approach is used with 30 B-splines in the interval $[1;50]$
 and a second order penalty. The `plot()` routine on the `epifit_LPSMAP`
 object can be used to plot the estimated reproduction number.
 
 ``` r
-epifit_LPSMAP <- epilps(incidence = simepi$y, serial_interval = si, tictoc = TRUE)
-```
-
-    ## Inference method chosen: LPSMAP. 
-    ## CI for LPSMAP computed via lognormal posterior approx. of Rt.Total number of days: 50. 
-    ## Mean Rt discarding first 7 days: 0.941.
-    ## Mean 95% CI of Rt discarding first 7 days: (0.847,1.072) 
-    ## Elapsed real time (wall clock time): 0.27 seconds.
-
-``` r
+epifit_LPSMAP <- estimR(incidence = simepi$y, si = si)
 plot(epifit_LPSMAP)
 ```
 
@@ -148,48 +138,33 @@ plot(epifit_LPSMAP)
 <br>
 
 Several options can be specified in the `plot()` routine. For instance,
-graphical parameters such as `themetype` and `rtcol` can be used to
-control the theme and color of the fitted $R_t$ curve. In addition, the
-option `overlayEpiestim` can be set to `TRUE` to overlay the estimated
-$R_t$ curve with the EpiEstim package of <span style="color: blue;">
-Cori et al., (2013) </span>.
+graphical parameters such as `theme` and `col` can be used to control
+the theme and color of the fitted $R_t$ curve. .
 
 ``` r
-plot(epifit_LPSMAP, themetype = "light", rtcol = "steelblue", overlayEpiestim = TRUE)
+plot(epifit_LPSMAP, theme = "light", col = "steelblue")
 ```
 
 <img src="README_files/figure-gfm/plotepi-1.png" style="display: block; margin: auto;" />
 
 <br>
 
-The numerical values of the estimated $R(t)$ at days $t=8,\dots,14$
-obtained with LPSMAP and the associated $95\%$ credible interval can be
-obtained by typing:
+Estimates related to $R(t)$ at days $t=8,\dots,14$ can be obtained by
+typing:
 
 ``` r
-knitr::kable(epifit_LPSMAP$epifit[8:14,2:4])
+knitr::kable(epifit_LPSMAP$RLPS[8:14,])
 ```
 
-|     |  R_estim | R95CI_low | R95CI_up |
-|:----|---------:|----------:|---------:|
-| 8   | 2.430813 |  2.093478 | 2.822503 |
-| 9   | 2.410348 |  2.124610 | 2.734516 |
-| 10  | 2.333723 |  2.090665 | 2.605038 |
-| 11  | 2.230679 |  2.032775 | 2.447849 |
-| 12  | 2.107274 |  1.938577 | 2.290650 |
-| 13  | 1.964609 |  1.824910 | 2.115003 |
-| 14  | 1.813097 |  1.692481 | 1.942308 |
-
-A smooth estimate of the epidemic curve can be obtained with the code
-below. The option `epicol` controls the color of the curve and
-`incibars` can be set to *TRUE* or *FALSE* to show or not the bar plot
-of the incidence counts.
-
-``` r
-plot(epifit_LPSMAP, plotout = "epicurve", themetype = "light", epicol = "orange", incibars = TRUE)
-```
-
-<img src="README_files/figure-gfm/plotepi2-1.png" style="display: block; margin: auto;" />
+|     | Time |        R |      Rsd |  Rq0.025 |   Rq0.05 |   Rq0.25 |   Rq0.50 |   Rq0.75 |   Rq0.95 |  Rq0.975 |
+|:----|-----:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|---------:|
+| 8   |    8 | 2.347971 | 1.429948 | 2.071469 | 2.113619 | 2.248883 | 2.347971 | 2.451425 | 2.608308 | 2.661382 |
+| 9   |    9 | 2.316242 | 1.408964 | 2.083892 | 2.119611 | 2.233496 | 2.316242 | 2.402053 | 2.531113 | 2.574498 |
+| 10  |   10 | 2.239280 | 1.361276 | 2.039719 | 2.070560 | 2.168492 | 2.239280 | 2.312378 | 2.421748 | 2.458366 |
+| 11  |   11 | 2.118863 | 1.287335 | 1.954625 | 1.980144 | 2.060842 | 2.118863 | 2.178519 | 2.267301 | 2.296902 |
+| 12  |   12 | 1.983053 | 1.204475 | 1.842537 | 1.864437 | 1.933527 | 1.983053 | 2.033848 | 2.109216 | 2.134286 |
+| 13  |   13 | 1.856523 | 1.127282 | 1.739468 | 1.757777 | 1.815377 | 1.856523 | 1.898602 | 1.960817 | 1.981456 |
+| 14  |   14 | 1.746807 | 1.060498 | 1.644445 | 1.660488 | 1.710881 | 1.746807 | 1.783488 | 1.837614 | 1.855541 |
 
 ## Real data examples
 
@@ -197,8 +172,7 @@ To illustrate EpiLPS on real data, we work with the Covid19 R Interface
 Data Hub <https://covid19datahub.io/>. Four countries are considered
 (Luxembourg, Italy, Canada and Japan) and the reproduction number is
 estimated with LPSMAP over the period April 2020 - October 2021 with a
-uniform serial interval over 5 days. For Japan, option `overlayEpiestim`
-is *TRUE* to compare the EpiLPS and EpiEstim fits.
+uniform serial interval over 5 days.
 
 ``` r
 library("COVID19")
@@ -227,68 +201,28 @@ dateJPN <- Japan$date[95:649]
 inciJPN <- Japan$hosp[95:649]
 
 # Fit with EpiLPS
-epiLUX <- epilps(incidence = inciLUX, serial_interval = si, verbose = FALSE)
-epiITA <- epilps(incidence = inciITA, serial_interval = si, verbose = FALSE)
-epiCAN <- epilps(incidence = inciCAN, serial_interval = si, verbose = FALSE)
-epiJPN <- epilps(incidence = inciJPN, serial_interval = si, verbose = FALSE)
+epiLUX <- estimR(incidence = inciLUX, si = si)
+epiITA <- estimR(incidence = inciITA, si = si)
+epiCAN <- estimR(incidence = inciCAN, si = si)
+epiJPN <- estimR(incidence = inciJPN, si = si)
 
 gridExtra::grid.arrange(
-plot(epiLUX, dates = dateLUX, datelab = "3m", rtcol = "steelblue",
-     Rtitle = "Estimated R Luxembourg"),
+plot(epiLUX, dates = dateLUX, datelab = "3m", tcol = "steelblue",
+     title = "Estimated R Luxembourg"),
 plot(epiITA, dates = dateITA, datelab = "3m", rtcol = "chartreuse4",
-     Rtitle = "Estimated R Italy"),
+     title = "Estimated R Italy"),
 plot(epiCAN, dates = dateCAN, datelab = "3m", rtcol = "brown2",
-     Rtitle = "Estimated R Canada"),
+     title = "Estimated R Canada"),
 plot(epiJPN, dates = dateJPN, datelab = "3m", rtcol = "darkorchid1",
-     overlayEpiestim = TRUE, Rtitle = "Estimated R Japan"),
+     title = "Estimated R Japan"),
 nrow = 2, ncol = 2)
 ```
 
 <img src="README_files/figure-gfm/realdata-1.png" style="display: block; margin: auto;" />
 
-## Validation
-
-To check the (statistical) performance of EpiLPS, the `perfcheck()`
-routine can be used to simulate epidemic outbreaks under four different
-scenarios. Each scenario has a different $R_t$ curve to be compared with
-the estimated trajectories fitted by EpiLPS. For comparative reasons,
-the trajectories of EpiEstim (with a weekly sliding window) are also
-shown. The code below simulates 25 epidemic outbreaks with a data
-generating process following scenario 3 and a given serial interval
-distribution. A seed can also be specified for reproducibility.
-
-``` r
-simexample <- perfcheck(S = 20, method = "LPSMALA",
-                        serial_interval = c(0.2, 0.4, 0.2, 0.1, 0.1),
-                        scenario = 3, ci_level = 0.95,  seed = 1234,
-                        dist = "negbin", overdisp = 1000,
-                        themetype = "gray")
-```
-
-![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
-
-    ## Comparing LPSMALA vs EpiEstim in S=20 replications (epidemic T=50 days)
-    ## Mean Bias on days 8-50:
-    ## -- EpiLPS mean Bias: 0.00117
-    ## -- EpiEstim mean Bias: -0.01485
-    ## Mean MSE on days 8-50:
-    ## -- EpiLPS mean MSE:   0.01053
-    ## -- EpiEstim mean MSE: 0.07618
-    ## Mean credible interval coverage on days 8-50 (nominal level: 95 %):
-    ## -- EpiLPS mean coverage:   94.76744
-    ## -- EpiEstim mean coverage: 30.11628
-    ## -- EpiLPS mean CI width: 0.39
-    ## -- EpiEstim mean CI width: 0.3
-    ## Incidence of cases generated from a negative binomial distribution. 
-    ## Overdispersion parameter value: 1000.
-    ## EpiEstim window size: 7 day(s).
-    ## Average values computed over period t=8 to T=50.
-    ## Penalty order for P-splines: 2.
-    ## Parameters for the Gamma prior on dispersion parameter: a=10 b=10.
-
 ## Package version
 
-This is version 1.0.7 (2023-01-17) - “Thunderlight”.
+This is version 1.0.8 (2023-02-12) - “EpiLPS Kernels”.
 
 ## Acknowledgments
 

@@ -4,35 +4,30 @@
 \alias{epicurve}
 \title{Plot the epidemic curve}
 \usage{
-epicurve(epicounts, dates = NULL,
-datelab = c("7d", "1m", "3m", "6m"), seriesname = "Series 1",
-themetype = c("gray","classic","light","dark"), colbar = "deepskyblue4",
-title = "Epidemic curve", poslegend = "right", dirlegend = "vertical",
-xlabel = "Time (days)", ylabel = "Incidence")
+epicurve(
+  incidence,
+  dates = NULL,
+  datelab = "7d",
+  col = "deepskyblue4",
+  barwidth = 1,
+  title = "Epidemic curve",
+  xtickangle = 0
+)
 }
 \arguments{
-\item{epicounts}{A time series of counts in data frame format.}
+\item{incidence}{A vector for the time series of incidence.}
 
 \item{dates}{A vector of dates in format "YY-MM-DD".}
 
-\item{datelab}{The spacing for ticks on the x-axis. Either 7 days, 1 month,
-3 months or 6 months.}
+\item{datelab}{The spacing for ticks on the x-axis. Default "7d".}
 
-\item{seriesname}{The legend name of the time series.}
+\item{col}{The color of the epidemic curve.}
 
-\item{themetype}{Type of theme for the plot.}
-
-\item{colbar}{The color of the bars.}
+\item{barwidth}{The width of the bars. Default is 1.}
 
 \item{title}{Title of the plot.}
 
-\item{poslegend}{The position of the legend in the plot.}
-
-\item{dirlegend}{The direction of the legend in the plot.}
-
-\item{xlabel}{The label on the x-axis.}
-
-\item{ylabel}{The label on the y-axis.}
+\item{xtickangle}{The angle of the x-ticks. Default is 0 (horizontal).}
 }
 \value{
 A plot of the epidemic curve based on the provided time series of
@@ -40,13 +35,12 @@ counts.
 }
 \description{
 This routine gives a graphical representation of the epidemic curve based
-on incidence data.
+on case incidence data.
 }
 \examples{
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
 epidemic <- episim(serial_interval = si, Rpattern = 4)
-epi_inci <- as.data.frame(epidemic$y)
-epicurve(epi_inci)
+epicurve(epidemic$y)
 }
 \author{
 Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}

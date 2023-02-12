@@ -33,3 +33,10 @@
 * Version name: "Thunderlight"
 * Added epicurve() routine to plot the epidemic curve based on incidence data.
 * Added minor changes to plot outputs.
+
+### Version 1.0.8 ### (**2023-02-12**)
+
+* Version name: "EpiLPS Kernels"
+* Added a kernel structure for a new architecture.
+
+

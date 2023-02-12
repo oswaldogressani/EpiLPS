@@ -1,7 +1,7 @@
 Package: EpiLPS
 Type: Package
 Title: A Bayesian Tool for Fast and Flexible Estimation of the Reproduction Number
-Version: 1.0.7
+Version: 1.0.8
 Depends: R (>= 4.1.0)
 Authors@R: person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
@@ -27,12 +27,9 @@ LinkingTo:
 Imports: 
     Rcpp (>= 1.0.7),
     coda  (>= 0.19-4),
-    progress  (>= 1.2.2),
-    crayon    (>= 1.4.1),
     MASS (>= 7.3-54),
     EpiEstim (>= 2.2-4),
     ggplot2 (>= 3.3.5),
-    grDevices (>= 4.1.0),
     gridExtra (>= 2.3)
 Suggests: 
     rmarkdown,

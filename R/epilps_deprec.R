@@ -1,4 +1,4 @@
-#' Estimation of the time-varying reproduction number with Laplacian-P-splines
+#' Old version of epilps
 #'
 #' @description
 #' This routine estimates the instantaneous reproduction number Rt (the mean number
@@ -18,7 +18,7 @@
 #' counts. If the right neighbor is NA, the left neighbor is used as a
 #' replacement value.
 #'
-#' @usage epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
+#' @usage epilps_deprec(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 #'        serial_interval, penorder = 2, hyperprior = c(10,10),
 #'        chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95,
 #'        etainit = c(1,5), cimethod = 1, verbose = TRUE, dates = NULL, tictoc = FALSE)
@@ -63,12 +63,12 @@
 #' @examples
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
 #' epidemic <- episim(serial_interval = si, Rpattern = 2, endepi = 30)
-#' epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si,)
+#' # epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si,)
 #' # plot(epifit)
 #'
-#' @export
+#' @noRd
 
-epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
+epilps_deprec <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
                 serial_interval, penorder = 2, hyperprior = c(10,10),
                 chain_length = 5000, burn = 2000, progmala = TRUE,
                 ci_level = 0.95, etainit = c(1,5), cimethod = 1, verbose = TRUE,
@@ -246,13 +246,13 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
     tun <- 0.15
 
     #-- Progress bar
-    if (progmala == TRUE) {
-      progbar <- progress::progress_bar$new(
-        format = crayon::cyan$bold("MALA running... [:bar] :percent"),
-        total = M,
-        clear = FALSE
-      )
-    }
+    # if (progmala == TRUE) {
+    #   progbar <- progress::progress_bar$new(
+    #     format = crayon::cyan$bold("MALA running... [:bar] :percent"),
+    #     total = M,
+    #     clear = FALSE
+    #   )
+    # }
 
     for (m in 1:M) {
       # New proposal
@@ -317,9 +317,9 @@ epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 
       tun <- (hfun(heval)) ^ 2
 
-      if (progmala == TRUE) {
-        progbar$tick()
-      }
+      # if (progmala == TRUE) {
+      #   progbar$tick()
+      # }
     }
 
     accept_rate <- round(counter / M * 100, 2)
