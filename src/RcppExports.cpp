@@ -11,9 +11,9 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// Rcpp_Laplace
-List Rcpp_Laplace(double rho, double lambda, int K, Function Dlogptheta, Function D2logptheta);
-RcppExport SEXP _EpiLPS_Rcpp_Laplace(SEXP rhoSEXP, SEXP lambdaSEXP, SEXP KSEXP, SEXP DlogpthetaSEXP, SEXP D2logpthetaSEXP) {
+// Rcpp_KerLaplace
+List Rcpp_KerLaplace(double rho, double lambda, int K, Function Dlogptheta, Function D2logptheta);
+RcppExport SEXP _EpiLPS_Rcpp_KerLaplace(SEXP rhoSEXP, SEXP lambdaSEXP, SEXP KSEXP, SEXP DlogpthetaSEXP, SEXP D2logpthetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -22,13 +22,54 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< Function >::type Dlogptheta(DlogpthetaSEXP);
     Rcpp::traits::input_parameter< Function >::type D2logptheta(D2logpthetaSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rcpp_Laplace(rho, lambda, K, Dlogptheta, D2logptheta));
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerLaplace(rho, lambda, K, Dlogptheta, D2logptheta));
     return rcpp_result_gen;
 END_RCPP
 }
-// Rcpp_cubicBspline
-NumericMatrix Rcpp_cubicBspline(NumericVector x, double lower, double upper, int K);
-RcppExport SEXP _EpiLPS_Rcpp_cubicBspline(SEXP xSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP KSEXP) {
+// Rcpp_KerMVN
+NumericVector Rcpp_KerMVN(arma::vec mu, arma::mat Sigma);
+RcppExport SEXP _EpiLPS_Rcpp_KerMVN(SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerMVN(mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Rcpp_KerRpostmap
+List Rcpp_KerRpostmap(NumericMatrix BB, NumericVector theta, NumericMatrix Covar, NumericVector sinter, NumericVector MVvec);
+RcppExport SEXP _EpiLPS_Rcpp_KerRpostmap(SEXP BBSEXP, SEXP thetaSEXP, SEXP CovarSEXP, SEXP sinterSEXP, SEXP MVvecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type BB(BBSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type Covar(CovarSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sinter(sinterSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type MVvec(MVvecSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerRpostmap(BB, theta, Covar, sinter, MVvec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Rcpp_KerRpostmcmc
+NumericVector Rcpp_KerRpostmcmc(int t, NumericMatrix BB, NumericVector sinter, NumericMatrix thetasample);
+RcppExport SEXP _EpiLPS_Rcpp_KerRpostmcmc(SEXP tSEXP, SEXP BBSEXP, SEXP sinterSEXP, SEXP thetasampleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type t(tSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type BB(BBSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sinter(sinterSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type thetasample(thetasampleSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerRpostmcmc(t, BB, sinter, thetasample));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Rcpp_KercubicBspline
+NumericMatrix Rcpp_KercubicBspline(NumericVector x, double lower, double upper, int K);
+RcppExport SEXP _EpiLPS_Rcpp_KercubicBspline(SEXP xSEXP, SEXP lowerSEXP, SEXP upperSEXP, SEXP KSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,14 +77,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lower(lowerSEXP);
     Rcpp::traits::input_parameter< double >::type upper(upperSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rcpp_cubicBspline(x, lower, upper, K));
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KercubicBspline(x, lower, upper, K));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_EpiLPS_Rcpp_Laplace", (DL_FUNC) &_EpiLPS_Rcpp_Laplace, 5},
-    {"_EpiLPS_Rcpp_cubicBspline", (DL_FUNC) &_EpiLPS_Rcpp_cubicBspline, 4},
+    {"_EpiLPS_Rcpp_KerLaplace", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplace, 5},
+    {"_EpiLPS_Rcpp_KerMVN", (DL_FUNC) &_EpiLPS_Rcpp_KerMVN, 2},
+    {"_EpiLPS_Rcpp_KerRpostmap", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmap, 5},
+    {"_EpiLPS_Rcpp_KerRpostmcmc", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmcmc, 4},
+    {"_EpiLPS_Rcpp_KercubicBspline", (DL_FUNC) &_EpiLPS_Rcpp_KercubicBspline, 4},
     {NULL, NULL, 0}
 };
 

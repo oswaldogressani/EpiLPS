@@ -1,6 +1,6 @@
 /* ---------------------------------------------------
- Laplace approximation in C++
- Copyright, Oswaldo Gressani. All rights reserved.
+Laplace approximation in C++
+Copyright, Oswaldo Gressani. All rights reserved.
  ------------------------------------------------------*/
 
 #include <RcppArmadillo.h>
@@ -8,9 +8,10 @@
 using namespace Rcpp;
 // [[Rcpp::export]]
 
-List Rcpp_Laplace(double rho, double lambda, int K,
+List Rcpp_KerLaplace(double rho, double lambda, int K,
                   Function Dlogptheta, Function D2logptheta){
-
+  // Kernel routine
+  // Author : Oswaldo Gressani
   int iter = 0;
   double tol = 1e-5;
   double dist = 3;

@@ -54,7 +54,7 @@ KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
       # New proposal
       meanLH <- zeta_cur + 0.5 * tun * as.numeric(SigLH %*%
                                                     Dlogtar(zeta_cur, lambda_cur))
-      zeta_prop <- MASS::mvrnorm(n = 1, mu = meanLH, Sigma = (tun * SigLH))
+      zeta_prop <- as.numeric(Rcpp_KerMVN(mu = meanLH, Sigma = (tun * SigLH)))
 
       # Accept/Reject decision
       G_cur  <- Dlogtar(zeta_cur, lambda_cur)

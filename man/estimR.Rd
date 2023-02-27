@@ -4,7 +4,7 @@
 \alias{estimR}
 \title{Estimation of the reproduction number with Laplacian-P-splines}
 \usage{
-estimR(incidence, si, K = 30, dates = NULL, cimethod = 1, CoriR = FALSE, WTR = FALSE)
+estimR(incidence, si, K = 30, dates = NULL, CoriR = FALSE, WTR = FALSE)
 }
 \arguments{
 \item{incidence}{A vector containing the time series of incidence counts.}
@@ -14,10 +14,6 @@ estimR(incidence, si, K = 30, dates = NULL, cimethod = 1, CoriR = FALSE, WTR = F
 \item{K}{Number of B-splines in the basis.}
 
 \item{dates}{A vector of date values (optional).}
-
-\item{cimethod}{The method used to construct credible intervals for Rt
-Default is 1 (log-normal approx) with scaling correction
-on the covariance matrix. Setting it to 2 ignores the scaling correction.}
 
 \item{CoriR}{Should the Rt estimate be also computed with the method of Cori?}
 

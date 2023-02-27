@@ -14,15 +14,12 @@
 #' counts. If the right neighbor is NA, the left neighbor is used as a
 #' replacement value.
 #'
-#' @usage estimR(incidence, si, K = 30, dates = NULL, cimethod = 1, CoriR = FALSE, WTR = FALSE)
+#' @usage estimR(incidence, si, K = 30, dates = NULL, CoriR = FALSE, WTR = FALSE)
 #'
 #' @param incidence A vector containing the time series of incidence counts.
 #' @param si The discrete serial interval distribution.
 #' @param K Number of B-splines in the basis.
 #' @param dates A vector of date values (optional).
-#' @param cimethod The method used to construct credible intervals for Rt
-#'  Default is 1 (log-normal approx) with scaling correction
-#'  on the covariance matrix. Setting it to 2 ignores the scaling correction.
 #' @param CoriR Should the Rt estimate be also computed with the method of Cori?
 #' @param WTR Should the Rt estimate be also computed with the Wallinga-Teunis
 #' approach?
@@ -52,14 +49,13 @@
 #'
 #' @export
 
-estimR <- function(incidence, si, K = 30, dates = NULL, cimethod = 1,
-                    CoriR = FALSE, WTR = FALSE){
+estimR <- function(incidence, si, K = 30, dates = NULL, CoriR = FALSE, WTR = FALSE){
 
   tic <- proc.time()             # Clock starts ticking
   y <- KerIncidCheck(incidence)  # Run checks on case incidence vector
   n <- length(y)                 # Total number of days of the epidemic
   simax <- length(si)            # Length of serial interval distribution
-  B <- Rcpp_cubicBspline(seq_len(n), lower = 1, upper = n, K = K) # C++ call
+  B <- Rcpp_KercubicBspline(seq_len(n), lower = 1, upper = n, K = K) # C++ call
   D <- diag(K)
   penorder <- 2
   for(k in 1:penorder){D <- diff(D)}
@@ -72,7 +68,7 @@ estimR <- function(incidence, si, K = 30, dates = NULL, cimethod = 1,
     v <- x[2] # v = log(lambda)
 
     # Laplace approximation
-    LL <- Rcpp_Laplace(exp(w), exp(v), K,
+    LL <- Rcpp_KerLaplace(exp(w), exp(v), K,
                        KerPtheta(Dobs = y, BB = B, Pen = P)$Dlogptheta,
                        KerPtheta(Dobs = y, BB = B, Pen = P)$D2logptheta)
     thetastar <- as.numeric(LL$Lapmode)
@@ -91,7 +87,7 @@ estimR <- function(incidence, si, K = 30, dates = NULL, cimethod = 1,
   hypermap <- stats::optim(c(1, 5), fn = logphyper)$par
   disphat <- exp(hypermap[1])
   lambhat <- exp(hypermap[2])
-  Lap_approx <- Rcpp_Laplace(disphat, lambhat, K,
+  Lap_approx <- Rcpp_KerLaplace(disphat, lambhat, K,
                              KerPtheta(Dobs = y, BB = B, Pen = P)$Dlogptheta,
                              KerPtheta(Dobs = y, BB = B, Pen = P)$D2logptheta)
   thetahat <- as.numeric(Lap_approx$Lapmode)
@@ -102,7 +98,7 @@ estimR <- function(incidence, si, K = 30, dates = NULL, cimethod = 1,
   cratio <- (1 + (1 / disphat) * mean(muhat)) / disphat
   if (cratio <= 1) {
     EMV <- (1 / (1 + muhat / disphat))
-  } else if (cratio > 1 || cimethod == 2) {
+  } else if (cratio > 1) {
     EMV <- rep(1, n)
   }
 
@@ -113,8 +109,16 @@ estimR <- function(incidence, si, K = 30, dates = NULL, cimethod = 1,
   }
 
   # Computation of summary statistics for reproduction number with LPS
-  RLPS <- KerRpostmap(BB = B, theta = thetahat, Covar = Sighat, sinter = si,
-                      MVvec = EMV, Tdom = Time)
+  Routcpp <- Rcpp_KerRpostmap(BB = B, theta = thetahat, Covar = Sighat,
+                              sinter = si, MVvec = EMV)
+
+
+  RLPS <- data.frame(cbind(Time, as.numeric(Routcpp$R), as.numeric(Routcpp$Rsd),
+                  matrix(unlist(lapply(c(0.025,0.05,0.25,0.50,0.75,0.95,0.975),
+                  FUN = stats::qlnorm, meanlog = Routcpp$meanlogNorm,
+                  sdlog = Routcpp$sdlogNorm)),nrow = n, byrow = F)))
+  colnames(RLPS) <- c("Time", "R", "Rsd", "Rq0.025", "Rq0.05","Rq0.25",
+                    "Rq0.50", "Rq0.75", "Rq0.95", "Rq0.975")
 
   if (CoriR == TRUE) {# Use Cori method with weekly sliding windows
     RCori <- KerCori(Dobs = incidence, sinter = si)

@@ -1,6 +1,6 @@
 /* ---------------------------------------------------
-    Cubic B-spline matrix in C++
-    Copyright, Oswaldo Gressani. All rights reserved.
+Cubic B-spline matrix in C++
+Copyright, Oswaldo Gressani. All rights reserved.
 ------------------------------------------------------*/
 
 #include <Rcpp.h>
@@ -8,9 +8,11 @@ using namespace Rcpp;
 
 //[[Rcpp::export]]
 
-NumericMatrix Rcpp_cubicBspline(NumericVector x, double lower, double upper, int K){
-
-  int nx = x.length(); // length of input vector
+NumericMatrix Rcpp_KercubicBspline(NumericVector x, double lower,
+                                   double upper, int K){
+  // Kernel routine
+  // Author : Oswaldo Gressani
+  int nx = x.length();
   int ndx = K-3;
   double dx = (upper - lower) / ndx;
   int nknots = ndx + 2 * 3 + 1;

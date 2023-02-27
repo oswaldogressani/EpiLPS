@@ -59,7 +59,7 @@ estimRmcmc <- function(incidence, si, K = 30, niter = 5000, burnin = 2000,
   y <- KerIncidCheck(incidence)  # Run checks on case incidence vector
   n <- length(y)                 # Total number of days of the epidemic
   simax <- length(si)            # Length of serial interval distribution
-  B <- Rcpp_cubicBspline(seq_len(n), lower = 1, upper = n, K = K) # C++ call
+  B <- Rcpp_KercubicBspline(seq_len(n), lower = 1, upper = n, K = K) # C++ call
   D <- diag(K)
   penorder <- 2
   for(k in 1:penorder){D <- diff(D)}
@@ -72,7 +72,7 @@ estimRmcmc <- function(incidence, si, K = 30, niter = 5000, burnin = 2000,
     v <- x[2] # v = log(lambda)
 
     # Laplace approximation
-    LL <- Rcpp_Laplace(exp(w), exp(v), K,
+    LL <- Rcpp_KerLaplace(exp(w), exp(v), K,
                        KerPtheta(Dobs = y, BB = B, Pen = P)$Dlogptheta,
                        KerPtheta(Dobs = y, BB = B, Pen = P)$D2logptheta)
     thetastar <- as.numeric(LL$Lapmode)
@@ -90,7 +90,7 @@ estimRmcmc <- function(incidence, si, K = 30, niter = 5000, burnin = 2000,
   hypermap <- stats::optim(c(1, 5), fn = logphyper)$par
   disphat <- exp(hypermap[1])
   lambhat <- exp(hypermap[2])
-  Lap_approx <- Rcpp_Laplace(disphat, lambhat, K,
+  Lap_approx <- Rcpp_KerLaplace(disphat, lambhat, K,
                              KerPtheta(Dobs = y, BB = B, Pen = P)$Dlogptheta,
                              KerPtheta(Dobs = y, BB = B, Pen = P)$D2logptheta)
   thetahat <- as.numeric(Lap_approx$Lapmode)
@@ -128,8 +128,20 @@ estimRmcmc <- function(incidence, si, K = 30, niter = 5000, burnin = 2000,
     Time <- dates
   }
 
-  RLPS <- KerRpostmcmc(BB = B, sinter = si, thetasample = thetaMALA,
-                       Tdom = Time)
+  RLPS <- data.frame(matrix(0, nrow = n, ncol = 10))
+  colnames(RLPS) <- c("Time", "R", "Rsd", "Rq0.025", "Rq0.05","Rq0.25",
+                      "Rq0.50","Rq0.75", "Rq0.95", "Rq0.975")
+  RLPS$Time <- Time
+
+  for(j in 1:n){
+    CppCall <- as.numeric(Rcpp_KerRpostmcmc(t = j, BB = B, sinter = si,
+                                            thetasample = thetaMALA))
+    RLPS$R[j] <- mean(CppCall)
+    RLPS$Rsd[j] <- stats::sd(CppCall)
+    RLPS[j, (4:10)] <- stats::quantile(CppCall,
+                                probs = c(0.025, 0.05, 0.25, 0.50, 0.75,
+                                          0.95, 0.975))
+  }
 
   if (CoriR == TRUE) {# Use Cori method with weekly sliding windows
     RCori <- KerCori(Dobs = incidence, sinter = si)

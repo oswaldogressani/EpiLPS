@@ -27,7 +27,6 @@ LinkingTo:
 Imports: 
     Rcpp (>= 1.0.7),
     coda  (>= 0.19-4),
-    MASS (>= 7.3-54),
     EpiEstim (>= 2.2-4),
     ggplot2 (>= 3.3.5),
     gridExtra (>= 2.3)
