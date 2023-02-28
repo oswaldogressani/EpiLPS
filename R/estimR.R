@@ -120,10 +120,16 @@ estimR <- function(incidence, si, K = 30, dates = NULL, CoriR = FALSE, WTR = FAL
   colnames(RLPS) <- c("Time", "R", "Rsd", "Rq0.025", "Rq0.05","Rq0.25",
                     "Rq0.50", "Rq0.75", "Rq0.95", "Rq0.975")
 
+  toc <- proc.time() - tic
+  toc <- round(toc[3], 3)
+
   if (CoriR == TRUE) {# Use Cori method with weekly sliding windows
+    tic_Cori <- proc.time()
     RCori <- KerCori(Dobs = incidence, sinter = si)
+    toc_Cori <- proc.time() - tic_Cori
   } else{
     RCori <- "Not called"
+    toc_Cori <- "Not called"
   }
 
   if(WTR == TRUE){# Use Wallinga-Teunis method to estimate R
@@ -132,13 +138,13 @@ estimR <- function(incidence, si, K = 30, dates = NULL, CoriR = FALSE, WTR = FAL
     RWT <- "Not called"
   }
 
-  toc <- proc.time() - tic
-  toc <- round(toc[3], 3)
 
   #-- Output results in a list
   outputlist <- list(incidence = y, si = si, RLPS = RLPS,
                      RCori = RCori, RWT = RWT,
-                     elapsed = toc, penparam = lambhat, K = K,
+                     LPS_elapsed = toc,
+                     Cori_elapsed = toc_Cori,
+                     penparam = lambhat, K = K,
                      NegBinoverdisp = disphat, method = "LPSMAP")
 
 
