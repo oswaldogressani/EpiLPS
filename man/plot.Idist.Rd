@@ -11,23 +11,23 @@
 \arguments{
 \item{x}{An object of class \code{Idist}.}
 
-\item{barcol}{The color of the discretized interval distribution.}
+\item{barcol}{Color of the discretized interval distribution.}
 
-\item{denscol}{The color of the probability density function.}
+\item{denscol}{Color of the probability density function (pdf).}
 
 \item{denstransparent}{The transparency of the pdf.}
 
-\item{barwidth}{The width of the bars for the discrete distribution.}
+\item{barwidth}{Width of the bars for the discrete distribution.}
 
 \item{title}{Title of the plot.}
 
-\item{themetype}{The theme of the plot.}
+\item{themetype}{Theme of the plot.}
 
-\item{titlesize}{The size of the plot title. Default is 15.}
+\item{titlesize}{Size of the plot title. Default is 15.}
 
-\item{xtitlesize}{The size of title and text on x axis. Default is 13.}
+\item{xtitlesize}{Size of title and text on x axis. Default is 13.}
 
-\item{ytitlesize}{The size of title and text on y axis. Default is 13.}
+\item{ytitlesize}{Size of title and text on y axis. Default is 13.}
 
 \item{...}{Further arguments to be passed to plot.}
 }

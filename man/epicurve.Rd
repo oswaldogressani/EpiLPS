@@ -4,20 +4,13 @@
 \alias{epicurve}
 \title{Plot the epidemic curve}
 \usage{
-epicurve(
-  incidence,
-  dates = NULL,
-  datelab = "7d",
-  col = "deepskyblue4",
-  barwidth = 1,
-  title = "Epidemic curve",
-  xtickangle = 0
-)
+epicurve(incidence, dates = NULL, datelab = "7d", col = "deepskyblue4", barwidth = 1,
+           title = "Epidemic curve", xtickangle = 0, smooth = NULL,  smoothcol = "orange")
 }
 \arguments{
-\item{incidence}{A vector for the time series of incidence.}
+\item{incidence}{A vector containing the incidence time series}
 
-\item{dates}{A vector of dates in format "YY-MM-DD".}
+\item{dates}{A vector of dates in format "YYYY-MM-DD".}
 
 \item{datelab}{The spacing for ticks on the x-axis. Default "7d".}
 
@@ -28,19 +21,26 @@ epicurve(
 \item{title}{Title of the plot.}
 
 \item{xtickangle}{The angle of the x-ticks. Default is 0 (horizontal).}
+
+\item{smooth}{An object of class Rt obtained with the \code{estimR} or
+\code{estimRmcmc} routine. It is used to draw a smoothed estimate of the
+epidemic curve based on the Laplacian-P-splines model.}
+
+\item{smoothcol}{The color of the smoothed curve and associated credible
+interval.}
 }
 \value{
-A plot of the epidemic curve based on the provided time series of
-counts.
+A plot of the epidemic curve.
 }
 \description{
 This routine gives a graphical representation of the epidemic curve based
-on case incidence data.
+on an incidence time series.
 }
 \examples{
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-epidemic <- episim(serial_interval = si, Rpattern = 4)
+epidemic <- episim(si = si, Rpattern = 4)
 epicurve(epidemic$y)
+
 }
 \author{
 Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}

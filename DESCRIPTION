@@ -1,7 +1,7 @@
 Package: EpiLPS
 Type: Package
 Title: A Bayesian Tool for Fast and Flexible Estimation of the Reproduction Number
-Version: 1.0.8
+Version: 1.1.0
 Depends: R (>= 4.1.0)
 Authors@R: person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
@@ -10,11 +10,11 @@ Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
 BugReports: https://github.com/oswaldogressani/EpiLPS/issues
 Description: Estimation of the instantaneous reproduction number with 
  Laplacian-P-splines following the methodology of Gressani et al. (2022)
- <doi:10.1371/journal.pcbi.1010618>. The negative Binomial 
- distribution is used to model the time series of case counts. Two methods are 
+ <doi:10.1371/journal.pcbi.1010618>. The negative binomial 
+ distribution is used to model the time series of incidence data. Two methods are 
  available for inference : (1) a sampling-free approach based on a maximum a 
  posteriori calibration of the hyperparameter vector and (2) a fully stochastic 
- approach with a Metropolis-within-Gibbs algorithm and Langevin diffusions for
+ approach with a Metropolis-adjusted Langevin algorithm for
  efficient sampling of the posterior distribution.
 URL: <https://github.com/oswaldogressani/EpiLPS>
 License: GPL-3

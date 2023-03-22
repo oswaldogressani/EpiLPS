@@ -12,17 +12,18 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // Rcpp_KerLaplace
-List Rcpp_KerLaplace(double rho, double lambda, int K, Function Dlogptheta, Function D2logptheta);
-RcppExport SEXP _EpiLPS_Rcpp_KerLaplace(SEXP rhoSEXP, SEXP lambdaSEXP, SEXP KSEXP, SEXP DlogpthetaSEXP, SEXP D2logpthetaSEXP) {
+List Rcpp_KerLaplace(NumericVector theta0, double rho, double lambda, int K, Function Dlogptheta, Function D2logptheta);
+RcppExport SEXP _EpiLPS_Rcpp_KerLaplace(SEXP theta0SEXP, SEXP rhoSEXP, SEXP lambdaSEXP, SEXP KSEXP, SEXP DlogpthetaSEXP, SEXP D2logpthetaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type theta0(theta0SEXP);
     Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< Function >::type Dlogptheta(DlogpthetaSEXP);
     Rcpp::traits::input_parameter< Function >::type D2logptheta(D2logpthetaSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rcpp_KerLaplace(rho, lambda, K, Dlogptheta, D2logptheta));
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerLaplace(theta0, rho, lambda, K, Dlogptheta, D2logptheta));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -81,13 +82,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Rcpp_Kerhyperoptim
+List Rcpp_Kerhyperoptim(NumericVector x, NumericMatrix BB, Function grad, double step);
+RcppExport SEXP _EpiLPS_Rcpp_Kerhyperoptim(SEXP xSEXP, SEXP BBSEXP, SEXP gradSEXP, SEXP stepSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type BB(BBSEXP);
+    Rcpp::traits::input_parameter< Function >::type grad(gradSEXP);
+    Rcpp::traits::input_parameter< double >::type step(stepSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_Kerhyperoptim(x, BB, grad, step));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_EpiLPS_Rcpp_KerLaplace", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplace, 5},
+    {"_EpiLPS_Rcpp_KerLaplace", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplace, 6},
     {"_EpiLPS_Rcpp_KerMVN", (DL_FUNC) &_EpiLPS_Rcpp_KerMVN, 2},
     {"_EpiLPS_Rcpp_KerRpostmap", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmap, 5},
     {"_EpiLPS_Rcpp_KerRpostmcmc", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmcmc, 4},
     {"_EpiLPS_Rcpp_KercubicBspline", (DL_FUNC) &_EpiLPS_Rcpp_KercubicBspline, 4},
+    {"_EpiLPS_Rcpp_Kerhyperoptim", (DL_FUNC) &_EpiLPS_Rcpp_Kerhyperoptim, 4},
     {NULL, NULL, 0}
 };
 

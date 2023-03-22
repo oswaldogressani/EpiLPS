@@ -1,4 +1,4 @@
-cff-version: 1.0.8
+cff-version: 1.1.0
 message: "If you use this package, please cite it as below."
 authors:
 - family-names: "Gressani"
@@ -7,4 +7,4 @@ authors:
 title: "EpiLPS: a fast and flexible Bayesian tool for estimation
   of the time-varying reproduction number. [Computer Software]."
 date-released: 2021-10-31
-url: "https://github.com/oswaldogressani/EpiLPS"
+url: "https://epilps.com/"

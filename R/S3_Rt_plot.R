@@ -1,29 +1,29 @@
-#' Plot the EpiLPS fitted epidemic curve and reproduction number
+#' Plot the estimated reproduction number
 #'
 #' @description This routine can be used to plot the estimated reproduction
-#' number.
+#' number based on an object of class \code{Rt}.
 #'
 #' @usage
-#' \method{plot}{epilps}(x, datelab = "7d", cilevel = 0.95, col = "black", cicol = "gray",
+#' \method{plot}{Rt}(x, datelab = "7d", cilevel = 0.95, col = "black", cicol = "gray",
 #'  xtickangle = 0, legendpos = "right", title = "Estimated R",
-#'  addfit = c("none","Cori","WT"), theme = "gray",timecut = 0,...)
+#'  addfit = c("none","Cori","WT"), theme = "gray", timecut = 0,...)
 #'
-#' @param x An object of class \code{epilps}.
-#' @param datelab The spacing for ticks on the x-axis.
-#' @param cilevel The level of the credible interval.
-#' @param col The color of the fitted Rt curve for LPS.
+#' @param x An object of class \code{Rt}.
+#' @param datelab Spacing for the ticks on the x-axis.
+#' @param cilevel Level of the credible interval.
+#' @param col Color of the fitted \eqn{R_t} curve for LPS.
 #' @param cicol Color for shading the credible envelope.
-#' @param xtickangle The angle of the x-ticks. Default is 0 (horizontal).
+#' @param xtickangle Angle of the x-ticks. Default is 0 (horizontal).
 #' @param legendpos Position of the legend.
 #' @param title Title of the plot.
-#' @param addfit Should an additional Rt fit be added?
+#' @param addfit Should an additional \eqn{R_t} fit be added?
 #' @param theme Theme, either "gray", "classic", "light", "dark"
 #' @param timecut Cut time points on plot.
 #' @param ... Further arguments to be passed to plot.
 #'
 #' @examples
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-#' epidemic <- episim(serial_interval = si, Rpattern = 2, endepi = 30)
+#' epidemic <- episim(si = si, Rpattern = 2, endepi = 30)
 #' epifit <- estimR(incidence = epidemic$y, K = 30, si = si)
 #' plot(epifit)
 #'
@@ -34,12 +34,12 @@
 #' @export
 
 
-plot.epilps <- function(x, datelab = "7d", cilevel = 0.95, col = "black",
+plot.Rt <- function(x, datelab = "7d", cilevel = 0.95, col = "black",
                         cicol = "gray", xtickangle = 0, legendpos = "right",
                         title = "Estimated R", addfit = c("none","Cori","WT"),
                         theme = "gray", timecut = 0,...) {
-    if(!inherits(x, "epilps"))
-      stop("x must be an epilps object")
+    if(!inherits(x, "Rt"))
+      stop("x must be an Rt object")
     if(cilevel != 0.90 & cilevel != 0.95)
       stop("cilevel must be either 0.90 or 0.95")
 

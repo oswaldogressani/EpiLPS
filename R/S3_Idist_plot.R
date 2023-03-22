@@ -9,15 +9,15 @@
 #'  titlesize = 15, xtitlesize = 13, ytitlesize = 13, ...)
 #'
 #' @param x An object of class \code{Idist}.
-#' @param barcol The color of the discretized interval distribution.
-#' @param denscol The color of the probability density function.
+#' @param barcol Color of the discretized interval distribution.
+#' @param denscol Color of the probability density function (pdf).
 #' @param denstransparent The transparency of the pdf.
-#' @param barwidth The width of the bars for the discrete distribution.
+#' @param barwidth Width of the bars for the discrete distribution.
 #' @param title Title of the plot.
-#' @param themetype The theme of the plot.
-#' @param titlesize The size of the plot title. Default is 15.
-#' @param xtitlesize The size of title and text on x axis. Default is 13.
-#' @param ytitlesize The size of title and text on y axis. Default is 13.
+#' @param themetype Theme of the plot.
+#' @param titlesize Size of the plot title. Default is 15.
+#' @param xtitlesize Size of title and text on x axis. Default is 13.
+#' @param ytitlesize Size of title and text on y axis. Default is 13.
 #' @param ... Further arguments to be passed to plot.
 #'
 #' @examples

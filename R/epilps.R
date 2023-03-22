@@ -18,7 +18,7 @@
 #' counts. If the right neighbor is NA, the left neighbor is used as a
 #' replacement value.
 #'
-#' @usage epilps_deprec(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
+#' @usage epilps(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
 #'        serial_interval, penorder = 2, hyperprior = c(10,10),
 #'        chain_length = 5000, burn = 2000, progmala = TRUE, ci_level = 0.95,
 #'        etainit = c(1,5), cimethod = 1, verbose = TRUE, dates = NULL, tictoc = FALSE)
@@ -62,7 +62,7 @@
 #'
 #' @examples
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-#' epidemic <- episim(serial_interval = si, Rpattern = 2, endepi = 30)
+#' epidemic <- episim(si = si, Rpattern = 2, endepi = 30)
 #' # epifit <- epilps(incidence = epidemic$y, K = 30, serial_interval = si,)
 #' # plot(epifit)
 #'
@@ -181,7 +181,7 @@ epilps_deprec <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
     lambda <- exp(v)
 
     # Laplace approximation
-    LL <- Rcpp_KerLaplace(a_disp, lambda, K, Dlogptheta, D2logptheta)
+    LL <- Rcpp_KerLaplace(theta0 = rep(1.5,K), a_disp, lambda, K, Dlogptheta, D2logptheta)
     thetastar <- as.numeric(LL$Lapmode)
     logdetSigstar <- Re(LL$logdetSigma)
 
@@ -198,7 +198,7 @@ epilps_deprec <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
   etamap <- stats::optim(etainit, fn=logphyper, control = list(fnscale=-1))$par
   disphat <- exp(etamap[1])
   lambhat <- exp(etamap[2])
-  Lap_approxx <- Rcpp_KerLaplace(disphat, lambhat, K, Dlogptheta, D2logptheta)
+  Lap_approxx <- Rcpp_KerLaplace(theta0 = rep(1.5,K), disphat, lambhat, K, Dlogptheta, D2logptheta)
   thetahat <- as.numeric(Lap_approxx$Lapmode)
   Sighat <- Lap_approxx$Lapvar
 

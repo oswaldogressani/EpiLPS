@@ -2,14 +2,13 @@
 % Please edit documentation in R/episim.R
 \name{episim}
 \alias{episim}
-\title{Simulation of incidence count data}
+\title{Simulation of an incidence time series}
 \usage{
-episim(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
+episim(si, endepi = 50, Rpattern = 1, Rconst = 2.5,
        dist = c("poiss", "negbin"), overdisp = 1, verbose = FALSE, plotsim = FALSE)
 }
 \arguments{
-\item{serial_interval}{A vector of values for the discrete serial interval
-(must sum to 1).}
+\item{si}{The serial interval distribution.}
 
 \item{endepi}{The total number of days of the epidemic.}
 
@@ -18,26 +17,26 @@ Rt. Six scenarios are possible with 1,2,3,4,5,6.}
 
 \item{Rconst}{The constant value of R (if scenario 1 is selected), default is 2.5.}
 
-\item{dist}{The distribution from which to sample the incidence of cases.
-Either Poisson (default) or negative binomial.}
+\item{dist}{The distribution from which to sample the incidence counts. Either
+Poisson (default) or negative binomial.}
 
 \item{overdisp}{Overdispersion parameter for the negative binomial setting.}
 
-\item{verbose}{Should metadata on simulated epidemic be printed?}
+\item{verbose}{Should metadata of the simulated epidemic be printed?}
 
 \item{plotsim}{Create a plot of the incidence time series, the true
 reproduction number curve and the serial interval.}
 }
 \value{
 An object of class \code{episim} consisting of a list with the
- generated time series of cases, the mean vector of the Poisson/negative binomial
+ generated incidence time series, the mean vector of the Poisson/negative binomial
  distribution, the true underlying R function for the data generating process and the
  chosen serial interval distribution.
 }
 \description{
 Based on a serial interval and a functional input for the reproduction number
-over T days, the routine generates a set of incidence counts following a
-Poisson or negative binomial model. The link between the reproduction number
+over \eqn{T} days, the routine generates an incidence time series following
+a Poisson or negative binomial model. The link between the reproduction number
 and the generated incidence data is governed by the renewal equation. The
 baseline (mean) number of cases at day 1 is fixed at 10. The mean number of
 cases for the remaining days of the epidemic are generated following
@@ -45,7 +44,7 @@ equation (2) of Azmon et al. (2013).
 }
 \examples{
 si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-epidemic <- episim(serial_interval = si, Rpattern = 1)
+epidemic <- episim(si = si, Rpattern = 1)
 
 }
 \references{

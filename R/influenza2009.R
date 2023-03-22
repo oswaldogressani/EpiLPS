@@ -1,0 +1,29 @@
+#' Data on the 2009 pandemic influenza in Pennsylvania
+#'
+#' @docType data
+#'
+#' @description A list with the daily incidence of onset of symptoms among
+#' children in a school in Pennsylvania (2009), a vector of dates and a
+#' discrete serial interval distribution.
+#'
+#' @usage data(influenza2009)
+#'
+#' @format A list with three components:
+#' \describe{
+#'  \item{\code{incidence}}{An incidence time series of length 32.}
+#'  \item{\code{dates}}{A vector of dates in "YYYY-MM-DD" format.}
+#'  \item{\code{si}}{A vector of probabilities corresponding to the serial
+#'  interval distribution.}
+#' }
+#'
+#' @source \url{https://cran.r-project.org/package=EpiEstim}
+#'
+#' @references Ferguson N.M. et al. (2005) Strategies for containing an
+#'  emerging influenza pandemic in Southeast Asia. Nature 437(7056), 209-214.
+#'
+#' @references Cauchemez S. et al. (2011) Role of social networks in shaping
+#' disease transmission during a community outbreak of 2009 H1N1 pandemic
+#' influenza. Proc Natl Acad Sci USA 108(7), 2825-2830.
+#'
+#'
+"influenza2009"

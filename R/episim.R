@@ -1,32 +1,31 @@
-#' Simulation of incidence count data
+#' Simulation of an incidence time series
 #'
 #' @description
 #' Based on a serial interval and a functional input for the reproduction number
-#' over T days, the routine generates a set of incidence counts following a
-#' Poisson or negative binomial model. The link between the reproduction number
+#' over \eqn{T} days, the routine generates an incidence time series following
+#' a Poisson or negative binomial model. The link between the reproduction number
 #' and the generated incidence data is governed by the renewal equation. The
 #' baseline (mean) number of cases at day 1 is fixed at 10. The mean number of
 #' cases for the remaining days of the epidemic are generated following
 #' equation (2) of Azmon et al. (2013).
 #'
-#' @usage episim(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
+#' @usage episim(si, endepi = 50, Rpattern = 1, Rconst = 2.5,
 #'        dist = c("poiss", "negbin"), overdisp = 1, verbose = FALSE, plotsim = FALSE)
 #'
-#' @param serial_interval A vector of values for the discrete serial interval
-#'  (must sum to 1).
+#' @param si The serial interval distribution.
 #' @param endepi The total number of days of the epidemic.
 #' @param Rpattern Different scenarios for the true underlying curve of
 #'  Rt. Six scenarios are possible with 1,2,3,4,5,6.
 #' @param Rconst The constant value of R (if scenario 1 is selected), default is 2.5.
-#' @param dist The distribution from which to sample the incidence of cases.
-#'  Either Poisson (default) or negative binomial.
+#' @param dist The distribution from which to sample the incidence counts. Either
+#'  Poisson (default) or negative binomial.
 #' @param overdisp Overdispersion parameter for the negative binomial setting.
-#' @param verbose Should metadata on simulated epidemic be printed?
+#' @param verbose Should metadata of the simulated epidemic be printed?
 #' @param plotsim Create a plot of the incidence time series, the true
 #'  reproduction number curve and the serial interval.
 #'
 #' @return An object of class \code{episim} consisting of a list with the
-#'  generated time series of cases, the mean vector of the Poisson/negative binomial
+#'  generated incidence time series, the mean vector of the Poisson/negative binomial
 #'  distribution, the true underlying R function for the data generating process and the
 #'  chosen serial interval distribution.
 #'
@@ -38,11 +37,11 @@
 #'
 #' @examples
 #' si <- c(0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05, 0.1, 0.1, 0.1)
-#' epidemic <- episim(serial_interval = si, Rpattern = 1)
+#' epidemic <- episim(si = si, Rpattern = 1)
 #'
 #' @export
 
-episim <- function(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
+episim <- function(si, endepi = 50, Rpattern = 1, Rconst = 2.5,
                    dist = c("poiss", "negbin"), overdisp = 1,
                    verbose = FALSE, plotsim = FALSE) {
 
@@ -59,20 +58,20 @@ episim <- function(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
                                           0.5 * t ^ 2 / 400
      }
 
-  smax <- length(serial_interval)      # Length of serial_interval
-  mu_y <- c()                          # Mean of y
-  y <- c()                             # Incidence count
+  smax <- length(si)
+  mu_y <- c()
+  y <- c()
 
-  sampling_dist <- match.arg(dist)     # Chosen distribution to sample from
+  sampling_dist <- match.arg(dist)
 
   for (t in 1:endepi) {
     if (t == 1) {
-      mu_y[t] <- 10 # Mean of incidence count at day = 1.
+      mu_y[t] <- 10
       y[t] <- 10
     } else if (t >= 2 && t <= smax) {
       mu_y[t] <- Rtrue(t) *
         sum(rev(y[1:(smax - 1)][1:(t - 1)]) *
-              serial_interval[1:(smax - 1)][1:(t - 1)])
+              si[1:(smax - 1)][1:(t - 1)])
       if (sampling_dist == "poiss") {
         y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
       } else if (sampling_dist == "negbin") {
@@ -80,7 +79,7 @@ episim <- function(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
       }
     } else if (t > smax && t <= endepi) {
       mu_y[t] <-
-        Rtrue(t) * sum(rev(y[(t - smax):(t - 1)]) * serial_interval)
+        Rtrue(t) * sum(rev(y[(t - smax):(t - 1)]) * si)
       if (sampling_dist == "poiss") {
         y[t] <- stats::rpois(n = 1, lambda = mu_y[t])
       } else if (sampling_dist == "negbin") {
@@ -135,10 +134,10 @@ episim <- function(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
 
     # Plot 2 (serial interval)
     silen <- seq_len(smax)
-    sispec <- data.frame(silen = silen, serial_interval = serial_interval)
+    sispec <- data.frame(silen = silen, si = si)
 
     plotsint <- ggplot2::ggplot(data = sispec,
-                                ggplot2::aes(x = silen, y = serial_interval)) +
+                                ggplot2::aes(x = silen, y = si)) +
                 ggplot2::scale_x_discrete(name = "",
                                           limits = as.character(silen)) +
                 ggplot2::geom_bar(stat = "identity", width = 0.35,
@@ -173,7 +172,7 @@ episim <- function(serial_interval, endepi = 50, Rpattern = 1, Rconst = 2.5,
 
 
   outlist <- list(y = y, mu_y = mu_y, Rtrue = Rtrue,
-                  serial_interval = serial_interval)
+                  si = si)
   attr(outlist, "class") <- "episim"
   outlist
 }

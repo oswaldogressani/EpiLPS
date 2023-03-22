@@ -39,4 +39,10 @@
 * Version name: "EpiLPS Kernels"
 * Added a kernel structure for a new architecture.
 
+### Version 1.1.0 ### (**2023-03-22**)
 
+* Version name: "Reducing cyclomatic complexity"
+* Simplification of routine inputs.
+* Separation of old *epilps()* routine into two smaller routines, namely
+  *estimR()* and *estimRmcmc()*.
+* Added and simplified S3 methods.
