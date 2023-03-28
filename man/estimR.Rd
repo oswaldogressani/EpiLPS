@@ -5,7 +5,7 @@
 \title{Estimation of the reproduction number with Laplacian-P-splines}
 \usage{
 estimR(incidence, si, K = 30, dates = NULL, maxmethod = c("NelderMead","HillClimb"),
-CoriR = FALSE, WTR = FALSE, optimstep = 0.3)
+CoriR = FALSE, WTR = FALSE, optimstep = 0.3, priors = Rmodelpriors())
 }
 \arguments{
 \item{incidence}{A vector containing the incidence time series. If \code{incidence}
@@ -27,6 +27,9 @@ is used as a replacement value.}
 
 \item{optimstep}{Learning rate for the "HillClimb" method to maximize the
 posterior distribution of the hyperparameters.}
+
+\item{priors}{A list containing the prior specification of the model
+hyperparameters as set in Rmodelpriors. See ?Rmodelpriors.}
 }
 \value{
 A list with the following components:

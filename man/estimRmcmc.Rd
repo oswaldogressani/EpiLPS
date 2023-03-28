@@ -5,7 +5,7 @@
 \title{Estimation of the reproduction number with Laplacian-P-splines via MCMC}
 \usage{
 estimRmcmc(incidence, si, K = 30, dates = NULL, niter = 5000, burnin = 2000,
- CoriR = FALSE, WTR = FALSE)
+ CoriR = FALSE, WTR = FALSE, priors = Rmodelpriors())
 }
 \arguments{
 \item{incidence}{A vector containing the incidence time series. If
@@ -27,6 +27,9 @@ right neighbor is NA, the left neighbor is used as a replacement value.}
 
 \item{WTR}{Should the \eqn{R_t} estimate of Wallinga-Teunis (2004) be
 also computed?}
+
+\item{priors}{A list containing the prior specification of the model
+hyperparameters as set in Rmodelpriors. See ?Rmodelpriors.}
 }
 \value{
 A list with the following components:

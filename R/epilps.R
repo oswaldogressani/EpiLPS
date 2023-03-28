@@ -68,7 +68,7 @@
 #'
 #' @noRd
 
-epilps_deprec <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
+epilps <- function(incidence, K = 30, method = c("LPSMAP","LPSMALA"),
                 serial_interval, penorder = 2, hyperprior = c(10,10),
                 chain_length = 5000, burn = 2000, progmala = TRUE,
                 ci_level = 0.95, etainit = c(1,5), cimethod = 1, verbose = TRUE,

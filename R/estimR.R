@@ -10,7 +10,7 @@
 #' between the epidemic curve and the reproduction number is established via the renewal equation.
 #'
 #' @usage estimR(incidence, si, K = 30, dates = NULL, maxmethod = c("NelderMead","HillClimb"),
-#' CoriR = FALSE, WTR = FALSE, optimstep = 0.3)
+#' CoriR = FALSE, WTR = FALSE, optimstep = 0.3, priors = Rmodelpriors())
 #'
 #' @param incidence A vector containing the incidence time series. If \code{incidence}
 #'   contains NA values at certain time points, these are replaced by the average of
@@ -23,7 +23,9 @@
 #' @param CoriR Should the \eqn{R_t} estimate of Cori (2013) be also computed?
 #' @param WTR Should the \eqn{R_t} estimate of Wallinga-Teunis (2004) be also computed?
 #' @param optimstep Learning rate for the "HillClimb" method to maximize the
-#' posterior distribution of the hyperparameters.
+#'  posterior distribution of the hyperparameters.
+#' @param priors A list containing the prior specification of the model
+#'  hyperparameters as set in Rmodelpriors. See ?Rmodelpriors.
 #'
 #' @details The \code{estimR} routine estimates the reproduction number in a
 #'  totally "sampling-free" fashion. The hyperparameter vector (containing the
@@ -99,7 +101,8 @@
 
 estimR <- function(incidence, si, K = 30, dates = NULL,
                    maxmethod = c("NelderMead", "HillClimb"),
-                   CoriR = FALSE, WTR = FALSE, optimstep = 0.3){
+                   CoriR = FALSE, WTR = FALSE, optimstep = 0.3,
+                   priors = Rmodelpriors()){
 
   tic <- proc.time()             # Clock starts ticking
   y <- KerIncidCheck(incidence)  # Run checks on case incidence vector
@@ -111,6 +114,14 @@ estimR <- function(incidence, si, K = 30, dates = NULL,
   for(k in 1:penorder){D <- diff(D)}
   P <- t(D) %*% D           # Penalty matrix of dimension c(K,K)
   P <- P + diag(1e-06, K)   # Perturbation to ensure P is full rank
+
+  # Prior specification
+  priorspec <- priors
+  a_delta <- priorspec$a_delta
+  b_delta <- priorspec$b_delta
+  phi <- priorspec$phi
+  a_rho <- priorspec$a_rho
+  b_rho <- priorspec$b_rho
 
   # Minus log-posterior of hyperparameter vector
   logphyper <- function(x) {
@@ -124,11 +135,11 @@ estimR <- function(incidence, si, K = 30, dates = NULL,
     thetastar <- as.numeric(LL$Lapmode)
     logdetSigstar <- Re(LL$logdetSigma)
 
-    equal <- (-1) * (0.5 * logdetSigstar + 0.5 * (K + 2) * v + 1e-04 * w -
-                       (0.5 * 2 + 10) * log(0.5 * 2 * exp(v) + 10) +
+    equal <- (-1) * (0.5 * logdetSigstar + 0.5 * (K + phi) * v + a_rho * w -
+                       (0.5 * phi + a_delta) * log(0.5 * phi * exp(v) + b_delta) +
                        KerLikelihood(Dobs = y, BB = B)$loglik(thetastar, exp(w)) -
                        0.5 * exp(v) * sum((thetastar * P) %*% thetastar) -
-                       1e-04 * exp(w))
+                       b_rho * exp(w))
 
     return(equal)
   }
@@ -150,11 +161,11 @@ estimR <- function(incidence, si, K = 30, dates = NULL,
                     (1 / (1 + exp(Btheta - w))))) -
                        y * (1 / (1 + exp(Btheta - w))))
 
-    grad_w <- 0.5 * Re(LL$dSigw) + 1e-04 - 1e-04 * exp(w) + Dloglik_w
+    grad_w <- 0.5 * Re(LL$dSigw) + a_rho - b_rho * exp(w) + Dloglik_w
 
-    grad_v <- 0.5 * Re(LL$dSigv) + 0.5 * (K + 2) - ((0.5 * 2 + 10) /
-                                                      (0.5 * 2 * exp(v) + 10)) *
-      (0.5 * 2 * exp(v)) - 0.5 * exp(v) * sum((thetastar * P) %*% thetastar)
+    grad_v <- 0.5 * Re(LL$dSigv) + 0.5 * (K + phi) - ((0.5 * phi + a_delta) /
+                                              (0.5 * phi * exp(v) + b_delta)) *
+      (0.5 * phi * exp(v)) - 0.5 * exp(v) * sum((thetastar * P) %*% thetastar)
 
     return(list(grad=c(grad_w, grad_v), thetastar = thetastar))
   }

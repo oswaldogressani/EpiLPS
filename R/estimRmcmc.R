@@ -14,7 +14,7 @@
 #'  established via the renewal equation.
 #'
 #' @usage estimRmcmc(incidence, si, K = 30, dates = NULL, niter = 5000, burnin = 2000,
-#'  CoriR = FALSE, WTR = FALSE)
+#'  CoriR = FALSE, WTR = FALSE, priors = Rmodelpriors())
 #'
 #' @param incidence A vector containing the incidence time series. If
 #'  \code{incidence} contains NA values at certain time points, these are
@@ -28,6 +28,8 @@
 #' @param CoriR Should the \eqn{R_t} estimate of Cori (2013) be also computed?
 #' @param WTR Should the \eqn{R_t} estimate of Wallinga-Teunis (2004) be
 #'  also computed?
+#' @param priors A list containing the prior specification of the model
+#'  hyperparameters as set in Rmodelpriors. See ?Rmodelpriors.
 #'
 #' @return A list with the following components:
 #' \itemize{
@@ -87,7 +89,8 @@
 #' @export
 
 estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
-                       burnin = 2000, CoriR = FALSE, WTR = FALSE){
+                       burnin = 2000, CoriR = FALSE, WTR = FALSE,
+                       priors = Rmodelpriors()){
   tic <- proc.time()             # Clock starts ticking
   y <- KerIncidCheck(incidence)  # Run checks on case incidence vector
   n <- length(y)                 # Total number of days of the epidemic
@@ -98,6 +101,14 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
   for(k in 1:penorder){D <- diff(D)}
   P <- t(D) %*% D           # Penalty matrix of dimension c(K,K)
   P <- P + diag(1e-06, K)   # Perturbation to ensure P is full rank
+
+  # Prior specification
+  priorspec <- priors
+  a_delta <- priorspec$a_delta
+  b_delta <- priorspec$b_delta
+  phi <- priorspec$phi
+  a_rho <- priorspec$a_rho
+  b_rho <- priorspec$b_rho
 
   # Minus log-posterior of hyperparameter vector
   logphyper <- function(x) {
@@ -111,38 +122,12 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
     thetastar <- as.numeric(LL$Lapmode)
     logdetSigstar <- Re(LL$logdetSigma)
 
-    equal <- (-1) * (0.5 * logdetSigstar + 0.5 * (K + 2) * v + 1e-04 * w -
-                       (0.5 * 2 + 10) * log(0.5 * 2 * exp(v) + 10) +
+    equal <- (-1) * (0.5 * logdetSigstar + 0.5 * (K + phi) * v + a_rho * w -
+                       (0.5 * phi + a_delta) * log(0.5 * phi * exp(v) + b_delta) +
                        KerLikelihood(Dobs = y, BB = B)$loglik(thetastar, exp(w)) -
                        0.5 * exp(v) * sum((thetastar * P) %*% thetastar) -
-                       1e-04 * exp(w))
+                       b_rho * exp(w))
     return(equal)
-  }
-
-  # Gradient of logphyper
-  Dlogphyper <- function(x, thetavec){
-    w <- x[1] # w = log(rho)
-    v <- x[2] # v = log(lambda)
-
-    # Laplace approximation
-    LL <- Rcpp_KerLaplace(theta0 = thetavec, exp(w), exp(v), K,
-                          KerPtheta(Dobs = y, BB = B, Pen = P)$Dlogptheta,
-                          KerPtheta(Dobs = y, BB = B, Pen = P)$D2logptheta)
-    thetastar <- as.numeric(LL$Lapmode)
-    Btheta <- as.numeric(B%*%thetastar)
-
-    Dloglik_w <- sum(exp(w) * (digamma(y + exp(w)) - digamma(exp(w)) +
-                                 (1 + w) - (log(exp(Btheta) + exp(w)) +
-                                              (1 / (1 + exp(Btheta - w))))) -
-                       y * (1 / (1 + exp(Btheta - w))))
-
-    grad_w <- 0.5 * Re(LL$dSigw) + 1e-04 - 1e-04 * exp(w) + Dloglik_w
-
-    grad_v <- 0.5 * Re(LL$dSigv) + 0.5 * (K + 2) - ((0.5 * 2 + 10) /
-                                                      (0.5 * 2 * exp(v) + 10)) *
-      (0.5 * 2 * exp(v)) - 0.5 * exp(v) * sum((thetastar * P) %*% thetastar)
-
-    return(list(grad=c(grad_w, grad_v), thetastar = thetastar))
   }
 
   # Maximization of the posterior hyperparameters
