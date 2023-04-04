@@ -57,6 +57,8 @@ A list with the following components:
  \item{method: }{The method to estimate the reproduction number with Laplacian-P-splines.}
  \item{optim_method: }{The chosen method to to maximize the posterior distribution
    of the hyperparameters.}
+ \item{HPD90_Rt: }{The \eqn{90\%} HPD interval for Rt obtained with the LPS methodology.}
+ \item{HPD95_Rt: }{The \eqn{95\%} HPD interval for Rt obtained with the LPS methodology.}
 }
 }
 \description{

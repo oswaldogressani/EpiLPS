@@ -19,7 +19,7 @@
 #' @param si The (discrete) serial interval distribution.
 #' @param K Number of B-splines in the basis.
 #' @param dates A vector of dates in format "YYYY-MM-DD" (optional).
-#' @param maxmethod The method to maximize the posterior distribution of the hyperparameters.
+#' @param maxmethod The method to maximize the hyperparameter posterior distribution.
 #' @param CoriR Should the \eqn{R_t} estimate of Cori (2013) be also computed?
 #' @param WTR Should the \eqn{R_t} estimate of Wallinga-Teunis (2004) be also computed?
 #' @param optimstep Learning rate for the "HillClimb" method to maximize the

@@ -25,6 +25,6 @@ SARS outbreak in Hong Kong and a discretized serial interval distribution.
 \references{
 Cori A. et al. (2009). Temporal variability and social
 heterogeneity in disease transmission: the case of SARS in Hong Kong.
-PLoS Comput Biol 5(8) : e1000471.
+\emph{Plos Computational Biology} \strong{5}(8) : e1000471.
 }
 \keyword{datasets}

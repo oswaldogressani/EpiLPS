@@ -39,7 +39,7 @@
 * Version name: "EpiLPS Kernels"
 * Added a kernel structure for a new architecture.
 
-### Version 1.1.0 ### (**2023-03-22**)
+### Version 1.1.0 ### (**2023-04-04**)
 
 * Version name: "Reducing cyclomatic complexity"
 * Simplification of routine inputs.

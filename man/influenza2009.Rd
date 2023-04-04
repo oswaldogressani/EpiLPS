@@ -26,10 +26,11 @@ discrete serial interval distribution.
 }
 \references{
 Ferguson N.M. et al. (2005) Strategies for containing an
- emerging influenza pandemic in Southeast Asia. Nature 437(7056), 209-214.
+emerging influenza pandemic in Southeast Asia. \emph{Nature}
+\strong{437}(7056), 209-214.
 
 Cauchemez S. et al. (2011) Role of social networks in shaping
 disease transmission during a community outbreak of 2009 H1N1 pandemic
-influenza. Proc Natl Acad Sci USA 108(7), 2825-2830.
+influenza. \emph{Proc Natl Acad Sci} USA \strong{108}(7), 2825-2830.
 }
 \keyword{datasets}

@@ -19,7 +19,7 @@ is used as a replacement value.}
 
 \item{dates}{A vector of dates in format "YYYY-MM-DD" (optional).}
 
-\item{maxmethod}{The method to maximize the posterior distribution of the hyperparameters.}
+\item{maxmethod}{The method to maximize the hyperparameter posterior distribution.}
 
 \item{CoriR}{Should the \eqn{R_t} estimate of Cori (2013) be also computed?}
 

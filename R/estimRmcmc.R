@@ -56,6 +56,8 @@
 #'  \item{method: }{The method to estimate the reproduction number with Laplacian-P-splines.}
 #'  \item{optim_method: }{The chosen method to to maximize the posterior distribution
 #'    of the hyperparameters.}
+#'  \item{HPD90_Rt: }{The \eqn{90\%} HPD interval for Rt obtained with the LPS methodology.}
+#'  \item{HPD95_Rt: }{The \eqn{95\%} HPD interval for Rt obtained with the LPS methodology.}
 #' }
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
@@ -179,6 +181,12 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
   colnames(RLPS) <- c("Time", "R", "Rsd", "Rq0.025", "Rq0.05","Rq0.25",
                       "Rq0.50","Rq0.75", "Rq0.95", "Rq0.975")
   RLPS$Time <- Time
+  HPD90_Rt <- data.frame(matrix(0, nrow = n, ncol = 2))
+  HPD95_Rt <- data.frame(matrix(0, nrow = n, ncol = 2))
+  colnames(HPD90_Rt) <- c("HPD90_low","HPD90_up")
+  colnames(HPD95_Rt) <- c("HPD95_low","HPD95_up")
+  rownames(HPD90_Rt) <- Time
+  rownames(HPD95_Rt) <- Time
 
   for(j in 1:n){
     CppCall <- as.numeric(Rcpp_KerRpostmcmc(t = j, BB = B, sinter = si,
@@ -188,6 +196,8 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
     RLPS[j, (4:10)] <- stats::quantile(CppCall,
                                 probs = c(0.025, 0.05, 0.25, 0.50, 0.75,
                                           0.95, 0.975))
+    HPD90_Rt[j, ] <- coda::HPDinterval(coda::as.mcmc(CppCall), prob = 0.90)
+    HPD95_Rt[j, ] <- coda::HPDinterval(coda::as.mcmc(CppCall), prob = 0.95)
   }
 
   if (CoriR == TRUE) {# Use Cori method with weekly sliding windows
@@ -214,7 +224,9 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
                      NegBinoverdisp = rhohat_mcmc,
                      optimconverged = optimconverged,
                      method = "LPSMALA",
-                     optim_method = optim_method)
+                     optim_method = optim_method,
+                     HPD90_Rt = HPD90_Rt,
+                     HPD95_Rt = HPD95_Rt)
 
   attr(outputlist, "class") <- "Rt"
   outputlist

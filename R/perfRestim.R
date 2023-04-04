@@ -178,6 +178,7 @@ perfRestim <- function(nsim = 100, scenario = 1, days = 40, K = 40,
   ciwidthEpiEstim90 <- matrix(0, nrow = nsim, ncol = days - 7)
   ciwidthLPS95 <- matrix(0, nrow = nsim, ncol = days - 7)
   ciwidthEpiEstim95 <- matrix(0, nrow = nsim, ncol = days - 7)
+  hyperoptim_convergence <- c()
 
   for(s in 1:nsim){
     epidemic <- episim(si = serial_interval, endepi = days,
@@ -199,11 +200,13 @@ perfRestim <- function(nsim = 100, scenario = 1, days = 40, K = 40,
       #-- Estimation with estimR
       epilps_fit <- estimR(incidence = sim_incid[s, ], si = serial_interval,
                            K = K, CoriR = TRUE)
+      hyperoptim_convergence[s] <- epilps_fit$optimconverged
     } else if (match.arg(method)=="LPSMALA"){
       #-- Estimation with estimRmcmc
       epilps_fit <- estimRmcmc(incidence = sim_incid[s, ], si = serial_interval,
                                K = K, CoriR = TRUE, niter = mcmciter,
                                burnin = burnin)
+      hyperoptim_convergence[s] <- epilps_fit$optimconverged
     }
 
     #-- Estimation with EpiEstim using 7 days windows
@@ -213,12 +216,21 @@ perfRestim <- function(nsim = 100, scenario = 1, days = 40, K = 40,
     RLPS_estim[s, ] <- epilps_fit$RLPS$R[-(1:7)]
     BiasLPS[s, ] <- RLPS_estim[s, ] - Rtarget
     MSELPS[s, ] <- (BiasLPS[s, ] ^ 2)
+    if(match.arg(method)=="LPSMAP"){
     CPLPS90[s, ] <- (epilps_fit$RLPS$Rq0.05[-(1:7)] <= Rtarget) &
       (Rtarget <= epilps_fit$RLPS$Rq0.95[-(1:7)])
     CPLPS95[s, ] <- (epilps_fit$RLPS$Rq0.025[-(1:7)] <= Rtarget) &
       (Rtarget <= epilps_fit$RLPS$Rq0.975[-(1:7)])
     ciwidthLPS90[s,] <- (epilps_fit$RLPS$Rq0.95-epilps_fit$RLPS$Rq0.05)[-(1:7)]
     ciwidthLPS95[s,] <- (epilps_fit$RLPS$Rq0.975-epilps_fit$RLPS$Rq0.025)[-(1:7)]
+    } else if (match.arg(method) == "LPSMALA"){
+      CPLPS90[s, ] <- (epilps_fit$HPD90_Rt[,1][-(1:7)] <= Rtarget) &
+        (Rtarget <= epilps_fit$HPD90_Rt[,2][-(1:7)])
+      CPLPS95[s, ] <- (epilps_fit$HPD95_Rt[,1][-(1:7)] <= Rtarget) &
+        (Rtarget <= epilps_fit$HPD95_Rt[,2][-(1:7)])
+      ciwidthLPS90[s,] <- (epilps_fit$HPD90_Rt[,2]-epilps_fit$HPD90_Rt[,1])[-(1:7)]
+      ciwidthLPS95[s,] <- (epilps_fit$HPD95_Rt[,2]-epilps_fit$HPD95_Rt[,1])[-(1:7)]
+    }
 
     # EpiEstim results
     REpiEstim_estim[s, ] <- epiestim_fit$`Mean(R)`
@@ -401,7 +413,11 @@ perfRestim <- function(nsim = 100, scenario = 1, days = 40, K = 40,
       legend.text = ggplot2::element_text(size = 9)
     )
 
+  convergence_message <- paste0("Algorithm for hyperparameter optimization converged for ",
+                                sum(hyperoptim_convergence)/
+                                  nsim * 100,"% of the simulated epidemics.")
   outlist <- list(LPS = summaryLPS, EpiEstim = summaryEpiEstim,
+                  convergence_message = convergence_message,
                   inciplot = inciplot, Rlpsplot = Rlpsplot,
                   Repiestimplot = Repiestimplot)
 

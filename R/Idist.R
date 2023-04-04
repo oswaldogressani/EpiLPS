@@ -22,15 +22,7 @@
 #' corresponding to the discrete distribution of the disease interval,
 #' the name of the chosen parametric distribution and its parameters.
 #'
-#' @details The discretization is based on the formula in Held et al. (2019). The
-#' probability mass function \eqn{g(t)} for the discrete time variable
-#' \eqn{t \in \{1,\dots,D_{\text{max}}\}} is given by:
-#'
-#' \eqn{g(t) = \frac{F(t+0.5)-F(t-0.5)}{F(D_{\text{max}}+0.5)-F(0.5)}},
-#'
-#' where \eqn{D_{\text{max}}} is the greatest integer less than or equal
-#' to \eqn{F^{-1}(0.9999)}, and \eqn{F} is the cumulative distribution function
-#' of the chosen parametric distribution for the disease interval.
+#' @details The discretization is based on the formula in Held et al. (2019).
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
