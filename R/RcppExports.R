@@ -5,6 +5,10 @@ Rcpp_KerLaplace <- function(theta0, rho, lambda, K, Dlogptheta, D2logptheta) {
     .Call(`_EpiLPS_Rcpp_KerLaplace`, theta0, rho, lambda, K, Dlogptheta, D2logptheta)
 }
 
+Rcpp_KerLaplaceIncub <- function(theta0, lambda, K, Dlogptheta, D2logptheta) {
+    .Call(`_EpiLPS_Rcpp_KerLaplaceIncub`, theta0, lambda, K, Dlogptheta, D2logptheta)
+}
+
 Rcpp_KerMVN <- function(mu, Sigma) {
     .Call(`_EpiLPS_Rcpp_KerMVN`, mu, Sigma)
 }

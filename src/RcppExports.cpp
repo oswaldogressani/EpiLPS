@@ -27,6 +27,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Rcpp_KerLaplaceIncub
+List Rcpp_KerLaplaceIncub(NumericVector theta0, double lambda, int K, Function Dlogptheta, Function D2logptheta);
+RcppExport SEXP _EpiLPS_Rcpp_KerLaplaceIncub(SEXP theta0SEXP, SEXP lambdaSEXP, SEXP KSEXP, SEXP DlogpthetaSEXP, SEXP D2logpthetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type theta0(theta0SEXP);
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< Function >::type Dlogptheta(DlogpthetaSEXP);
+    Rcpp::traits::input_parameter< Function >::type D2logptheta(D2logpthetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerLaplaceIncub(theta0, lambda, K, Dlogptheta, D2logptheta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Rcpp_KerMVN
 NumericVector Rcpp_KerMVN(arma::vec mu, arma::mat Sigma);
 RcppExport SEXP _EpiLPS_Rcpp_KerMVN(SEXP muSEXP, SEXP SigmaSEXP) {
@@ -99,6 +114,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_EpiLPS_Rcpp_KerLaplace", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplace, 6},
+    {"_EpiLPS_Rcpp_KerLaplaceIncub", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplaceIncub, 5},
     {"_EpiLPS_Rcpp_KerMVN", (DL_FUNC) &_EpiLPS_Rcpp_KerMVN, 2},
     {"_EpiLPS_Rcpp_KerRpostmap", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmap, 5},
     {"_EpiLPS_Rcpp_KerRpostmcmc", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmcmc, 4},

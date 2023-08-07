@@ -5,7 +5,7 @@ Oswaldo Gressani (<oswaldo.gressani@uhasselt.be>)
 
 <!-- Introduce badges -->
 
-![Version](https://img.shields.io/badge/Version-1.1.0-MediumSeaGreen)
+![Version](https://img.shields.io/badge/Version-1.2.0-MediumSeaGreen)
 ![Languages](https://img.shields.io/badge/Languages-R%2C%20C%2B%2B-informational)
 ![Lifecycle](https://img.shields.io/badge/lifecycle-stabilizing-green)
 ![CodeSize](https://img.shields.io/github/languages/code-size/oswaldogressani/EpiLPS?color=orange&label=Code%20size&style=plastic)
@@ -52,7 +52,8 @@ e1010618. <https://doi.org/10.1371/journal.pcbi.1010618>
 
 #### Package version
 
-This is version 1.1.0 (2023-03-22) - “Reducing cyclomatic complexity”.
+This is version 1.2.0 (2023-08-07) - “Extension to incubation
+estimation”.
 
 #### Acknowledgments
 

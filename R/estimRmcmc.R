@@ -153,7 +153,8 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
                                    style = 3, char =">")
   MCMCout <- KerMCMC(Dobs = incidence, BB = B, Pen = P, Covar = Sighat,
                      thetaoptim = thetahat, penoptim = lambhat,
-                     overdispoptim = disphat, progress = progbar)$MALA(M=niter)
+                     overdispoptim = disphat, progress = progbar,
+                     priors = priorspec)$MALA(M=niter)
   # Chain extraction
   lambdaMALA <- coda::as.mcmc(MCMCout$lambda_mcmc[(burnin+1):niter])
   deltaMALA <- coda::as.mcmc(MCMCout$delta_mcmc[(burnin+1):niter])

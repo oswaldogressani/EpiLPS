@@ -3,7 +3,7 @@
 #' @noRd
 
 KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
-                    progress) {
+                    progress, priors) {
   # Kernel routine
   # Author: Oswaldo Gressani (oswaldo_gressani@hotmail.fr)
   K <- ncol(BB)
@@ -13,7 +13,7 @@ KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
     w <- zeta[(K + 1)]
     rho <- exp(w)
     equal <- KerLikelihood(Dobs, BB)$loglik(theta, rho) - 0.5 * lambda *
-      sum((theta * Pen) %*% theta) - 1e-04 * exp(w) + 1e-04 * w
+      sum((theta * Pen) %*% theta) - priors$b_rho * exp(w) + priors$a_rho * w
     return(equal)
   }
 
@@ -28,7 +28,7 @@ KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
                                  (1 + w) - (log(exp(Btheta) + exp(w)) +
                                               (1 / (1 + exp(Btheta - w))))) -
                        Dobs * (1 / (1 + exp(Btheta - w))))
-    deriv_w <- Dloglik_w - 1e-04 * exp(w) + 1e-04
+    deriv_w <- Dloglik_w - priors$b_rho * exp(w) + priors$a_rho
     res <- c(grad_theta, deriv_w)
     return(res)
 
@@ -81,16 +81,17 @@ KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
       }
 
       # Gibbs step for delta
-      gdelta_shape <- 0.5 * 2 + 10
-      gdelta_rate <- 0.5 * 2 * lambda_cur + 10
+      gdelta_shape <- 0.5 * priors$phi + priors$a_delta
+      gdelta_rate <- 0.5 * priors$phi * lambda_cur + priors$b_delta
       deltavec[m] <- stats::rgamma(n = 1,
                                    shape = gdelta_shape,
                                    rate = gdelta_rate)
 
       # Gibbs step for lambda
-      glambda_shape <- 0.5 * (K + 2)
+      glambda_shape <- 0.5 * (K + priors$phi)
       glambda_rate <- 0.5 * (as.numeric(t(zetamat[m, ][1:K]) %*% Pen
-                                      %*% zetamat[m, ][1:K]) + deltavec[m] * 2)
+                                      %*% zetamat[m, ][1:K]) + deltavec[m] *
+                               priors$phi)
       lambvec[m] <- stats::rgamma(n = 1, shape = glambda_shape,
                                   rate = glambda_rate)
       lambda_cur <- lambvec[m]

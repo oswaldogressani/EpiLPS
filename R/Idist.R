@@ -60,7 +60,7 @@ Idist <- function(mean, sd, dist = c("gamma", "weibull", "lognorm"),
       }
       pvec <- sapply(seq_len(Dmax), gt)
       outlist <- list(pvec = pvec, dist = cdist, shape = shape, rate = rate)
-    } else if (cdist == "weibull"){ # Weibull with shape rate
+    } else if (cdist == "weibull"){ # Weibull with shape scale
 
       fa <- function(a) {
         val <- (mean / gamma(1 + (1 / a))) ^ 2 *

@@ -46,3 +46,14 @@
 * Separation of old *epilps()* routine into two smaller routines, namely
   *estimR()* and *estimRmcmc()*.
 * Added and simplified S3 methods.
+
+### Version 1.2.0 ### (**2023-08-07**)
+
+* Version name: "Extension to incubation estimation"
+* Added priors to KerMCMC routine.
+* Added routine for histogram smoothing with LPS.
+* Added routines to estimate the incubation period distribution.
+
+
+
+
