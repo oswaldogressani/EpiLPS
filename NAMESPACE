@@ -2,6 +2,7 @@
 
 S3method(plot,Idist)
 S3method(plot,Rt)
+S3method(plot,incubestim)
 S3method(summary,Rt)
 export(Idist)
 export(Rmodelpriors)

@@ -1,20 +1,36 @@
 #' Simulation of incubation times
 #'
 #' @description
-#' This routine simulates incubation times for a given generation times density
-#' and incubation times density.
+#' This routine simulates symptom onset times, generation times and left and
+#' right bounds of infecting exposure windows for source-recipient pairs based
+#' on a given incubation distribution and a generation time distribution. The
+#' generation time distribution is assumed to be a Weibull with shape 2.826 and
+#' scale 5.665 (Ferretti et al. 2020). The incubation distribution can be chosen
+#' by the user among:
 #'
-#' @usage incubsim(incubdist = c("LogNormal","Weibull","MixWeibull", "Gamma"),
-#' coarseness = 1, n = 100, tmax  = 20, tgridlen = 500, plotsim = FALSE)
+#' \itemize{
+#'  \item{A LogNormal distribution with a mean of 5.5 days and standard deviation of
+#'   2.1 days (Ferretti et al. 2020).}
+#'  \item{A Weibull distribution (shape-scale parameterization) with a mean of 6.4 days and standard deviation of
+#'   2.3 days (Backer et al. 2020).}
+#'  \item{An artificial bimodal distribution constructed from a mixture of two
+#'   Weibull distributions.}
+#'  \item{A Gamma distribution (shape-rate parameterization) with a mean of 3.8 days and standard deviation of
+#' 2.9 days (Donnelly et al. 2003).}
+#'  }
+#'
+#' @usage incubsim(incubdist = c("LogNormal","Weibull","MixWeibull", "Gamma"), coarseness = 1,
+#'  n = 100, tmax = 20, tgridlen = 500, plotsim = FALSE)
 #'
 #' @param incubdist The distribution of the incubation period.
-#' @param coarseness The average coarseness of the data.
-#' @param n The number of observations.
+#' @param coarseness The average coarseness of the data. Default is 1 day.
+#' @param n The sample size.
 #' @param tmax The upper bound on which to evaluate the \code{incubdist} density.
-#' @param plotsim Create a plot of the simulated data.
+#' @param plotsim Graphical visualization of the simulated data?
 #' @param tgridlen The number of grid points on which to evaluate the density.
 #'
-#' @return An object of class \code{incubsim} consisting of....
+#' @return A list including (among others) the left and right bounds of the
+#' incubation period.
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
@@ -31,10 +47,10 @@
 #' 1761-1766.
 #'
 #' @examples
-#' incubsim()
+#' simdat <- incubsim(n = 50) # Simulation of incubation times for 50 cases.
+#' simdat$Dobsincub           # Left and right bounds of incubation period.
 #'
 #' @export
-
 
 incubsim <- function(incubdist = c("LogNormal","Weibull","MixWeibull", "Gamma"),
                      coarseness = 1, n = 100, tmax = 20, tgridlen = 500, plotsim = FALSE){
@@ -331,7 +347,7 @@ incubsim <- function(incubdist = c("LogNormal","Weibull","MixWeibull", "Gamma"),
                                   round(meanGT,2), " days and standard deviation of: ",
                                   round(sdGT,2), " days."),
                   Incubdist = paste0("Incubation distribution is ",
-                                     match.arg(incubdist),"(",Iparams[1],Iparams[2],")",
+                                     match.arg(incubdist),"(",Iparams[1],",",Iparams[2],")",
                                      " with mean ",
                                      round(meanI,2), " days and standard deviation of: ",
                                      round(sdI,2), " days."),

@@ -3,11 +3,10 @@
 #' @description
 #' This function computes an estimate of the incubation density based on
 #' coarse data constructed from symptom onset times and exposure windows. It
-#' uses the Laplacian-P-splines methodology with a Langevinized Gibbs sampler
+#' uses the Laplacian-P-splines methodology with a Langevinized Gibbs algorithm
 #' to sample from the posterior distribution.
 #'
-#' @usage estimIncub(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
-#' verbose = FALSE)
+#' @usage estimIncub(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500, verbose = FALSE)
 #'
 #' @param x A data frame with the lower and upper bound of incubation interval.
 #' @param K Number of B-splines in the basis.
@@ -23,12 +22,14 @@
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
 #'
 #' @examples
-#' # None
+#' set.seed(123)
+#' simdat <- incubsim(n = 30, tmax = 20) # Simulate incubation data
+#' data <- simdat$Dobsincub              # Incubation bounds
+#' incubfit <- estimIncub(x = data, niter = 500, tmax = 20, verbose = TRUE)
 #'
 #' @export
 
-estimIncub <- function(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
-                       verbose = FALSE){
+estimIncub <- function(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500, verbose = FALSE){
 
   tic <- proc.time()
   nobs <- nrow(x)
@@ -598,7 +599,8 @@ estimIncub <- function(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
                     pengpos = maxplamb$penpos,
                     penval = lambmax,
                     fdens = fdens,
-                    ftgMCMC = ftgMCMC_LPS)
+                    ftgMCMC = ftgMCMC_LPS,
+                    incubdat = x)
   } else if(modselect == 2){ # Log-Normal
     outlist <- list(tg = tg, ftg = ftgLN, stats = LNincub,
                     mcmcrate = MCMC$accept_rate, timing = toc,
@@ -608,7 +610,8 @@ estimIncub <- function(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
                     fdens = fdens,
                     meanlog = meanlogMoM,
                     sdlog = sdlogMoM,
-                    ftgMCMC = ftgMCMC_LN)
+                    ftgMCMC = ftgMCMC_LN,
+                    incubdat = x)
   } else if(modselect == 3){ # Gamma
     outlist <- list(tg = tg, ftg = ftgG, stats = Gincub,
                     mcmcrate = MCMC$accept_rate, timing = toc,
@@ -618,7 +621,8 @@ estimIncub <- function(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
                     fdens = fdens,
                     shape = shapeGMoM,
                     rate = rateMoM,
-                    ftgMCMC = ftgMCMC_G)
+                    ftgMCMC = ftgMCMC_G,
+                    incubdat = x)
   } else if(modselect == 4){# Weibull
     outlist <- list(tg = tg, ftg = ftgW, stats = Wincub,
                     mcmcrate = MCMC$accept_rate, timing = toc,
@@ -628,7 +632,10 @@ estimIncub <- function(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
                     fdens = fdens,
                     shape = shapeWMoM,
                     scale = scaleMoM,
-                    ftgMCMC = ftgMCMC_W)
+                    ftgMCMC = ftgMCMC_W,
+                    incubdat = x)
   }
-  return(outlist)
+
+  attr(outlist, "class") <- "incubestim"
+  outlist
 }

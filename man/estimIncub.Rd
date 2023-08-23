@@ -4,8 +4,7 @@
 \alias{estimIncub}
 \title{Estimation of the incubation density based on coarse data}
 \usage{
-estimIncub(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500,
-verbose = FALSE)
+estimIncub(x, K = 10, niter = 1000, tmax = max(x), tgridlen = 500, verbose = FALSE)
 }
 \arguments{
 \item{x}{A data frame with the lower and upper bound of incubation interval.}
@@ -28,11 +27,14 @@ A list of class \code{incubestim} containing summary values for
 \description{
 This function computes an estimate of the incubation density based on
 coarse data constructed from symptom onset times and exposure windows. It
-uses the Laplacian-P-splines methodology with a Langevinized Gibbs sampler
+uses the Laplacian-P-splines methodology with a Langevinized Gibbs algorithm
 to sample from the posterior distribution.
 }
 \examples{
-# None
+set.seed(123)
+simdat <- incubsim(n = 30, tmax = 20) # Simulate incubation data
+data <- simdat$Dobsincub              # Incubation bounds
+incubfit <- estimIncub(x = data, niter = 500, tmax = 20, verbose = TRUE)
 
 }
 \author{

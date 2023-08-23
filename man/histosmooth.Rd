@@ -39,7 +39,7 @@ ffit <- histosmooth(x, xl = 1, xr = 6)
 tt <- seq(ffit$xl, ffit$xr, length = 500)
 dtt <- tt[2] - tt[1]
 graphics::hist(x, breaks = seq(ffit$xl, ffit$xr, by = ffit$binwidth),
-     freq = FALSE, ylim = c(0, 0.8), main = "Old Faithful geyser",
+     freq = FALSE, ylim = c(0, 0.8), main = "Old Faithful Geyser",
     xlab = "Eruption time (minutes)")
 densfit <- sapply(tt, ffit$fdens)
 densfit <- densfit / (sum(densfit * dtt))
