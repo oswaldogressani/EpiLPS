@@ -18,7 +18,7 @@
 #'  taken to be the maximum of \code{x}.
 #' @param K Number of B-splines in the basis.
 #'
-#' @return A list of class \code{densestim} containing the left (\code{xl})
+#' @return A list containing the left (\code{xl})
 #' and right (\code{xr}) bounds of the domain of the estimated density, the
 #' binwidth and a function to be evaluated between \code{xl} and \code{xr}.
 #'

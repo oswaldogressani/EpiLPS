@@ -85,7 +85,7 @@
 #'
 #' @examples
 #' # Illustration on simulated data
-#' si<- Idist(mean = 5, sd = 3)$pvec
+#' si <- Idist(mean = 5, sd = 3)$pvec
 #' datasim <- episim(si = si, endepi = 60, Rpattern = 5, dist="negbin", overdisp = 50)
 #' epifit_sim <- estimR(incidence = datasim$y, si = si, CoriR = TRUE)
 #' plot(epifit_sim, addfit = "Cori")

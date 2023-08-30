@@ -3,7 +3,6 @@
 ^README\.Rmd$
 ^man/figures$
 ^README_files
-^CITATION\.cff$
 ^cran-comments\.md$
 ^LICENSE$
 ^CRAN-SUBMISSION$

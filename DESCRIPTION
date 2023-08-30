@@ -1,6 +1,6 @@
 Package: EpiLPS
 Type: Package
-Title: A fast and flexible Bayesian tool for estimating epidemiological parameters
+Title: A Fast and Flexible Bayesian Tool for Estimating Epidemiological Parameters
 Version: 1.2.0
 Depends: R (>= 4.1.0)
 Authors@R: person("Oswaldo","Gressani", 
