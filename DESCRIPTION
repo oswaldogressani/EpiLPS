@@ -1,11 +1,13 @@
 Package: EpiLPS
 Type: Package
 Title: A Fast and Flexible Bayesian Tool for Estimating Epidemiological Parameters
-Version: 1.2.0
+Version: 1.2.5
 Depends: R (>= 4.1.0)
-Authors@R: person("Oswaldo","Gressani", 
+Authors@R: c(person("Oswaldo","Gressani", 
  email="oswaldo_gressani@hotmail.fr", role=c("aut","cre"),
- comment=c(ORCID ="0000-0003-4152-6159"))
+ comment=c(ORCID ="0000-0003-4152-6159")),
+ person("Bryan", "Sumalinab", role = "ctb", comment=c(ORCID ="0000-0001-8264-5336"))
+ )
 Maintainer: Oswaldo Gressani <oswaldo_gressani@hotmail.fr>
 BugReports: https://github.com/oswaldogressani/EpiLPS/issues
 Description: Estimation of epidemiological parameters with 

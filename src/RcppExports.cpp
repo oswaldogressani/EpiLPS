@@ -42,6 +42,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Rcpp_KerLaplaceNowcast
+List Rcpp_KerLaplaceNowcast(NumericVector xi0, NumericVector v, int dimxi, Function Dlogpxi, Function D2logpxi);
+RcppExport SEXP _EpiLPS_Rcpp_KerLaplaceNowcast(SEXP xi0SEXP, SEXP vSEXP, SEXP dimxiSEXP, SEXP DlogpxiSEXP, SEXP D2logpxiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type xi0(xi0SEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type v(vSEXP);
+    Rcpp::traits::input_parameter< int >::type dimxi(dimxiSEXP);
+    Rcpp::traits::input_parameter< Function >::type Dlogpxi(DlogpxiSEXP);
+    Rcpp::traits::input_parameter< Function >::type D2logpxi(D2logpxiSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_KerLaplaceNowcast(xi0, v, dimxi, Dlogpxi, D2logpxi));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Rcpp_KerMVN
 NumericVector Rcpp_KerMVN(arma::vec mu, arma::mat Sigma);
 RcppExport SEXP _EpiLPS_Rcpp_KerMVN(SEXP muSEXP, SEXP SigmaSEXP) {
@@ -115,6 +130,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_EpiLPS_Rcpp_KerLaplace", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplace, 6},
     {"_EpiLPS_Rcpp_KerLaplaceIncub", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplaceIncub, 5},
+    {"_EpiLPS_Rcpp_KerLaplaceNowcast", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplaceNowcast, 5},
     {"_EpiLPS_Rcpp_KerMVN", (DL_FUNC) &_EpiLPS_Rcpp_KerMVN, 2},
     {"_EpiLPS_Rcpp_KerRpostmap", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmap, 5},
     {"_EpiLPS_Rcpp_KerRpostmcmc", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmcmc, 4},

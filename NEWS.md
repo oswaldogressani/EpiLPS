@@ -54,6 +54,11 @@
 * Added routine for histogram smoothing with LPS.
 * Added routines to estimate the incubation period distribution.
 
+### Version 1.2.5 ### (**2024-01-08**)
+
+* Version name: "Extension to nowcasting".
+* Added nowcasting routine and associated S3 method.
+* Added incidence and mortality datasets for Belgium.
 
 
 
