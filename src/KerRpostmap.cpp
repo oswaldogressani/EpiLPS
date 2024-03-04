@@ -81,7 +81,7 @@ List Rcpp_KerRpostmap(NumericMatrix BB, NumericVector theta, NumericMatrix Covar
     sdlogNorm(0,t) = sqrt(sum(vectemp));
   }
 
-  NumericVector Rsd = sqrt(exp(pow(sdlogNorm,2) - 1) * exp(2 * meanlogNorm +
+  NumericVector Rsd = sqrt((exp(pow(sdlogNorm,2)) - 1) * exp(2 * meanlogNorm +
     pow(sdlogNorm,2)));
 
   return Rcpp::List::create(Named("R") = R,

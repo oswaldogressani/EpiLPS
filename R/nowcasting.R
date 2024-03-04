@@ -43,6 +43,7 @@
 #'  \strong{18}(10): e1010618.
 #' @references Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2023). Bayesian
 #'  nowcasting with Laplacian-P-splines. MedRxiv preprint.
+#'  \url{https://www.medrxiv.org/content/10.1101/2022.08.26.22279249v2}
 #'
 #' @examples
 #' # data("cov19mort2021")

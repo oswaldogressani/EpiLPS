@@ -2,7 +2,7 @@
 % Please edit documentation in R/S3_nowcast_plot.R
 \name{plot.nowcasted}
 \alias{plot.nowcasted}
-\title{Plot of nowcasted cases}
+\title{Plot of nowcasted cases and delay distribution}
 \usage{
 \method{plot}{nowcasted}(x, type = c("cases", "delay"), ...)
 }

@@ -1,4 +1,4 @@
-#' Plot of nowcasted cases
+#' Plot of nowcasted cases and delay distribution
 #'
 #' @description This routine plots the reported cases, the nowcasted cases and
 #' associated \eqn{95\%} credible interval for the nowcast. In addition, it

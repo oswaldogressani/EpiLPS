@@ -55,14 +55,15 @@ plot.Rt <- function(x, datelab = "7d", cilevel = 0.95, col = "black",
       ggplot2::ggplot(data = LPSRout, ggplot2::aes(x = Time)) +
       ggplot2::ggtitle(title) + ggplot2::xlab("Time") +
       ggplot2::ylab("R") +
-      ggplot2::geom_hline(yintercept = 1, linetype = "dotted", size = 0.8,
+      ggplot2::geom_hline(yintercept = 1, linetype = "dotted", linewidth = 0.8,
                           color = "gray46") +
+      ggplot2::ylim(0, NA) +
       ggplot2::geom_ribbon(ggplot2::aes(
         ymin = eval(parse(text = paste0("`Rq", (1 - cilevel) * 0.5, "`"))),
         ymax = eval(parse(text = paste0("`Rq", 1 - (1 - cilevel) * 0.5, "`")))),
         alpha = 0.5, fill = cicol) + xlabtype +
       ggplot2::geom_line(ggplot2::aes(y = `R`, linetype = "EpiLPS"),
-                         color = col, size = 0.8) +
+                         color = col, linewidth = 0.8) +
       eval(parse(text = paste0("ggplot2::theme_",theme,"()"))) +
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = xtickangle,
                                                          vjust = 0.55)) +
@@ -81,7 +82,7 @@ plot.Rt <- function(x, datelab = "7d", cilevel = 0.95, col = "black",
       CoriRout$Time <- LPSRout$Time
       Corilayer <-  ggplot2::geom_line(data = CoriRout, ggplot2::aes(
         x = Time, y = `Mean(R)`, color = "EpiEstim", linetype = "EpiEstim"),
-        size = 0.8, linetype = "twodash")
+        linewidth = 0.8, linetype = "twodash")
       CoriCI <- ggplot2::geom_ribbon(data = CoriRout,ggplot2::aes(
         ymin = eval(parse(
           text = paste0("`Quantile.", (1 - cilevel) * 0.5, "(R)`"))),
@@ -104,7 +105,7 @@ plot.Rt <- function(x, datelab = "7d", cilevel = 0.95, col = "black",
       }
       WTlayer <-  ggplot2::geom_line(data = WTRout, ggplot2::aes(
         x = Time, y = `Mean(R)`, color = "EpiEstimWT", linetype = "EpiEstimWT"),
-        size = 0.8, linetype = "twodash")
+        linewidth = 0.8, linetype = "twodash")
       WTCI <- ggplot2::geom_ribbon(data = WTRout,ggplot2::aes(
         ymin = `Quantile.0.025(R)`, ymax = `Quantile.0.975(R)`),
         alpha = 0.5, fill = "coral2")
