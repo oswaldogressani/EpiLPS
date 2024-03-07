@@ -14,7 +14,7 @@
 #'  established via the renewal equation.
 #'
 #' @usage estimRmcmc(incidence, si, K = 30, dates = NULL, niter = 5000, burnin = 2000,
-#'  CoriR = FALSE, WTR = FALSE, priors = Rmodelpriors())
+#'  CoriR = FALSE, WTR = FALSE, priors = Rmodelpriors(), progressbar = TRUE)
 #'
 #' @param incidence A vector containing the incidence time series. If
 #'  \code{incidence} contains NA values at certain time points, these are
@@ -30,34 +30,36 @@
 #'  also computed?
 #' @param priors A list containing the prior specification of the model
 #'  hyperparameters as set in Rmodelpriors. See ?Rmodelpriors.
+#' @param progressbar Should a progression bar indicating status of MCMC
+#'  algorithm be shown? Default is TRUE.
 #'
 #' @return A list with the following components:
 #' \itemize{
-#'  \item{incidence: }{The incidence time series.}
-#'  \item{si: }{The serial interval distribution.}
-#'  \item{RLPS: }{A data frame containing estimates of the reproduction number
-#'    obtained with the Laplacian-P-splines methodology.}
-#'  \item{thetahat: }{The estimated vector of B-spline coefficients.}
-#'  \item{Sighat: }{The estimated variance-covariance matrix of the Laplace
+#'  \item incidence: The incidence time series.
+#'  \item si: The serial interval distribution.
+#'  \item RLPS: A data frame containing estimates of the reproduction number
+#'    obtained with the Laplacian-P-splines methodology.
+#'  \item thetahat: The estimated vector of B-spline coefficients.
+#'  \item Sighat: The estimated variance-covariance matrix of the Laplace
 #'    approximation to the conditional posterior distribution of
-#'    the B-spline coefficients.}
-#'  \item{RCori: }{A data frame containing the estimates of the reproduction
-#'    obtained with the method of Cori (2013).}
-#'  \item{RWT: }{A data frame containing the estimates of the reproduction
-#'    obtained with the method of Wallinga-Teunis (2004).}
-#'  \item{LPS_elapsed: }{The routine real elapsed time (in seconds) when estimation
-#'    of the reproduction number is carried out with Laplacian-P-splines.}
-#'  \item{penparam: }{The estimated penalty parameter related to the P-spline model.}
-#'  \item{K: }{The number of B-splines used in the basis.}
-#'  \item{NegBinoverdisp: }{The estimated overdispersion parameter of the negative
-#'    binomial distribution for the incidence time series.}
-#'  \item{optimconverged: }{Indicates whether the algorithm to maximize the
-#'    posterior distribution of the hyperparameters has converged.}
-#'  \item{method: }{The method to estimate the reproduction number with Laplacian-P-splines.}
-#'  \item{optim_method: }{The chosen method to to maximize the posterior distribution
-#'    of the hyperparameters.}
-#'  \item{HPD90_Rt: }{The \eqn{90\%} HPD interval for Rt obtained with the LPS methodology.}
-#'  \item{HPD95_Rt: }{The \eqn{95\%} HPD interval for Rt obtained with the LPS methodology.}
+#'    the B-spline coefficients.
+#'  \item RCori: A data frame containing the estimates of the reproduction
+#'    obtained with the method of Cori (2013).
+#'  \item RWT: A data frame containing the estimates of the reproduction
+#'    obtained with the method of Wallinga-Teunis (2004).
+#'  \item LPS_elapsed: The routine real elapsed time (in seconds) when estimation
+#'    of the reproduction number is carried out with Laplacian-P-splines.
+#'  \item penparam: The estimated penalty parameter related to the P-spline model.
+#'  \item K: The number of B-splines used in the basis.
+#'  \item NegBinoverdisp: The estimated overdispersion parameter of the negative
+#'    binomial distribution for the incidence time series.
+#'  \item optimconverged: Indicates whether the algorithm to maximize the
+#'    posterior distribution of the hyperparameters has converged.
+#'  \item method: The method to estimate the reproduction number with Laplacian-P-splines.
+#'  \item optim_method: The chosen method to to maximize the posterior distribution
+#'    of the hyperparameters.
+#'  \item HPD90_Rt: The \eqn{90\%} HPD interval for Rt obtained with the LPS methodology.
+#'  \item HPD95_Rt: The \eqn{95\%} HPD interval for Rt obtained with the LPS methodology.
 #' }
 #'
 #' @author Oswaldo Gressani \email{oswaldo_gressani@hotmail.fr}
@@ -83,7 +85,8 @@
 #' # Illustration on the 2009 influenza pandemic in Pennsylvania.
 #' data(influenza2009)
 #' epifit_flu <- estimRmcmc(incidence = influenza2009$incidence, dates = influenza2009$dates,
-#'                          si = influenza2009$si[-1], niter = 2500, burnin = 1500)
+#'                          si = influenza2009$si[-1], niter = 2500,
+#'                          burnin = 1500, progressbar = FALSE)
 #' tail(epifit_flu$RLPS)
 #' summary(epifit_flu)
 #' plot(epifit_flu)
@@ -92,7 +95,7 @@
 
 estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
                        burnin = 2000, CoriR = FALSE, WTR = FALSE,
-                       priors = Rmodelpriors()){
+                       priors = Rmodelpriors(), progressbar = TRUE){
   tic <- proc.time()             # Clock starts ticking
   y <- KerIncidCheck(incidence)  # Run checks on case incidence vector
   n <- length(y)                 # Total number of days of the epidemic
@@ -147,10 +150,14 @@ estimRmcmc <- function(incidence, si, K = 30, dates = NULL, niter = 5000,
   Sighat <- Lap_approx$Lapvar
 
   # Call Metropolis-adjusted Langevin algorithm
+  if(isTRUE(progressbar)){
   cat(paste0("Metropolis-adjusted Langevin algorithm running for ",niter,
              " iterations \n"))
   progbar <- utils::txtProgressBar(min = 1, max = niter, initial = 1,
                                    style = 3, char =">")
+  } else{
+  progbar <- NULL
+  }
   MCMCout <- KerMCMC(Dobs = incidence, BB = B, Pen = P, Covar = Sighat,
                      thetaoptim = thetahat, penoptim = lambhat,
                      overdispoptim = disphat, progress = progbar,

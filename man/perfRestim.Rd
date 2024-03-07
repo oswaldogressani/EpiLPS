@@ -34,12 +34,12 @@ binomial model in the \code{episim()} routine.}
 \value{
 A list with the following components:
 \itemize{
- \item{LPS: }{Results for the LPS approach.}
- \item{EpiEstim: }{Results for the EpiEstim approach with weekly sliding
- windows.}
- \item{inciplot: }{The simulated incidence time series.}
- \item{Rlpsplot: }{Estimated \eqn{R_t} trajectories with LPS.}
- \item{Repiestimplot: }{Estimated \eqn{R_t} trajectories with EpiEstim.}
+ \item LPS: Results for the LPS approach.
+ \item EpiEstim: Results for the EpiEstim approach with weekly sliding
+ windows.
+ \item inciplot: The simulated incidence time series.
+ \item Rlpsplot: Estimated \eqn{R_t} trajectories with LPS.
+ \item Repiestimplot: Estimated \eqn{R_t} trajectories with EpiEstim.
 }
 }
 \description{

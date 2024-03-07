@@ -54,7 +54,7 @@
 * Added routine for histogram smoothing with LPS.
 * Added routines to estimate the incubation period distribution.
 
-### Version 1.3.0 ### (**2024-03-04**)
+### Version 1.3.0 ### (**2024-03-07**)
 
 * Version name: "Extension to nowcasting".
 * Added nowcasting routine and associated S3 method.
@@ -62,6 +62,8 @@
 * Added incidence and mortality datasets for Belgium.
 * Corrected Rsd formula in KerRpostmap.cpp file.
 * Added 0 as a lower bound on ylim for S3_Rt_plot.R.
+* Updated KerMCMC.R to compute Dlogtar(zeta_prop, lambda_cur) only once in MALA.
+* Updated CITATION file.
 
 
 

@@ -8,11 +8,11 @@
 #' latter number is then combined with the already reported cases and interpreted as a nowcast or
 #' prediction for the true epidemic status regarding the number of daily cases. The routine
 #' is anchored around Laplacian-P-splines in an epidemic context (Gressani et al. 2022) and the
-#' detailed methodology can be found in Sumalinab et al. (2024). Two different models can be fitted,
+#' detailed methodology can be found in Sumalinab et al. (2023). Two different models can be fitted,
 #' named M3 (the default) and M2. M3 uses a joint approach that simultaneously models the delay dimension
 #' and the time-varying reproduction number. M2 uses reported cases and a nowcast of the not yet reported
-#' cases based on the methodology of Sumalinab et al. (2023). See Sumalinab et al. (2024) and the
-#' vignette (url) for more details.
+#' cases. See Sumalinab et al. (2023) and the vignette \url{https://epilps.com/NowcastingRt.html} for
+#' more details.
 #'
 #' @usage nowcastingR(data, day.effect = TRUE, ref.day = "Monday", si, method = c("M3", "M2"))
 #'
@@ -34,11 +34,11 @@
 #'
 #' @return A list with the following components:
 #' \itemize{
-#'  \item{data: }{The data frame used as an input.}
-#'  \item{Rnow: }{A data frame containing the nowcasted reproduction number.}
-#'  \item{lambda_estim: }{Estimated penalty parameters of the P-splines model.}
-#'  \item{phi_estim: }{Estimated overdispersion parameter from the negative binomial model.}
-#'  \item{method: }{The model choice, i.e. either M3 or M2.}
+#'  \item data: The data frame used as an input.
+#'  \item Rnow: A data frame containing the nowcasted reproduction number.
+#'  \item lambda_estim: Estimated penalty parameters of the P-splines model.
+#'  \item phi_estim: Estimated overdispersion parameter from the negative binomial model.
+#'  \item method: The model choice, i.e. either M3 or M2.
 #'  }
 #'
 #' @author Bryan Sumalinab (writing) and Oswaldo Gressani (editing).
@@ -47,10 +47,7 @@
 #'  (2022). EpiLPS: A fast and flexible Bayesian tool for estimation of the
 #'  time-varying reproduction number. \emph{Plos Computational Biology},
 #'  \strong{18}(10): e1010618.
-#' @references Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2023). Bayesian
-#'  nowcasting with Laplacian-P-splines. MedRxiv preprint.
-#'  \url{https://www.medrxiv.org/content/10.1101/2022.08.26.22279249v2}
-#' @references Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2024). An
+#' @references Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2023). An
 #'  efficient approach to nowcasting the time-varying reproduction number. MedRxiv preprint.
 #'  \url{https://doi.org/10.1101/2023.10.30.23297251}
 #'

@@ -52,12 +52,11 @@ KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
 
     for (m in 1:M) {
       # New proposal
-      meanLH <- zeta_cur + 0.5 * tun * as.numeric(SigLH %*%
-                                                    Dlogtar(zeta_cur, lambda_cur))
+      G_cur  <- Dlogtar(zeta_cur, lambda_cur)
+      meanLH <- zeta_cur + 0.5 * tun * as.numeric(SigLH %*% G_cur)
       zeta_prop <- as.numeric(Rcpp_KerMVN(mu = meanLH, Sigma = (tun * SigLH)))
 
       # Accept/Reject decision
-      G_cur  <- Dlogtar(zeta_cur, lambda_cur)
       G_prop <- Dlogtar(zeta_prop, lambda_cur)
       ldiffq <- as.numeric((-0.5) * t(G_prop + G_cur) %*%
                              ((zeta_prop - zeta_cur) +
@@ -114,9 +113,13 @@ KerMCMC <- function(Dobs, BB, Pen, Covar, thetaoptim, penoptim, overdispoptim,
       }
 
       tun <- (hfun(heval)) ^ 2
+      if(!is.null(progress)){
       utils::setTxtProgressBar(progress, m)
+      }
     }
+    if(!is.null(progress)){
     close(progress)
+    }
 
     accept_rate <- round(counter / M * 100, 2)
 

@@ -28,11 +28,11 @@
 #'
 #' @return A list with the following components:
 #' \itemize{
-#'  \item{data: }{The data frame used as an input.}
-#'  \item{cases.now: }{A data frame containing the nowcasting results with \eqn{95\%} prediction intervals.}
-#'  \item{delay: }{A data frame containing the two-dimensional delay distribution.}
-#'  \item{lambda_estim: }{Estimated penalty parameters of the P-splines model.}
-#'  \item{phi_estim: }{Estimated overdispersion parameter from the negative binomial model.}
+#'  \item data: The data frame used as an input.
+#'  \item cases.now: A data frame containing the nowcasting results with \eqn{95\%} prediction intervals.
+#'  \item delay: A data frame containing the two-dimensional delay distribution.
+#'  \item lambda_estim: Estimated penalty parameters of the P-splines model.
+#'  \item phi_estim: Estimated overdispersion parameter from the negative binomial model.
 #'  }
 #'
 #' @author Bryan Sumalinab (writing) and Oswaldo Gressani (editing).

@@ -34,31 +34,31 @@ hyperparameters as set in Rmodelpriors. See ?Rmodelpriors.}
 \value{
 A list with the following components:
 \itemize{
- \item{incidence: }{The incidence time series.}
- \item{si: }{The serial interval distribution.}
- \item{RLPS: }{A data frame containing estimates of the reproduction number
-   obtained with the Laplacian-P-splines methodology.}
- \item{thetahat: }{The estimated vector of B-spline coefficients.}
- \item{Sighat: }{The estimated variance-covariance matrix of the Laplace
+ \item incidence: The incidence time series.
+ \item si: The serial interval distribution.
+ \item RLPS: A data frame containing estimates of the reproduction number
+   obtained with the Laplacian-P-splines methodology.
+ \item thetahat: The estimated vector of B-spline coefficients.
+ \item Sighat: The estimated variance-covariance matrix of the Laplace
    approximation to the conditional posterior distribution of
-   the B-spline coefficients.}
- \item{RCori: }{A data frame containing the estimates of the reproduction
-   obtained with the method of Cori (2013).}
- \item{RWT: }{A data frame containing the estimates of the reproduction
-   obtained with the method of Wallinga-Teunis (2004).}
- \item{LPS_elapsed: }{The routine real elapsed time (in seconds) when estimation
-   of the reproduction number is carried out with Laplacian-P-splines.}
- \item{Cori_elapsed: }{The routine real elapsed time (in seconds) when estimation
-   of the reproduction number is carried out with the method of Cori (2013).}
- \item{penparam: }{The estimated penalty parameter related to the P-spline model.}
- \item{K: }{The number of B-splines used in the basis.}
- \item{NegBinoverdisp: }{The estimated overdispersion parameter of the negative
-   binomial distribution for the incidence time series.}
- \item{optimconverged: }{Indicates whether the algorithm to maximize the
-   posterior distribution of the hyperparameters has converged.}
- \item{method: }{The method to estimate the reproduction number with Laplacian-P-splines.}
- \item{optim_method: }{The chosen method to to maximize the posterior distribution
-   of the hyperparameters.}
+   the B-spline coefficients.
+ \item RCori: A data frame containing the estimates of the reproduction
+   obtained with the method of Cori et al. (2013).
+ \item RWT: A data frame containing the estimates of the reproduction
+   obtained with the method of Wallinga-Teunis (2004).
+ \item LPS_elapsed: The routine real elapsed time (in seconds) when estimation
+   of the reproduction number is carried out with Laplacian-P-splines.
+ \item Cori_elapsed: The routine real elapsed time (in seconds) when estimation
+   of the reproduction number is carried out with the method of Cori et al. (2013).
+ \item penparam: The estimated penalty parameter related to the P-spline model.
+ \item K: The number of B-splines used in the basis.
+ \item NegBinoverdisp: The estimated overdispersion parameter of the negative
+   binomial distribution for the incidence time series.
+ \item optimconverged: Indicates whether the algorithm to maximize the
+   posterior distribution of the hyperparameters has converged.
+ \item method: The method to estimate the reproduction number with Laplacian-P-splines.
+ \item optim_method: The chosen method to to maximize the posterior distribution
+   of the hyperparameters.
 }
 }
 \description{

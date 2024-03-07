@@ -66,8 +66,7 @@ plot.Rtnow <- function(x, datelab = "7d", cilevel = 0.95, xtickangle = 0,
       ggplot2::theme(legend.title = ggplot2::element_blank(),
                      legend.position = legendpos) +
       ggplot2::ggtitle('Estimated R') +
-      ggplot2::scale_color_manual(values = c("nowcasted" = nowcastcol)) +
-      ggplot2::scale_fill_manual(values = c("nowcasted" = nowcastcol))
+      ggplot2::scale_color_manual(values = c("nowcasted" = nowcastcol))
 
     return(plotout)
   }

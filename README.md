@@ -43,7 +43,7 @@ Associated literature:
     nowcasting with Laplacian-P-splines. MedRxiv preprint.
     <https://www.medrxiv.org/content/10.1101/2022.08.26.22279249v2>
 
-4.  Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2024). An
+4.  Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2023). An
     efficient approach to nowcasting the time-varying reproduction
     number. MedRxiv preprint.
     <https://doi.org/10.1101/2023.10.30.23297251>
@@ -51,17 +51,17 @@ Associated literature:
 To cite the EpiLPS package in publications starting from version 1.2.0
 use:
 
-    Gressani, O. (2021). EpiLPS: a fast and flexible Bayesian tool for 
-    estimating epidemiological parameters. [Computer Software]. https://epilps.com/
+    Gressani, O. (2021). EpiLPS: A Fast and Flexible Bayesian Tool for 
+    Estimating Epidemiological Parameters. [Computer Software]. https://epilps.com/
 
 For versions before 1.2.0 use:
 
-    Gressani, O. (2021). EpiLPS: a fast and flexible Bayesian tool for 
-    estimation of the time-varying reproduction number. [Computer Software]. https://epilps.com/
+    Gressani, O. (2021). EpiLPS: A Fast and Flexible Bayesian Tool for 
+    Estimation of the Time-varying Reproduction Number. [Computer Software]. https://epilps.com/
 
 #### Package version
 
-This is version 1.3.0 (2024-03-04) - “Extension to nowcasting”.
+This is version 1.3.0 (2024-03-07) - “Extension to nowcasting”.
 
 #### Acknowledgments
 
