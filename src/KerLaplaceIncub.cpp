@@ -37,14 +37,6 @@ List Rcpp_KerLaplaceIncub(NumericVector theta0, double lambda, int K,
   arma::mat Sigmastar = (-1) * arma::inv(Hess);
   arma::mat Sigmainv = (-1) * Hess;
   arma::cx_double logdetSigmastar = arma::log_det(Sigmastar);
-  arma::cx_double detSigmastar = exp(logdetSigmastar);
-  arma::cx_double invdetSigmastar = pow(detSigmastar,(-1));
-
- // double epsil = 1e-5;
- // double lambdainc = lambda + epsil;
- // arma::mat Sigmainc = (-1) * arma::inv(as<arma::mat>(D2logptheta(theta0,lambdainc)));
- // arma::mat diff = (1/epsil) * (Sigmainc-Sigmastar);
- // arma::cx_double dSigma =  invdetSigmastar * (arma::trace(detSigmastar * Sigmainv * diff));
 
   return Rcpp::List::create(Named("Lapmode") = theta0,
                             Named("Lapvar") = Sigmastar,

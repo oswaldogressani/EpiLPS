@@ -25,19 +25,15 @@ plot.nowcasted <- function(x, type = c("cases", "delay"), ...){
   Date <- data$Date
   Cases <- data$Cases
   Reported <- data$Reported
-  y <- x$cases.now$y
-  CI95_low <- data_CI$CI95L
-  CI95_up <- data_CI$CI95R
   data1 <- data[data$Reported != "Not yet reported", ]
-
   data1 <- data1[data1$Date > max(data1$Date) - (2 * D), ]
   data1 <- stats::aggregate(Cases ~ Date + Reported, data = data1, FUN = sum)
   data2 <- data.frame("Date" = data_CI$Date, "Reported" = "Nowcast",
                       "Cases" = utils::tail(x$cases.now$y, n = D) -
                         utils::tail(data1$Cases, n = D))
   data3 <- rbind(data1,data2)
-  CI95_low <- c(rep(NA,nrow(data3)-D), CI95_low)
-  CI95_up <- c(rep(NA,nrow(data3)-D), CI95_up)
+  CI95_low <- c(rep(NA,nrow(data3)-D), data_CI$CI95L)
+  CI95_up <- c(rep(NA,nrow(data3)-D), data_CI$CI95R)
   data3 <- cbind(data3, CI95_low, CI95_up)
   datarep <- data3[data3$Reported == "Reported",]
   datanow <- data3[data3$Reported == "Nowcast",]

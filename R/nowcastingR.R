@@ -49,7 +49,6 @@
 #'  \strong{18}(10): e1010618.
 #' @references Sumalinab, B., Gressani, O., Hens, N. and Faes, C. (2023). An
 #'  efficient approach to nowcasting the time-varying reproduction number. MedRxiv preprint.
-#'  \url{https://doi.org/10.1101/2023.10.30.23297251}
 #'
 #' @examples
 #' # data("cov19incidence2022")
