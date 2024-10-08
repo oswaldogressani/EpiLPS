@@ -65,5 +65,10 @@
 * Updated KerMCMC.R to compute Dlogtar(zeta_prop, lambda_cur) only once in MALA.
 * Updated CITATION file.
 
+### Version 1.4.0 ### (**2024-10-08**)
+
+* Version name: ""
+* Updated nowcasting.R routine output.
+
 
 

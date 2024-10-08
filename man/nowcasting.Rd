@@ -33,6 +33,9 @@ A list with the following components:
  \item delay: A data frame containing the two-dimensional delay distribution.
  \item lambda_estim: Estimated penalty parameters of the P-splines model.
  \item phi_estim: Estimated overdispersion parameter from the negative binomial model.
+ \item Kt: The number of B-spline basis functions in the time dimension.
+ \item Kd: The number of B-spline basis functions in the delay dimension.
+ \item xi_mode: The mode of the conditional posterior distribution of the latent vector.
  }
 }
 \description{

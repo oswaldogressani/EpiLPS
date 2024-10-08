@@ -33,6 +33,9 @@
 #'  \item delay: A data frame containing the two-dimensional delay distribution.
 #'  \item lambda_estim: Estimated penalty parameters of the P-splines model.
 #'  \item phi_estim: Estimated overdispersion parameter from the negative binomial model.
+#'  \item Kt: The number of B-spline basis functions in the time dimension.
+#'  \item Kd: The number of B-spline basis functions in the delay dimension.
+#'  \item xi_mode: The mode of the conditional posterior distribution of the latent vector.
 #'  }
 #'
 #' @author Bryan Sumalinab (writing) and Oswaldo Gressani (editing).
@@ -371,7 +374,10 @@ nowcasting <- function(data, day.effect = TRUE, ref.day = "Monday", verbose = TR
                  cases.now = cases.now,
                  delay = data_delay,
                  lambda_estim = lambda_estim,
-                 phi_estim = phi_estim)
+                 phi_estim = phi_estim,
+                 Kt = Kt,
+                 Kd = Kd,
+                 xi_mode = xi_mode)
 
   attr(outputlist, "class") <- "nowcasted"
   outputlist
