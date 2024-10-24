@@ -126,6 +126,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Rcpp_Kerserialint
+List Rcpp_Kerserialint(NumericMatrix x, int B, NumericVector p);
+RcppExport SEXP _EpiLPS_Rcpp_Kerserialint(SEXP xSEXP, SEXP BSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type B(BSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(Rcpp_Kerserialint(x, B, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_EpiLPS_Rcpp_KerLaplace", (DL_FUNC) &_EpiLPS_Rcpp_KerLaplace, 6},
@@ -136,6 +149,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_EpiLPS_Rcpp_KerRpostmcmc", (DL_FUNC) &_EpiLPS_Rcpp_KerRpostmcmc, 4},
     {"_EpiLPS_Rcpp_KercubicBspline", (DL_FUNC) &_EpiLPS_Rcpp_KercubicBspline, 4},
     {"_EpiLPS_Rcpp_Kerhyperoptim", (DL_FUNC) &_EpiLPS_Rcpp_Kerhyperoptim, 4},
+    {"_EpiLPS_Rcpp_Kerserialint", (DL_FUNC) &_EpiLPS_Rcpp_Kerserialint, 3},
     {NULL, NULL, 0}
 };
 

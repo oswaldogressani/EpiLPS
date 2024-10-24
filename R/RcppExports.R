@@ -33,3 +33,7 @@ Rcpp_Kerhyperoptim <- function(x, BB, grad, step) {
     .Call(`_EpiLPS_Rcpp_Kerhyperoptim`, x, BB, grad, step)
 }
 
+Rcpp_Kerserialint <- function(x, B = 5000L, p = as.numeric( c(0.05,0.25,0.50,0.75,0.95))) {
+    .Call(`_EpiLPS_Rcpp_Kerserialint`, x, B, p)
+}
+
