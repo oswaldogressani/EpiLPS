@@ -65,11 +65,10 @@
 * Updated KerMCMC.R to compute Dlogtar(zeta_prop, lambda_cur) only once in MALA.
 * Updated CITATION file.
 
-### Version 1.4.0 ### (**2024-10-24**)
+### Version 1.4.0 ### (**2025-09-01**)
 
-* Version name: "Extension to serial interval estimation".
+* Version name: "Square root n".
 * Updated nowcasting.R routine output.
-* Added estimSI.R and Kerserialint.cpp for serial interval estimation.
 * Added dataset on influenza serial interval data.
 
 
