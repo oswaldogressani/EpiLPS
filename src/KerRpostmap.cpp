@@ -66,7 +66,7 @@ List Rcpp_KerRpostmap(NumericMatrix BB, NumericVector theta, NumericMatrix Covar
   for(int t = simax; t <= (n - 1); t++){
     for(int k = 0; k <= (K - 1); k++){
       BBk = BB( _ , k );
-      BBtemp = Rcpp::rev(BBk[Rcpp::seq(0, (t - 1))]);
+      BBtemp = Rcpp::rev(BBk[Rcpp::seq((t - simax), (t - 1))]);
       double add = (-1) *  pow(Rcpp::sum(
         Rcpp::rev(muhat[seq((t - simax), (t - 1))]) * sinter), (-1)) *
         (Rcpp::sum(Rcpp::rev(muhat[seq((t - simax), (t - 1))]) *
